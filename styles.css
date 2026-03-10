@@ -51,25 +51,18 @@ a:hover {
     opacity: 0.6;
 }
 
-/* Navbar */
 .navbar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 2.5rem var(--padding-x);
+    padding: 1.5rem var(--padding-x);
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 1000;
-    background-color: rgba(255, 255, 255, 0.6);
-    /* Reduced glassmorphism background opacity */
-    backdrop-filter: blur(6px);
-    /* Reduced blur */
-    -webkit-backdrop-filter: blur(6px);
-    /* Reduced blur */
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    /* Subtle border for separation */
+    background-color: var(--bg-color);
+    border-bottom: 1px solid var(--border-color);
     color: var(--text-primary);
 }
 
@@ -185,7 +178,7 @@ section {
 
 /* About Section */
 .about {
-    padding-top: 20vh;
+    padding-top: 15vh;
     padding-bottom: 5vh;
 }
 
@@ -209,9 +202,114 @@ section {
     /* Remove top margin for flex alignment with dots */
 }
 
+/* Scroll Down Gap Indicator */
+.scroll-down-gap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    height: 15vh;
+    margin-top: -5vh;
+    /* Pull up towards About */
+    position: relative;
+    z-index: 10;
+}
+
+.mouse-icon {
+    width: 24px;
+    height: 38px;
+    border: 2px solid var(--text-primary);
+    border-radius: 12px;
+    position: relative;
+    margin-bottom: 4px;
+    opacity: 0.6;
+}
+
+.mouse-icon .wheel {
+    width: 2px;
+    height: 6px;
+    background-color: var(--text-primary);
+    border-radius: 2px;
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: mouseWheel 2.5s infinite ease-in-out;
+}
+
+.arrow-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.arrow-icon span {
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-bottom: 2px solid var(--text-primary);
+    border-right: 2px solid var(--text-primary);
+    transform: rotate(45deg);
+    margin: -2px 0;
+    animation: mouseArrow 2.5s infinite;
+    opacity: 0;
+}
+
+.arrow-icon span:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.arrow-icon span:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+@keyframes mouseWheel {
+    0% {
+        top: 6px;
+        opacity: 1;
+        height: 6px;
+    }
+
+    40% {
+        top: 18px;
+        opacity: 0;
+        height: 2px;
+    }
+
+    41% {
+        top: 6px;
+        opacity: 0;
+        height: 2px;
+    }
+
+    100% {
+        top: 6px;
+        opacity: 1;
+        height: 6px;
+    }
+}
+
+@keyframes mouseArrow {
+    0% {
+        opacity: 0;
+        transform: rotate(45deg) translate(-3px, -3px);
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 0;
+        transform: rotate(45deg) translate(3px, 3px);
+    }
+}
+
 .timeline-scroll-section {
-    height: calc(200vh + 1500px);
-    /* 100vh docking anim + 1500px pause + 100vh static original height */
+    height: 250vh;
+    /* 100vh docking anim + 50vh pause */
     position: relative;
     background-color: #fafafa;
     padding: 0;
@@ -223,6 +321,7 @@ section {
     height: 100vh;
     display: flex;
     align-items: center;
+    padding-top: 0;
     overflow: hidden;
     width: 100%;
 }
@@ -240,7 +339,7 @@ section {
     display: flex;
     align-items: center;
     gap: 2rem;
-    margin-bottom: 6rem;
+    margin-bottom: 1rem;
 }
 
 .timeline-header .line {
@@ -302,7 +401,7 @@ section {
 
 .timeline-col {
     background-color: #fafafa;
-    padding: 4vw;
+    padding: 2.5rem;
     width: 50%;
     flex-shrink: 0;
     position: relative;
@@ -348,10 +447,10 @@ section {
 }
 
 .col-title {
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 500;
     letter-spacing: -0.03em;
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
     display: inline-block;
 }
 
@@ -394,7 +493,7 @@ section {
 }
 
 .timeline-item {
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
 }
 
 .timeline-meta {
@@ -778,4 +877,3 @@ section {
 .project-item.hidden-element:nth-child(3) {
     transition-delay: 0.2s;
 }
-
