@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +9,10 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <nav class="navbar hidden-element">
         <a href="#hero" class="logo">Pedro Gómez.</a>
@@ -25,16 +28,21 @@
     <main>
         <!-- Hero Section -->
         <section id="hero" class="hero">
-            <div class="hero-content hidden-element">
-                <p class="intro">Desarrollador de Software</p>
-                <h1 class="name">Pedro Gómez</h1>
-                <h2 class="headline">Building digital experiences.</h2>
-                <p class="description">
-                    Desarrollador backend especializado en Java y Python. Experiencia en plataformas escalables, automatización y procesamiento de datos. Enfocado en la intersección entre un diseño minimalista y una ingeniería sólida.
+            <div class="hero-content">
+                <p class="intro hidden-element slide-in-right">Desarrollador de Software</p>
+                <h1 class="name hidden-element slide-in-right">Pedro Gómez</h1>
+                <h2 class="headline hidden-element slide-in-right">Building digital experiences.</h2>
+                <p class="description hidden-element slide-in-right">
+                    Desarrollador Backend especializado en ingeniería de software, arquitectura de sistemas y
+                    automatización.<br>
+                    Diseño soluciones eficientes eliminando lo innecesario para centrarme en lo esencial: software
+                    sólido, escalable y bien estructurado.
                 </p>
-                <div class="hero-links">
-                    <a href="https://github.com/CODIGOAFRX" target="_blank" rel="noopener noreferrer" class="text-link">GitHub</a>
-                    <a href="https://www.linkedin.com/in/pedro-jes%C3%BAs-g%C3%B3mez-p%C3%A9rez-2b5534157/" target="_blank" rel="noopener noreferrer" class="text-link">LinkedIn</a>
+                <div class="hero-links hidden-element slide-in-right">
+                    <a href="https://github.com/CODIGOAFRX" target="_blank" rel="noopener noreferrer"
+                        class="text-link">GitHub</a>
+                    <a href="https://www.linkedin.com/in/pedro-jes%C3%BAs-g%C3%B3mez-p%C3%A9rez-2b5534157/"
+                        target="_blank" rel="noopener noreferrer" class="text-link">LinkedIn</a>
                     <a href="CV PEDRO G.S.Updf.pdf" target="_blank" class="text-link">Descargar CV</a>
                 </div>
             </div>
@@ -42,61 +50,124 @@
 
         <!-- About Section -->
         <section id="about" class="about">
-            <div class="content-wrapper hidden-element">
-                <h3 class="section-label">01 / Sobre Mí</h3>
-                <h2 class="large-text">
-                    Desarrollador backend que ofrece una combinación orgánica de ingeniería de software, arquitectura de sistemas y automatización. Me enfoco en eliminar lo innecesario para dejar hablar a lo esencial.
-                </h2>
-                <p class="secondary-text">
-                    Con experiencia en Java (Spring Boot) y Python, construyo APIs REST escalables, integro bases de datos robustas y creo herramientas de automatización inteligentes. Mi experiencia abarca desde soluciones de IA basadas en datos y pipelines ETL hasta monitorización web sintética en tiempo real y soporte de infraestructura. Destaco en entornos ágiles donde el código limpio, la integración continua y la resolución estratégica de problemas conducen a un software elegante e invisible.
-                </p>
-            </div>
+            <div class="content-wrapper">
+                <div class="large-text-container">
+                    <h3 class="section-label hidden-element slide-in-right">01 / Sobre mí</h3>
+                    <h1 class="large-text hidden-element slide-in-right">
+                        Me enfoco en eliminar lo innecesario para dejar hablar a lo esencial.
+                    </h1>
+                    <div class="working-on-list">
+                        <div class="working-on-item hidden-element slide-in-right">
+                            <span class="pulse-indicator"></span>
+                            <p class="secondary-text">
+                                Trabajo principalmente con Java (Spring Boot) y Python, desarrollando APIs REST
+                                escalables,
+                                integraciones con bases de datos robustas y herramientas de automatización orientadas a
+                                datos.
+                            </p>
+                        </div>
+                        <div class="working-on-item hidden-element slide-in-right">
+                            <span class="pulse-indicator"></span>
+                            <p class="secondary-text">
+                                Mi experiencia abarca desde pipelines ETL y soluciones de IA basadas en datos hasta
+                                monitorización
+                                web sintética en tiempo real e integración con infraestructuras empresariales.
+                            </p>
+                        </div>
+                        <div class="working-on-item hidden-element slide-in-right">
+                            <span class="pulse-indicator"></span>
+                            <p class="secondary-text">
+                                Disfruto trabajando en entornos ágiles, donde el código limpio, la integración continua
+                                y la
+                                resolución estratégica de problemas permiten construir software fiable, eficiente y
+                                mantenible.
+                            </p>
+                        </div>
+                    </div>
+                </div>
         </section>
 
         <!-- Timeline Section (Experience & Education) -->
-        <section id="timeline" class="timeline">
-            <div class="content-wrapper hidden-element">
-                <div class="timeline-header">
-                    <h3 class="section-label">02 / Experiencia y Educación</h3>
-                    <div class="line right-line"></div>
+        <section id="timeline" class="timeline-scroll-section">
+            <div class="timeline-sticky">
+                <div class="timeline">
+                    <div class="content-wrapper hidden-element">
+                        <div class="timeline-header">
+                            <h3 class="section-label">02 / Experiencia y Educación</h3>
+                        </div>
+
+                        <div class="timeline-grid" style="position: relative;">
+                            <!-- Indicator Graphic (fades in) -->
+                            <div class="scroll-indicator" id="scroll-indicator">
+                                <span class="indicator-text">Sigue bajando</span>
+                                <div class="indicator-arrow">↓</div>
+                            </div>
+
+                            <!-- Education Column -->
+                            <div class="timeline-col col-left" id="static-col">
+                                <h4 class="col-title">Formación</h4>
+
+                                <div class="timeline-item">
+                                    <span class="timeline-meta">2023 — 2025</span>
+                                    <h5 class="timeline-role">Desarrollo de Aplicaciones Multiplataforma (DAM)</h5>
+                                    <p class="timeline-context">MEDAC Nevada, Granada <br><em>Premio al Mejor Expediente
+                                            Académico</em></p>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <span class="timeline-meta">2023 — 2025</span>
+                                    <h5 class="timeline-role">Máster en Big Data e Inteligencia Artificial</h5>
+                                    <p class="timeline-context">UCAM <br><em>Machine Learning, Ciencia de Datos</em></p>
+                                </div>
+                            </div>
+
+                            <!-- Experience Column -->
+                            <div class="timeline-col col-right inverted" id="slide-col">
+                                <h4 class="col-title">Experiencia</h4>
+
+                                <div class="timeline-item">
+                                    <span class="timeline-meta">Ene 2026 — Presente</span>
+                                    <h5 class="timeline-role">Técnico Informático y E-Learning Content Developer</h5>
+                                    <p class="timeline-context">Estación Diseño <br><em>Soporte técnico y desarrollo de
+                                            contenidos e-learning</em></p>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <span class="timeline-meta">2025</span>
+                                    <h5 class="timeline-role">Servicios de Monitorización</h5>
+                                    <p class="timeline-context">Kyndryl (El Corte Inglés) <br><em>Desarrollo de
+                                            navegaciones
+                                            sintéticas con Python y Selenium. Monitorización con ITM y Splunk.</em></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </section>
 
-                <div class="timeline-grid">
-                    <!-- Education Column -->
-                    <div class="timeline-col">
-                        <div class="diagonal-bg"></div>
-                        <h4 class="col-title">Formación</h4>
-                        
-                        <div class="timeline-item">
-                            <span class="timeline-meta">2023 — 2025</span>
-                            <h5 class="timeline-role">Desarrollo de Aplicaciones Multiplataforma (DAM)</h5>
-                            <p class="timeline-context">MEDAC Nevada, Granada <br><em>Premio al Mejor Expediente Académico</em></p>
+        <!-- Currently Working On Section -->
+        <section id="working-on" class="working-on">
+            <div class="content-wrapper hidden-element">
+                <h3 class="section-label">03 / Actualmente trabajando en</h3>
+                <div class="working-on-list">
+                    <article class="working-on-item">
+                        <span class="pulse-indicator"></span>
+                        <div>
+                            <h4 class="working-on-title">TrackMix</h4>
+                            <p class="working-on-desc">Diseñando y construyendo una arquitectura robusta para la gestión
+                                musical usando Java 8+, Maven y JUnit 5. Enfocado en estructura modular y patrones
+                                sólidos orientados a objetos.</p>
                         </div>
-
-                        <div class="timeline-item">
-                            <span class="timeline-meta">2023 — 2025</span>
-                            <h5 class="timeline-role">Máster en Big Data e Inteligencia Artificial</h5>
-                            <p class="timeline-context">UCAM <br><em>Machine Learning, Ciencia de Datos</em></p>
+                    </article>
+                    <article class="working-on-item">
+                        <span class="pulse-indicator"></span>
+                        <div>
+                            <h4 class="working-on-title">Homelab & Self-Hosting</h4>
+                            <p class="working-on-desc">Desplegando y gestionando mi propia infraestructura en casa con
+                                Proxmox, Docker y Kubernetes.</p>
                         </div>
-                    </div>
-
-                    <!-- Experience Column -->
-                    <div class="timeline-col">
-                        <div class="diagonal-bg reverse"></div>
-                        <h4 class="col-title">Experiencia</h4>
-
-                        <div class="timeline-item">
-                            <span class="timeline-meta">Ene 2026 — Presente</span>
-                            <h5 class="timeline-role">Técnico Informático y E-Learning Content Developer</h5>
-                            <p class="timeline-context">Estación Diseño <br><em>Soporte técnico y desarrollo de contenidos e-learning</em></p>
-                        </div>
-
-                        <div class="timeline-item">
-                            <span class="timeline-meta">2025</span>
-                            <h5 class="timeline-role">Servicios de Monitorización</h5>
-                            <p class="timeline-context">Kyndryl (El Corte Inglés) <br><em>Desarrollo de navegaciones sintéticas con Python y Selenium. Monitorización con ITM y Splunk.</em></p>
-                        </div>
-                    </div>
+                    </article>
                 </div>
             </div>
         </section>
@@ -104,44 +175,10 @@
         <!-- Projects Section -->
         <section id="projects" class="projects">
             <div class="content-wrapper">
-                <h3 class="section-label hidden-element">03 / Proyectos Destacados</h3>
-                
-                <div class="projects-list">
-                    <article class="project-item hidden-element">
-                        <div class="project-info">
-                            <h3 class="project-title">ORBIS</h3>
-                            <p class="project-desc">Visualizador 3D interactivo que analiza audio en tiempo real y transforma parámetros acústicos en deformaciones visuales en Blender.</p>
-                            <span class="project-tech">Python / Blender / Procesamiento de Audio</span>
-                        </div>
-                        <a href="https://github.com/CODIGOAFRX/ORBIS" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver proyecto ORBIS">Ver Proyecto</a>
-                    </article>
+                <h3 class="section-label hidden-element">04 / Proyectos Destacados</h3>
 
-                    <article class="project-item hidden-element">
-                        <div class="project-info">
-                            <h3 class="project-title">Sesgo Framework</h3>
-                            <p class="project-desc">Mini-framework local diseñado para mitigar el sesgo en sistemas de clasificación automatizados, específicamente adaptado para procesos de RRHH y revisión de CVs.</p>
-                            <span class="project-tech">Python / Machine Learning / Fairness API</span>
-                        </div>
-                        <a href="https://github.com/CODIGOAFRX/sesgo_framework" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver proyecto Sesgo Framework">Ver Proyecto</a>
-                    </article>
-
-                    <article class="project-item hidden-element">
-                        <div class="project-info">
-                            <h3 class="project-title">TrackMix</h3>
-                            <p class="project-desc">Arquitectura de aplicación en Java que utiliza Maven para una sólida gestión de dependencias y empaquetado del proyecto.</p>
-                            <span class="project-tech">Java / Maven</span>
-                        </div>
-                        <a href="https://github.com/CODIGOAFRX/TrackMix" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver proyecto TrackMix">Ver Proyecto</a>
-                    </article>
-
-                    <article class="project-item hidden-element">
-                        <div class="project-info">
-                            <h3 class="project-title">PetCare Manager</h3>
-                            <p class="project-desc">API REST integral para la gestión de mascotas, visitas veterinarias, medicaciones y eventos, con programación automática y líneas temporales unificadas.</p>
-                            <span class="project-tech">Java 21 / Spring Boot / PostgreSQL</span>
-                        </div>
-                        <a href="https://github.com/CODIGOAFRX/petcare-manager" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver proyecto PetCare Manager">Ver Proyecto</a>
-                    </article>
+                <div class="projects-list" id="github-projects">
+                    <!-- Projects will be dynamically injected here using script.js -->
                 </div>
             </div>
         </section>
@@ -149,15 +186,17 @@
         <!-- Tech Stack Section -->
         <section id="stack" class="stack">
             <div class="content-wrapper hidden-element">
-                <h3 class="section-label">04 / Tecnologías y Habilidades</h3>
+                <h3 class="section-label">05 / Tecnologías y Habilidades</h3>
                 <div class="tech-grid-blueprint">
                     <div class="tech-blueprint-row">
                         <span class="tech-blueprint-label">BACKEND & CORE</span>
-                        <span class="tech-blueprint-data">Java 8/11/17/21 · Python 3.8+ · Spring Boot · Spring MVC · JPA / Hibernate · PHP</span>
+                        <span class="tech-blueprint-data">Java 8/11/17/21 · Python 3.8+ · Spring Boot · Spring MVC · JPA
+                            / Hibernate · PHP</span>
                     </div>
                     <div class="tech-blueprint-row">
                         <span class="tech-blueprint-label">DATA & AI</span>
-                        <span class="tech-blueprint-data">Machine Learning · Scikit-Learn · TensorFlow · ETL Pipelines · Pandas · NumPy</span>
+                        <span class="tech-blueprint-data">Machine Learning · Scikit-Learn · TensorFlow · ETL Pipelines ·
+                            Pandas · NumPy</span>
                     </div>
                     <div class="tech-blueprint-row">
                         <span class="tech-blueprint-label">DATABASES</span>
@@ -165,11 +204,13 @@
                     </div>
                     <div class="tech-blueprint-row">
                         <span class="tech-blueprint-label">CLOUD & DEVOPS</span>
-                        <span class="tech-blueprint-data">Docker · Kubernetes · AWS · GitLab CI/CD · Linux · Bash · Splunk</span>
+                        <span class="tech-blueprint-data">Docker · Kubernetes · AWS · GitLab CI/CD · Linux · Bash ·
+                            Splunk</span>
                     </div>
                     <div class="tech-blueprint-row">
                         <span class="tech-blueprint-label">QA & TESTING</span>
-                        <span class="tech-blueprint-data">JUnit 5 · Mockito · Selenium · PyTest · Postman · AppDynamics</span>
+                        <span class="tech-blueprint-data">JUnit 5 · Mockito · Selenium · PyTest · Postman ·
+                            AppDynamics</span>
                     </div>
                 </div>
             </div>
@@ -178,21 +219,23 @@
         <!-- Contact Section -->
         <section id="contact" class="contact">
             <div class="content-wrapper hidden-element">
-                <h3 class="section-label">05 / Contacto</h3>
+                <h3 class="section-label">06 / Contacto</h3>
                 <h2 class="contact-title">Construyamos algo juntos.</h2>
                 <a href="mailto:pedrojgomezperez@gmail.com" class="huge-link">pedrojgomezperez@gmail.com</a>
                 <div class="contact-socials">
                     <a href="https://github.com/CODIGOAFRX" target="_blank" rel="noopener noreferrer">GitHub</a>
-                    <a href="https://www.linkedin.com/in/pedro-jes%C3%BAs-g%C3%B3mez-p%C3%A9rez-2b5534157/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a href="https://www.linkedin.com/in/pedro-jes%C3%BAs-g%C3%B3mez-p%C3%A9rez-2b5534157/"
+                        target="_blank" rel="noopener noreferrer">LinkedIn</a>
                 </div>
             </div>
         </section>
     </main>
 
     <footer class="footer hidden-element">
-        <p>&copy; 2026 Pedro Gómez. Construido con intencionalidad.</p>
+        <p>&copy; 2026 Pedro Gómez.</p>
     </footer>
 
     <script src="script.js"></script>
 </body>
+
 </html>
