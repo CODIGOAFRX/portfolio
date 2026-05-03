@@ -29,9 +29,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
-                targetElement.scrollIntoView({
-                    behavior: 'smooth'
-                });
+                // Special handling for #timeline: scroll past the blank space
+                // so the sticky content is fully docked and the slide animation completes
+                if (targetId === '#timeline') {
+                    const rect = targetElement.getBoundingClientRect();
+                    const absoluteTop = rect.top + window.pageYOffset;
+                    // Scroll to a point where the sticky element has docked (1 viewport height into the section)
+                    // plus a bit extra so the experience column animation finishes
+                    const scrollTarget = absoluteTop + window.innerHeight;
+                    window.scrollTo({
+                        top: scrollTarget,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
             }
         });
     });
