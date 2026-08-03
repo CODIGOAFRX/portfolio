@@ -128,6 +128,46 @@ section {
     /* Raised further up to meet user preference */
     left: var(--padding-x);
     max-width: 900px;
+    z-index: 2;
+}
+
+.hero-globe {
+    position: absolute;
+    top: 50%;
+    left: 73%;
+    width: clamp(320px, 29vw, 520px);
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.hero-globe canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+@media (max-width: 1180px) {
+    .hero-globe {
+        left: 78%;
+        width: clamp(280px, 30vw, 390px);
+        opacity: 0.5;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-content {
+        z-index: 2;
+    }
+
+    .hero-globe {
+        top: 61%;
+        left: 86%;
+        width: 280px;
+        opacity: 0.12;
+        z-index: 1;
+    }
 }
 
 .hero .intro {

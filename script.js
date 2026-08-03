@@ -176,4 +176,142 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => observer.observe(article), 50);
         });
     }
+
+    // Minimal wireframe globe. Its horizontal rotation follows the page scroll.
+    const globeCanvas = document.getElementById('scroll-globe');
+
+    if (globeCanvas) {
+        const context = globeCanvas.getContext('2d');
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const baseRotation = -0.45;
+        const tilt = -0.16;
+        let width = 0;
+        let height = 0;
+        let currentRotation = baseRotation;
+        let targetRotation = baseRotation;
+        let animationFrame = 0;
+
+        const continents = [
+            [[-168, 70], [-145, 61], [-128, 52], [-124, 42], [-112, 31], [-98, 20], [-82, 25], [-80, 38], [-65, 48], [-58, 60], [-90, 72], [-130, 73], [-168, 70]],
+            [[-82, 12], [-68, 8], [-50, -5], [-38, -15], [-50, -25], [-58, -40], [-70, -55], [-75, -35], [-80, -5], [-82, 12]],
+            [[-12, 36], [5, 44], [30, 45], [45, 55], [80, 58], [120, 50], [145, 58], [160, 48], [130, 35], [105, 22], [80, 10], [55, 25], [38, 35], [25, 32], [15, 37], [-12, 36]],
+            [[-17, 35], [10, 37], [32, 30], [45, 10], [38, -12], [25, -35], [12, -34], [0, -20], [-8, 5], [-17, 35]],
+            [[112, -12], [135, -10], [153, -25], [145, -42], [118, -35], [112, -12]],
+            [[-52, 82], [-20, 78], [-28, 65], [-48, 60], [-60, 70], [-52, 82]]
+        ];
+
+        const projectPoint = (longitude, latitude, radius, centerX, centerY) => {
+            const lon = longitude * Math.PI / 180 + currentRotation;
+            const lat = latitude * Math.PI / 180;
+            const sphereX = Math.cos(lat) * Math.sin(lon);
+            const sphereY = Math.sin(lat);
+            const sphereZ = Math.cos(lat) * Math.cos(lon);
+            const tiltedY = sphereY * Math.cos(tilt) - sphereZ * Math.sin(tilt);
+            const tiltedZ = sphereY * Math.sin(tilt) + sphereZ * Math.cos(tilt);
+
+            return {
+                x: centerX + sphereX * radius,
+                y: centerY - tiltedY * radius,
+                z: tiltedZ
+            };
+        };
+
+        const drawCurve = (points, radius, centerX, centerY, frontColor, backColor, lineWidth) => {
+            for (let index = 1; index < points.length; index += 1) {
+                const start = projectPoint(points[index - 1][0], points[index - 1][1], radius, centerX, centerY);
+                const end = projectPoint(points[index][0], points[index][1], radius, centerX, centerY);
+
+                context.beginPath();
+                context.moveTo(start.x, start.y);
+                context.lineTo(end.x, end.y);
+                context.strokeStyle = (start.z + end.z) / 2 >= 0 ? frontColor : backColor;
+                context.lineWidth = lineWidth;
+                context.stroke();
+            }
+        };
+
+        const drawGlobe = () => {
+            if (!width || !height) return;
+
+            context.clearRect(0, 0, width, height);
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = Math.min(width, height) * 0.445;
+
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            context.fillStyle = 'rgba(249, 249, 249, 0.58)';
+            context.fill();
+
+            for (let latitude = -60; latitude <= 60; latitude += 30) {
+                const latitudeLine = [];
+                for (let longitude = -180; longitude <= 180; longitude += 4) {
+                    latitudeLine.push([longitude, latitude]);
+                }
+                drawCurve(latitudeLine, radius, centerX, centerY, '#b8b8b8', '#e3e3e3', 0.7);
+            }
+
+            for (let longitude = -150; longitude <= 180; longitude += 30) {
+                const longitudeLine = [];
+                for (let latitude = -90; latitude <= 90; latitude += 3) {
+                    longitudeLine.push([longitude, latitude]);
+                }
+                drawCurve(longitudeLine, radius, centerX, centerY, '#b8b8b8', '#e3e3e3', 0.7);
+            }
+
+            continents.forEach(continent => {
+                drawCurve(continent, radius, centerX, centerY, '#111111', '#d1d1d1', 1.45);
+            });
+
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            context.strokeStyle = '#111111';
+            context.lineWidth = 1.5;
+            context.stroke();
+
+            globeCanvas.dataset.rotation = currentRotation.toFixed(3);
+        };
+
+        const renderRotation = () => {
+            currentRotation += (targetRotation - currentRotation) * 0.14;
+            drawGlobe();
+
+            if (Math.abs(targetRotation - currentRotation) > 0.001) {
+                animationFrame = window.requestAnimationFrame(renderRotation);
+            } else {
+                currentRotation = targetRotation;
+                drawGlobe();
+                animationFrame = 0;
+            }
+        };
+
+        const requestRotationFrame = () => {
+            if (!animationFrame) {
+                animationFrame = window.requestAnimationFrame(renderRotation);
+            }
+        };
+
+        const syncRotationWithScroll = () => {
+            if (!reducedMotion) {
+                targetRotation = baseRotation + window.scrollY * 0.0022;
+                requestRotationFrame();
+            }
+        };
+
+        const resizeGlobe = () => {
+            const bounds = globeCanvas.getBoundingClientRect();
+            const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+            width = bounds.width;
+            height = bounds.height;
+            globeCanvas.width = Math.round(width * pixelRatio);
+            globeCanvas.height = Math.round(height * pixelRatio);
+            context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+            drawGlobe();
+        };
+
+        window.addEventListener('scroll', syncRotationWithScroll, { passive: true });
+        window.addEventListener('resize', resizeGlobe);
+        resizeGlobe();
+        syncRotationWithScroll();
+    }
 });
