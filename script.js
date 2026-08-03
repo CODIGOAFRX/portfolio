@@ -29,23 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
-                // Special handling for #timeline: scroll past the blank space
-                // so the sticky content is fully docked and the slide animation completes
-                if (targetId === '#timeline') {
-                    const rect = targetElement.getBoundingClientRect();
-                    const absoluteTop = rect.top + window.pageYOffset;
-                    // Scroll to a point where the sticky element has docked (1 viewport height into the section)
-                    // plus a bit extra so the experience column animation finishes
-                    const scrollTarget = absoluteTop + window.innerHeight;
-                    window.scrollTo({
-                        top: scrollTarget,
-                        behavior: 'smooth'
-                    });
-                } else {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
+                targetElement.scrollIntoView({
+                    behavior: 'smooth'
+                });
             }
         });
     });
@@ -65,72 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
     }, { passive: true });
-
-    // Horizontal Scroll Animation for Timeline Section
-    const timelineSection = document.getElementById('timeline');
-    const slideCol = document.getElementById('slide-col');
-    
-    if (timelineSection && slideCol) {
-        let currentTranslate = 100;
-        let targetTranslate = 100;
-        let ticking = false;
-
-        const calculateProgress = () => {
-            if (window.innerWidth <= 1024) return 0;
-            const rect = timelineSection.getBoundingClientRect();
-            let progress = 0;
-            if (rect.top <= 0) {
-                // Animate over strictly 1 window height. The remaining container size is dead-pause space.
-                const animDistance = window.innerHeight;
-                const scrolled = -rect.top;
-                progress = Math.min(1, Math.max(0, scrolled / animDistance));
-            }
-            return progress;
-        };
-
-        const updateAnimation = () => {
-            // Apply smoothing interpolation
-            currentTranslate += (targetTranslate - currentTranslate) * 0.08;
-            
-            // Snap to zero/target when close
-            if (Math.abs(targetTranslate - currentTranslate) < 0.05) {
-                currentTranslate = targetTranslate;
-            }
-            
-            const indicator = document.getElementById('scroll-indicator');
-            if (currentTranslate === 0) {
-                slideCol.style.transform = 'translateX(0px)';
-                slideCol.style.willChange = 'auto';
-                document.getElementById('static-col')?.classList.add('inverted');
-                if (indicator) indicator.classList.add('visible');
-            } else {
-                slideCol.style.transform = `translateX(${currentTranslate}%)`;
-                slideCol.style.willChange = 'transform';
-                document.getElementById('static-col')?.classList.remove('inverted');
-                if (indicator) indicator.classList.remove('visible');
-            }
-            
-            if (currentTranslate !== targetTranslate) {
-                requestAnimationFrame(updateAnimation);
-            } else {
-                ticking = false;
-            }
-        };
-
-        // Initialize immediately
-        targetTranslate = 100 * (1 - calculateProgress());
-        currentTranslate = targetTranslate;
-        slideCol.style.transform = `translateX(${currentTranslate}%)`;
-
-        window.addEventListener('scroll', () => {
-            if (window.innerWidth <= 1024) return;
-            targetTranslate = 100 * (1 - calculateProgress());
-            if (!ticking) {
-                ticking = true;
-                requestAnimationFrame(updateAnimation);
-            }
-        }, { passive: true });
-    }
 
     // Project content is kept locally so private repositories and GitHub rate limits
     // never leave the portfolio without information.
