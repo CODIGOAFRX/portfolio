@@ -57,6 +57,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectsContainer = document.getElementById('github-projects');
     const projects = [
         {
+            name: 'PERA ERP',
+            status: 'Proyecto principal · Backend en desarrollo',
+            description: 'Modernización de un ERP industrial y comercial mediante un backend multiempresa dividido en servicios con límites de dominio explícitos.',
+            goal: 'Cubrir el flujo completo desde el acceso y los datos maestros hasta presupuesto, albarán, factura, vencimientos y seguimiento de cobro, manteniendo aislados los datos de cada empresa.',
+            tech: 'Java 21, Spring Boot 4.1, Spring Cloud Gateway, Spring Security, PostgreSQL 17, Flyway, Maven, Docker Compose, OpenAPI y JUnit.',
+            features: 'API Gateway, autenticación JWT con roles, permisos y empresa activa; servicios de identidad, maestros, ventas y finanzas; base lógica por servicio, outbox transaccional y cálculos monetarios con BigDecimal.',
+            result: 'Primer hito validado con build limpio de siete módulos, cuatro migraciones Flyway, pruebas de importes y vencimientos y ejecución real en PostgreSQL. Más de 4.000 líneas de backend y configuración.',
+            href: 'https://github.com/CODIGOAFRX/PERA',
+            linkLabel: 'Ver GitHub',
+            featured: true
+        },
+        {
             name: 'AfroPX Web',
             status: 'En producción',
             description: 'Web oficial de artista, plataforma de mezcla y mastering y sistema completo de reservas para estudio.',
@@ -126,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (projectsContainer) {
         projects.forEach(project => {
             const article = document.createElement('article');
-            article.className = 'project-item hidden-element';
+            article.className = `project-item${project.featured ? ' project-featured' : ''} hidden-element`;
 
             const projectAction = project.private
                 ? '<span class="project-link project-link-disabled" aria-label="Repositorio privado">Privado</span>'

@@ -421,6 +421,28 @@ section {
     margin-bottom: 0.5rem;
 }
 
+.working-on-title-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-bottom: 0.5rem;
+}
+
+.working-on-title-row .working-on-title {
+    margin-bottom: 0;
+}
+
+.working-on-badge {
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--text-primary);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
 .working-on-desc {
     font-size: 1rem;
     color: var(--text-secondary);
@@ -538,8 +560,9 @@ section {
 
 .project-details {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(2rem, 4vw, 4rem);
+    row-gap: 2rem;
     margin-top: 0;
     max-height: 0;
     opacity: 0;
@@ -572,6 +595,7 @@ section {
 
 .detail-block {
     margin-bottom: 1.5rem;
+    min-width: 0;
 }
 
 .detail-label {
