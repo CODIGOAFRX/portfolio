@@ -132,116 +132,128 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { passive: true });
     }
 
-    // GitHub API Integration for Projects
+    // Project content is kept locally so private repositories and GitHub rate limits
+    // never leave the portfolio without information.
     const projectsContainer = document.getElementById('github-projects');
-    const targetRepos = ['ORBIS', 'sesgo_framework', 'TrackMix', 'petcare-manager'];
-    
-    // Detailed tech metadata not available from GitHub API
-    const projectMetadata = {
-        'ORBIS': {
-            goal: 'Crear una representación visual interactiva sincronizada con audio en tiempo real evitando latencias.',
-            tech: 'Python, Blender API, Librosa, NumPy',
-            features: 'Análisis FFT en tiempo real, manipulación de mallas 3D, mapeo reactivo al espectro de sonido.',
-            learned: 'Integración entre scripts de Python externos y la API interna de Blender, optimizando el rendimiento computacional para mantener la fluidez visual a 60FPS.'
+    const projects = [
+        {
+            name: 'AfroPX Web',
+            status: 'En producción',
+            description: 'Web oficial de artista, plataforma de mezcla y mastering y sistema completo de reservas para estudio.',
+            goal: 'Reunir identidad artística, lanzamientos, servicios profesionales de audio y reservas reales dentro de una experiencia coherente y administrable.',
+            tech: 'HTML, CSS, JavaScript, TypeScript, Cloudflare Pages y Functions, D1, Resend, Turnstile y Vitest.',
+            features: 'Smart links, calendario con disponibilidad real, prevención de dobles reservas, panel privado, correos automáticos, analítica agregada, QR y tarjetas promocionales.',
+            result: 'Proyecto desplegado y operativo en producción sobre el dominio afropxmusic.com.',
+            href: 'https://afropxmusic.com/',
+            linkLabel: 'Ver web'
         },
-        'sesgo_framework': {
-            goal: 'Desarrollar una herramienta local para auditar y mitigar el sesgo en modelos de clasificación automatizados de RRHH.',
-            tech: 'Python, Scikit-Learn, Pandas, API estructurada',
-            features: 'Cálculo de métricas de equidad, visualización de impacto dispar, mitigación preventiva de sesgo.',
-            learned: 'Entendimiento profundo de las métricas de Fairness en Machine Learning y la complejidad de equilibrar la precisión técnica de los modelos con métricas éticas.'
+        {
+            name: 'Biblioteca App',
+            status: 'En uso · privado',
+            description: 'Biblioteca virtual creada para gestionar el catálogo de la escuela en la que trabajo e integrarse con su plataforma interna.',
+            goal: 'Digitalizar la biblioteca escolar y ofrecer una API única para usuarios, libros, revistas y trabajos de fin de estudios.',
+            tech: 'PHP, PostgreSQL, Composer y Docker. El proyecto nació como backend en Java y Spring Boot.',
+            features: 'Autenticación y registro, gestión de perfil, CRUD de libros, revistas y TFE, además de carga de portadas para cada recurso.',
+            result: 'La migración a PHP mantiene las rutas del backend Java y mejora la integración con la infraestructura de la escuela.',
+            private: true
         },
-        'TrackMix': {
-            goal: 'Diseñar y construir una arquitectura de aplicación robusta para la gestión musical usando herramientas empresariales.',
-            tech: 'Java 8+, Maven, JUnit 5',
-            features: 'Estructura altamente modular, gestión estricta de dependencias y configuración centralizada de construcción.',
-            learned: 'Mejores prácticas en la arquitectura de software tradicional Java, ciclo de vida completo de construcción con Maven y patrones sólidos orientados a objetos.'
+        {
+            name: 'TrackMix',
+            status: 'En desarrollo',
+            description: 'API REST de analítica musical que transforma eventos de escucha en estadísticas y resúmenes personalizados.',
+            goal: 'Construir un backend de analítica musical similar a una versión simplificada de Spotify Wrapped.',
+            tech: 'Java 17, Spring Boot, Spring Data JPA, Hibernate, PostgreSQL o MySQL, Maven, Lombok y OpenAPI.',
+            features: 'Usuarios, artistas, canciones, escuchas individuales, tops, uso diario y horario, distribución por género y resumen anual.',
+            result: 'Arquitectura por capas y modelo relacional preparados para ampliar las métricas y consumidores de la API.',
+            href: 'https://github.com/CODIGOAFRX/TrackMix',
+            linkLabel: 'Ver GitHub'
         },
-        'petcare-manager': {
-            goal: 'Proporcionar un backend integral y altamente escalable para automatizar la gestión de clínicas veterinarias.',
-            tech: 'Java 21, Spring Boot, PostgreSQL, JPA/Hibernate',
-            features: 'Programación automatizada de eventos, gestión unificada de historiales clínicos del paciente y una API RESTful completamente segura.',
-            learned: 'Aprovechamiento de las características modernas de Java 21, resolviendo problemas complejos de optimización N+1 de consultas en JPA y estructuración eficiente del esquema de BBDD relacional.'
+        {
+            name: 'Portfolio Web',
+            status: 'En evolución',
+            description: 'Portfolio personal para presentar experiencia, proyectos y decisiones técnicas con una interfaz editorial y directa.',
+            goal: 'Mantener un espacio propio, rápido y legible que explique qué construyo y cómo afronto cada proyecto.',
+            tech: 'HTML, CSS y JavaScript, con despliegue estático en Vercel.',
+            features: 'Diseño responsive, navegación fluida, animaciones discretas y fichas de proyecto desplegables.',
+            result: 'Contenido actualizado para reflejar los productos y herramientas en los que trabajo actualmente.',
+            href: 'https://github.com/CODIGOAFRX/portfolio',
+            linkLabel: 'Ver GitHub'
+        },
+        {
+            name: 'PetCare Manager',
+            status: 'Prototipo funcional',
+            description: 'Backend REST para controlar mascotas, visitas veterinarias, medicaciones, eventos y próximos avisos.',
+            goal: 'Centralizar el historial básico de cada mascota y facilitar el seguimiento de medicaciones y revisiones.',
+            tech: 'Java 21, Spring Boot, Spring Web, JPA / Hibernate, PostgreSQL, Lombok y Bean Validation.',
+            features: 'CRUD de mascotas, visitas, medicaciones y eventos, alertas de dosis y timeline cronológico unificado.',
+            result: 'Una tarea programada detecta medicaciones atrasadas o próximas y permite añadir notificaciones en el futuro.',
+            href: 'https://github.com/CODIGOAFRX/petcare-manager',
+            linkLabel: 'Ver GitHub'
+        },
+        {
+            name: 'Music Stats',
+            status: 'Concepto inicial',
+            description: 'Exploración temprana de un backend de estadísticas musicales para distintos servicios de streaming.',
+            goal: 'Probar la base técnica de un servicio de estadísticas musicales.',
+            tech: 'Java 21, Spring Boot, Spring Data JPA, PostgreSQL, Lombok y Maven.',
+            features: 'Estructura inicial del servicio y configuración de persistencia.',
+            result: 'La línea de producto y analítica más completa continúa actualmente en TrackMix.',
+            href: 'https://github.com/CODIGOAFRX/Music-Stats',
+            linkLabel: 'Ver GitHub'
         }
-    };
+    ];
 
     if (projectsContainer) {
-        Promise.all(
-            targetRepos.map(repo => 
-                fetch(`https://api.github.com/repos/CODIGOAFRX/${repo}`)
-                    .then(response => response.ok ? response.json() : null)
-                    .catch(() => null)
-            )
-        )
-        .then(repos => {
-            const displayRepos = targetRepos.map(repoName => {
-                const fetched = repos.find(r => r && r.name === repoName);
-                if (fetched) return fetched;
-                // Graceful fallback for rate limits
-                return {
-                    name: repoName,
-                    stargazers_count: '-',
-                    description: 'Descripción detallada en mi perfil de GitHub.',
-                    html_url: `https://github.com/CODIGOAFRX/${repoName}`,
-                    language: '-'
-                };
-            });
+        projects.forEach(project => {
+            const article = document.createElement('article');
+            article.className = 'project-item hidden-element';
 
-            displayRepos.forEach(repo => {
-                const meta = projectMetadata[repo.name] || { goal: 'N/A', tech: repo.language || 'N/A', features: 'N/A', learned: 'N/A' };
-                
-                const article = document.createElement('article');
-                article.className = 'project-item hidden-element';
-                
-                article.innerHTML = `
-                    <div class="project-header">
-                        <div class="project-info">
-                            <h3 class="project-title">
-                                ${repo.name} 
-                                <span class="stars">★ ${repo.stargazers_count}</span>
-                            </h3>
-                            <p class="project-desc">${repo.description || 'Sin descripción disponible.'}</p>
-                        </div>
-                        <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver proyecto ${repo.name} en GitHub">Ver GitHub</a>
-                    </div>
-                    <div class="project-details">
-                        <div class="detail-block">
-                            <span class="detail-label">Objetivo de Ingeniería</span>
-                            <p class="detail-content">${meta.goal}</p>
-                        </div>
-                        <div class="detail-block">
-                            <span class="detail-label">Stack Tecnológico</span>
-                            <p class="detail-content">${meta.tech}</p>
-                        </div>
-                        <div class="detail-block">
-                            <span class="detail-label">Características Clave</span>
-                            <p class="detail-content">${meta.features}</p>
-                        </div>
-                        <div class="detail-block">
-                            <span class="detail-label">Resultados y Aprendizaje</span>
-                            <p class="detail-content">${meta.learned}</p>
-                        </div>
-                    </div>
-                `;
+            const projectAction = project.private
+                ? '<span class="project-link project-link-disabled" aria-label="Repositorio privado">Privado</span>'
+                : `<a href="${project.href}" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="${project.linkLabel}: ${project.name}">${project.linkLabel}</a>`;
 
-                // Click event for accordion expansion
-                article.addEventListener('click', (e) => {
-                    // Ignore click if clicking precisely on GitHub button
-                    if (e.target.classList.contains('project-link')) return;
-                    
-                    document.querySelectorAll('.project-item.expanded').forEach(item => {
-                        if (item !== article) item.classList.remove('expanded');
-                    });
-                    article.classList.toggle('expanded');
+            article.innerHTML = `
+                <div class="project-header">
+                    <div class="project-info">
+                        <h3 class="project-title">
+                            ${project.name}
+                            <span class="stars">${project.status}</span>
+                        </h3>
+                        <p class="project-desc">${project.description}</p>
+                    </div>
+                    ${projectAction}
+                </div>
+                <div class="project-details">
+                    <div class="detail-block">
+                        <span class="detail-label">Objetivo</span>
+                        <p class="detail-content">${project.goal}</p>
+                    </div>
+                    <div class="detail-block">
+                        <span class="detail-label">Stack Tecnológico</span>
+                        <p class="detail-content">${project.tech}</p>
+                    </div>
+                    <div class="detail-block">
+                        <span class="detail-label">Características Clave</span>
+                        <p class="detail-content">${project.features}</p>
+                    </div>
+                    <div class="detail-block">
+                        <span class="detail-label">Estado / Resultado</span>
+                        <p class="detail-content">${project.result}</p>
+                    </div>
+                </div>
+            `;
+
+            article.addEventListener('click', (event) => {
+                if (event.target.closest('.project-link')) return;
+
+                document.querySelectorAll('.project-item.expanded').forEach(item => {
+                    if (item !== article) item.classList.remove('expanded');
                 });
-
-                projectsContainer.appendChild(article);
-                // Add observer slightly delayed so DOM updates don't preempt intersections
-                setTimeout(() => observer.observe(article), 50);
+                article.classList.toggle('expanded');
             });
-        })
-        .catch(error => {
-            console.error('API Error:', error);
-            projectsContainer.innerHTML = '<p class="text-secondary" style="color:var(--text-secondary); margin-top:2rem;">No se pudieron cargar los proyectos de GitHub en este momento.</p>';
+
+            projectsContainer.appendChild(article);
+            setTimeout(() => observer.observe(article), 50);
         });
     }
 });

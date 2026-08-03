@@ -24,6 +24,7 @@ html {
     scroll-behavior: smooth;
     font-size: 16px;
     background-color: var(--bg-color);
+    overflow-x: hidden;
 }
 
 body {
@@ -645,6 +646,7 @@ section {
         align-items: flex-start;
         gap: 1.5rem;
     }
+
 }
 
 .project-info {
@@ -692,6 +694,12 @@ section {
     opacity: 1;
 }
 
+.project-link-disabled {
+    color: #777777;
+    border-color: #555555;
+    cursor: default;
+}
+
 .project-details {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -710,6 +718,17 @@ section {
 }
 
 @media (max-width: 768px) {
+    .project-info,
+    .project-title {
+        width: 100%;
+    }
+
+    .project-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.4rem;
+    }
+
     .project-details {
         grid-template-columns: 1fr;
     }
