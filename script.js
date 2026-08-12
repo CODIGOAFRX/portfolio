@@ -80,6 +80,17 @@ document.addEventListener('DOMContentLoaded', () => {
             linkLabel: 'Ver web'
         },
         {
+            name: 'Historia de la Moda',
+            status: 'En producción',
+            description: 'Web oficial de Carlos Sánchez de Medina Alcina que reúne su trayectoria, contenido editorial y oferta formativa sobre historia de la moda.',
+            goal: 'Construir una plataforma propia que conecte portfolio, podcasts, conferencias, biblioteca y aula online dentro de una experiencia editorial coherente y administrable.',
+            tech: 'React 19, TypeScript, Vinext, Vite, Cloudflare Workers, D1, Drizzle ORM, Resend, Playwright y Node.js.',
+            features: 'Archivo de podcasts y conferencias, biblioteca y cursos gestionables desde un panel privado, lanzamiento de contenidos SCORM, formulario de contacto transaccional, sitemap y diseño responsive.',
+            result: 'Proyecto desplegado en historiadelamoda.net, con persistencia en Cloudflare D1, administración de contenidos y comprobaciones automatizadas de build, interfaz y accesibilidad.',
+            href: 'https://historiadelamoda.net/',
+            linkLabel: 'Ver web'
+        },
+        {
             name: 'Biblioteca App',
             status: 'En uso · privado',
             description: 'Biblioteca virtual creada para gestionar el catálogo de la escuela en la que trabajo e integrarse con su plataforma interna.',
