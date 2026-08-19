@@ -58,102 +58,70 @@ document.addEventListener('DOMContentLoaded', () => {
     const projects = [
         {
             name: 'PERA ERP',
-            status: 'Proyecto principal · Backend en desarrollo',
-            description: 'Modernización de un ERP industrial y comercial mediante un backend multiempresa dividido en servicios con límites de dominio explícitos.',
-            goal: 'Cubrir el flujo completo desde el acceso y los datos maestros hasta presupuesto, albarán, factura, vencimientos y seguimiento de cobro, manteniendo aislados los datos de cada empresa.',
+            status: 'Proyecto principal · En desarrollo',
+            description: 'Backend multiempresa para modernizar un ERP industrial y comercial sin perder la lógica crítica del negocio.',
+            goal: 'Conectar identidad, datos maestros, ventas y finanzas manteniendo aislada la información de cada empresa.',
             tech: 'Java 21, Spring Boot 4.1, Spring Cloud Gateway, Spring Security, PostgreSQL 17, Flyway, Maven, Docker Compose, OpenAPI y JUnit.',
-            features: 'API Gateway, autenticación JWT con roles, permisos y empresa activa; servicios de identidad, maestros, ventas y finanzas; base lógica por servicio, outbox transaccional y cálculos monetarios con BigDecimal.',
-            result: 'Primer hito validado con build limpio de siete módulos, cuatro migraciones Flyway, pruebas de importes y vencimientos y ejecución real en PostgreSQL. Más de 4.000 líneas de backend y configuración.',
+            features: 'Siete módulos Maven, API Gateway, JWT con roles y empresa activa, límites de dominio, outbox transaccional y cálculos monetarios con BigDecimal.',
+            result: 'Primer hito ejecutado sobre PostgreSQL con migraciones Flyway, pruebas de importes y vencimientos y más de 4.000 líneas de backend y configuración.',
             href: 'https://github.com/CODIGOAFRX/PERA',
-            linkLabel: 'Ver GitHub',
+            linkLabel: 'GitHub',
             featured: true
         },
         {
-            name: 'AfroPX Web',
-            status: 'En producción',
-            description: 'Web oficial de artista, plataforma de mezcla y mastering y sistema completo de reservas para estudio.',
-            goal: 'Reunir identidad artística, lanzamientos, servicios profesionales de audio y reservas reales dentro de una experiencia coherente y administrable.',
-            tech: 'HTML, CSS, JavaScript, TypeScript, Cloudflare Pages y Functions, D1, Resend, Turnstile y Vitest.',
-            features: 'Smart links, calendario con disponibilidad real, prevención de dobles reservas, panel privado, correos automáticos, analítica agregada, QR y tarjetas promocionales.',
-            result: 'Proyecto desplegado y operativo en producción sobre el dominio afropxmusic.com.',
-            href: 'https://afropxmusic.com/',
-            linkLabel: 'Ver web'
+            name: 'ORBIS',
+            status: 'Prototipo técnico · Proyecto final DAM',
+            description: 'Visualizador que transforma el espectro de una señal de audio en geometría 3D orgánica en tiempo real.',
+            goal: 'Hacer visible el equilibrio de una mezcla y explorar nuevas aplicaciones educativas y creativas para el análisis de audio.',
+            tech: 'Python 3.11, NumPy, SciPy, SoundDevice, Blender 3.6, Geometry Nodes, sockets y JSON.',
+            features: 'FFT, RMS y frecuencia dominante; exportación continua cada 100 ms y enlace en vivo con una malla deformable en Blender.',
+            result: 'Prototipo alpha funcional desarrollado junto a David Erik García como proyecto final de Desarrollo de Aplicaciones Multiplataforma.',
+            href: 'https://github.com/CODIGOAFRX/ORBIS',
+            linkLabel: 'GitHub'
         },
         {
-            name: 'Historia de la Moda',
-            status: 'En producción',
-            description: 'Web oficial de Carlos Sánchez de Medina Alcina que reúne su trayectoria, contenido editorial y oferta formativa sobre historia de la moda.',
-            goal: 'Construir una plataforma propia que conecte portfolio, podcasts, conferencias, biblioteca y aula online dentro de una experiencia editorial coherente y administrable.',
-            tech: 'React 19, TypeScript, Vinext, Vite, Cloudflare Workers, D1, Drizzle ORM, Resend, Playwright y Node.js.',
-            features: 'Archivo de podcasts y conferencias, biblioteca y cursos gestionables desde un panel privado, lanzamiento de contenidos SCORM, formulario de contacto transaccional, sitemap y diseño responsive.',
-            result: 'Proyecto desplegado en historiadelamoda.net, con persistencia en Cloudflare D1, administración de contenidos y comprobaciones automatizadas de build, interfaz y accesibilidad.',
-            href: 'https://historiadelamoda.net/',
-            linkLabel: 'Ver web'
+            name: 'GSMFair',
+            status: 'Machine Learning responsable',
+            description: 'Mini-framework local para auditar y reducir disparidades entre grupos en sistemas automáticos de clasificación de CV.',
+            goal: 'Mitigar diferencias en tasas de falsos positivos y falsos negativos sin reentrenar el modelo original ni enviar datos a la nube.',
+            tech: 'Python, NumPy, Pandas, Scikit-learn y procesamiento reproducible de CSV.',
+            features: 'Ajuste de umbrales por grupo, mitigación con predicciones binarias e informes comparativos antes y después del tratamiento.',
+            result: 'En el ejemplo documentado reduce a la mitad las brechas de FPR y FNR, manteniendo todo el flujo en local.',
+            href: 'https://github.com/CODIGOAFRX/sesgo_framework',
+            linkLabel: 'GitHub'
         },
         {
             name: 'Biblioteca App',
             status: 'En uso · privado',
-            description: 'Biblioteca virtual creada para gestionar el catálogo de la escuela en la que trabajo e integrarse con su plataforma interna.',
-            goal: 'Digitalizar la biblioteca escolar y ofrecer una API única para usuarios, libros, revistas y trabajos de fin de estudios.',
+            description: 'Sistema para gestionar el catálogo de una escuela e integrarlo con su plataforma interna.',
+            goal: 'Ofrecer una API única para usuarios, libros, revistas y trabajos de fin de estudios.',
             tech: 'PHP, PostgreSQL, Composer y Docker. El proyecto nació como backend en Java y Spring Boot.',
-            features: 'Autenticación y registro, gestión de perfil, CRUD de libros, revistas y TFE, además de carga de portadas para cada recurso.',
-            result: 'La migración a PHP mantiene las rutas del backend Java y mejora la integración con la infraestructura de la escuela.',
+            features: 'Autenticación, perfiles, catálogo completo, trabajos académicos y carga de portadas.',
+            result: 'La adaptación a PHP conserva el contrato del backend original en Java y encaja con la infraestructura existente.',
             private: true
         },
         {
             name: 'TrackMix',
             status: 'En desarrollo',
-            description: 'API REST de analítica musical que transforma eventos de escucha en estadísticas y resúmenes personalizados.',
+            description: 'API de analítica musical que transforma cada escucha en hábitos, rankings y resúmenes personalizados.',
             goal: 'Construir un backend de analítica musical similar a una versión simplificada de Spotify Wrapped.',
             tech: 'Java 17, Spring Boot, Spring Data JPA, Hibernate, PostgreSQL o MySQL, Maven, Lombok y OpenAPI.',
             features: 'Usuarios, artistas, canciones, escuchas individuales, tops, uso diario y horario, distribución por género y resumen anual.',
             result: 'Arquitectura por capas y modelo relacional preparados para ampliar las métricas y consumidores de la API.',
             href: 'https://github.com/CODIGOAFRX/TrackMix',
-            linkLabel: 'Ver GitHub'
-        },
-        {
-            name: 'Portfolio Web',
-            status: 'En evolución',
-            description: 'Portfolio personal para presentar experiencia, proyectos y decisiones técnicas con una interfaz editorial y directa.',
-            goal: 'Mantener un espacio propio, rápido y legible que explique qué construyo y cómo afronto cada proyecto.',
-            tech: 'HTML, CSS y JavaScript, con despliegue estático en Vercel.',
-            features: 'Diseño responsive, navegación fluida, animaciones discretas y fichas de proyecto desplegables.',
-            result: 'Contenido actualizado para reflejar los productos y herramientas en los que trabajo actualmente.',
-            href: 'https://github.com/CODIGOAFRX/portfolio',
-            linkLabel: 'Ver GitHub'
-        },
-        {
-            name: 'PetCare Manager',
-            status: 'Prototipo funcional',
-            description: 'Backend REST para controlar mascotas, visitas veterinarias, medicaciones, eventos y próximos avisos.',
-            goal: 'Centralizar el historial básico de cada mascota y facilitar el seguimiento de medicaciones y revisiones.',
-            tech: 'Java 21, Spring Boot, Spring Web, JPA / Hibernate, PostgreSQL, Lombok y Bean Validation.',
-            features: 'CRUD de mascotas, visitas, medicaciones y eventos, alertas de dosis y timeline cronológico unificado.',
-            result: 'Una tarea programada detecta medicaciones atrasadas o próximas y permite añadir notificaciones en el futuro.',
-            href: 'https://github.com/CODIGOAFRX/petcare-manager',
-            linkLabel: 'Ver GitHub'
-        },
-        {
-            name: 'Music Stats',
-            status: 'Concepto inicial',
-            description: 'Exploración temprana de un backend de estadísticas musicales para distintos servicios de streaming.',
-            goal: 'Probar la base técnica de un servicio de estadísticas musicales.',
-            tech: 'Java 21, Spring Boot, Spring Data JPA, PostgreSQL, Lombok y Maven.',
-            features: 'Estructura inicial del servicio y configuración de persistencia.',
-            result: 'La línea de producto y analítica más completa continúa actualmente en TrackMix.',
-            href: 'https://github.com/CODIGOAFRX/Music-Stats',
-            linkLabel: 'Ver GitHub'
+            linkLabel: 'GitHub'
         }
     ];
 
     if (projectsContainer) {
-        projects.forEach(project => {
+        projects.forEach((project, index) => {
             const article = document.createElement('article');
             article.className = `project-item${project.featured ? ' project-featured' : ''} hidden-element`;
+            const detailsId = `project-details-${index}`;
 
             const projectAction = project.private
                 ? '<span class="project-link project-link-disabled" aria-label="Repositorio privado">Privado</span>'
-                : `<a href="${project.href}" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="${project.linkLabel}: ${project.name}">${project.linkLabel}</a>`;
+                : `<a href="${project.href}" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Abrir ${project.name} en ${project.linkLabel}">${project.linkLabel} ↗</a>`;
 
             article.innerHTML = `
                 <div class="project-header">
@@ -164,9 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         </h3>
                         <p class="project-desc">${project.description}</p>
                     </div>
-                    ${projectAction}
+                    <div class="project-actions">
+                        ${projectAction}
+                        <button class="project-toggle" type="button" aria-expanded="false" aria-controls="${detailsId}">
+                            <span>Ver detalles</span><span aria-hidden="true">+</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="project-details">
+                <div class="project-details" id="${detailsId}">
                     <div class="detail-block">
                         <span class="detail-label">Objetivo</span>
                         <p class="detail-content">${project.goal}</p>
@@ -186,13 +159,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            article.addEventListener('click', (event) => {
-                if (event.target.closest('.project-link')) return;
-
+            const toggle = article.querySelector('.project-toggle');
+            toggle.addEventListener('click', () => {
                 document.querySelectorAll('.project-item.expanded').forEach(item => {
-                    if (item !== article) item.classList.remove('expanded');
+                    if (item !== article) {
+                        item.classList.remove('expanded');
+                        const otherToggle = item.querySelector('.project-toggle');
+                        if (otherToggle) {
+                            otherToggle.setAttribute('aria-expanded', 'false');
+                            otherToggle.querySelector('span:first-child').textContent = 'Ver detalles';
+                            otherToggle.querySelector('span:last-child').textContent = '+';
+                        }
+                    }
                 });
                 article.classList.toggle('expanded');
+                const expanded = article.classList.contains('expanded');
+                toggle.setAttribute('aria-expanded', String(expanded));
+                toggle.querySelector('span:first-child').textContent = expanded ? 'Ocultar detalles' : 'Ver detalles';
+                toggle.querySelector('span:last-child').textContent = expanded ? '−' : '+';
             });
 
             projectsContainer.appendChild(article);
