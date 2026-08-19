@@ -1,0 +1,6 @@
+.git/
+.github/
+worker/
+tests/
+coverage/
+*.log

@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pedro-candidaturas-api",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-19",
+  "workers_dev": true,
+  "observability": {
+    "enabled": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "pedro-candidaturas-db",
+      "database_id": "c2f6adaf-663a-4a82-80d4-537f663bab9d"
+    }
+  ]
+}

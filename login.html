@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Acceso privado / Pedro Gómez</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/login.css?v=20260819-1">
+</head>
+<body>
+    <nav class="login-nav">
+        <a href="/" class="login-logo">Pedro Gómez.</a>
+        <a href="/">Volver al portfolio</a>
+    </nav>
+
+    <main class="login-main">
+        <section class="login-intro">
+            <p class="eyebrow">Área privada</p>
+            <h1>Panel de<br><span>candidaturas.</span></h1>
+            <p>Acceso reservado para la gestión personal de ofertas y solicitudes de empleo.</p>
+        </section>
+
+        <section class="login-card" aria-labelledby="login-title">
+            <p class="form-number">01 / Identificación</p>
+            <h2 id="login-title">Iniciar sesión</h2>
+            <p class="error-message" id="login-error" hidden>El usuario o la contraseña no son correctos.</p>
+            <form action="/api/login" method="post">
+                <label>
+                    <span>Usuario</span>
+                    <input name="username" type="text" autocomplete="username" required autofocus>
+                </label>
+                <label>
+                    <span>Contraseña</span>
+                    <input name="password" type="password" autocomplete="current-password" required>
+                </label>
+                <button type="submit">Entrar al panel <span aria-hidden="true">↗</span></button>
+            </form>
+        </section>
+    </main>
+
+    <script src="/login.js" defer></script>
+</body>
+</html>

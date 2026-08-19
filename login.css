@@ -1,0 +1,35 @@
+:root {
+    --bg: #ffffff;
+    --ink: #111111;
+    --muted: #6a6a6a;
+    --soft: #a0a0a0;
+    --line: #eeeeee;
+    --space: 6vw;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { min-height: 100vh; color: var(--ink); background: var(--bg); -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+.login-nav { height: 96px; padding: 0 var(--space); border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; font-size: .95rem; font-weight: 500; }
+.login-logo { font-size: 1.25rem; font-weight: 700; letter-spacing: -.03em; }
+.login-main { min-height: calc(100vh - 96px); padding: clamp(4rem, 10vh, 8rem) var(--space); display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr); gap: 8vw; align-items: start; }
+.eyebrow, .form-number { color: var(--soft); font-size: .8rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
+.login-intro h1 { margin: 1.6rem 0 2.2rem; font-size: clamp(4rem, 7.5vw, 8rem); line-height: .88; letter-spacing: -.075em; }
+.login-intro h1 span { color: #6b6b6b; font-weight: 500; }
+.login-intro > p:last-child { max-width: 600px; color: var(--muted); font-size: clamp(1.1rem, 1.4vw, 1.45rem); line-height: 1.55; }
+.login-card { border-top: 1px solid var(--ink); padding-top: 1.4rem; }
+.login-card h2 { margin: 1.2rem 0 2.4rem; font-size: clamp(2rem, 3vw, 3.25rem); letter-spacing: -.045em; }
+.login-card form { display: grid; gap: 1.6rem; }
+.login-card label { display: grid; gap: .55rem; color: var(--muted); font-size: .82rem; text-transform: uppercase; letter-spacing: .06em; }
+.login-card input { width: 100%; border: 0; border-bottom: 1px solid #bdbdbd; border-radius: 0; padding: .8rem 0 1rem; background: transparent; color: var(--ink); font: inherit; font-size: 1.1rem; outline: none; }
+.login-card input:focus { border-color: var(--ink); }
+.login-card button { margin-top: .7rem; padding: 1rem 0; border: 0; border-bottom: 1px solid var(--ink); display: flex; justify-content: space-between; background: transparent; color: var(--ink); font: inherit; font-size: 1rem; font-weight: 500; cursor: pointer; }
+.login-card button:hover { opacity: .55; }
+.error-message { margin: -1.2rem 0 1.6rem; color: #a32d2d; font-size: .9rem; line-height: 1.5; }
+
+@media (max-width: 800px) {
+    .login-nav { height: 76px; }
+    .login-main { min-height: auto; grid-template-columns: 1fr; gap: 4rem; padding-top: 4rem; }
+    .login-intro h1 { font-size: clamp(3.6rem, 16vw, 6rem); }
+}
