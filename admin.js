@@ -81,6 +81,36 @@ async function changeStatus(id, status, button) {
     }
 }
 
+function markAppliedAfterOpening(job) {
+    if (job.status !== 'pending') return;
+    const previousStatus = job.status;
+    job.status = 'applied';
+
+    window.setTimeout(() => {
+        updateMetrics();
+        render();
+    }, 120);
+
+    fetch('/api/jobs', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: job.id, status: 'applied' }),
+        keepalive: true
+    }).then(response => {
+        if (response.status === 401) window.location.assign('/login');
+        if (!response.ok) throw new Error('No se pudo actualizar');
+        return response.json();
+    }).then(payload => {
+        const index = state.jobs.findIndex(item => item.id === payload.job.id);
+        if (index !== -1) state.jobs[index] = payload.job;
+        updateMetrics();
+    }).catch(() => {
+        job.status = previousStatus;
+        updateMetrics();
+        render();
+    });
+}
+
 function createJobCard(job) {
     const article = node('article', 'job-card');
     const score = node('div', 'fit-score');
@@ -116,15 +146,18 @@ function createJobCard(job) {
     const actions = node('div', 'job-actions');
     const url = validExternalUrl(job.url);
     if (url) {
-        const link = node('a', '', 'Ver oferta ↗');
+        const link = node('a', 'apply-button', job.status === 'pending' ? 'Solicitar ↗' : 'Abrir oferta ↗');
         link.href = url;
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
+        link.addEventListener('click', () => markAppliedAfterOpening(job));
         actions.appendChild(link);
+    } else {
+        actions.appendChild(node('span', 'apply-button unavailable', 'Enlace no disponible'));
     }
 
     const nextActions = job.status === 'pending'
-        ? [['applied', 'Marcar solicitada', ''], ['dismissed', 'Descartar', 'secondary']]
+        ? [['dismissed', 'Descartar', 'secondary']]
         : [['pending', 'Volver a pendientes', 'secondary']];
     nextActions.forEach(([status, label, className]) => {
         const button = node('button', className, label);

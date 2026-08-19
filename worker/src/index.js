@@ -38,15 +38,67 @@ function stringArray(value, maxItems = 20) {
     return value.slice(0, maxItems).map(item => text(item, 300)).filter(Boolean);
 }
 
+function normalizeForMatch(value) {
+    return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
+}
+
+function canonicalJobUrl(value) {
+    try {
+        const url = new URL(String(value || '').trim());
+        if (!['http:', 'https:'].includes(url.protocol)) return null;
+
+        const linkedInJob = url.pathname.match(/\/jobs\/view\/(\d+)/);
+        if (url.hostname.endsWith('linkedin.com') && linkedInJob) {
+            return `https://www.linkedin.com/jobs/view/${linkedInJob[1]}/`;
+        }
+
+        return url.href.slice(0, 2000);
+    } catch {
+        return null;
+    }
+}
+
+function hybridOutsideAndalusia(job) {
+    const mode = normalizeForMatch([job?.workMode, job?.title, job?.summary].join(' '));
+    if (!/\b(hibrid|hybrid)/.test(mode)) return false;
+
+    const location = normalizeForMatch(job?.location);
+    if (!location || /\b(espana|spain|remoto|remote)\b/.test(location)) return false;
+    if (/\b(andalucia|almeria|cadiz|cordoba|granada|huelva|jaen|malaga|sevilla)\b/.test(location)) return false;
+
+    const outsideLocations = [
+        'madrid', 'barcelona', 'valencia', 'alicante', 'castellon', 'murcia', 'bilbao',
+        'vizcaya', 'bizkaia', 'guipuzcoa', 'gipuzkoa', 'alava', 'vitoria', 'navarra',
+        'pamplona', 'zaragoza', 'huesca', 'teruel', 'asturias', 'oviedo', 'gijon',
+        'cantabria', 'santander', 'galicia', 'coruna', 'pontevedra', 'lugo', 'ourense',
+        'castilla', 'leon', 'valladolid', 'salamanca', 'burgos', 'segovia', 'avila',
+        'palencia', 'soria', 'zamora', 'toledo', 'guadalajara', 'cuenca', 'albacete',
+        'ciudad real', 'extremadura', 'badajoz', 'caceres', 'la rioja', 'logrono',
+        'baleares', 'mallorca', 'canarias', 'tenerife', 'las palmas', 'ceuta', 'melilla'
+    ];
+    return outsideLocations.some(place => location.includes(place));
+}
+
 function normalizeJob(job) {
     const sourceId = text(job?.sourceId, 500);
     const title = text(job?.title, 500);
     const source = text(job?.source, 100);
-    if (!sourceId || !title || !source) return null;
+    const url = canonicalJobUrl(job?.url);
+    if (!sourceId || !title || !source || !url) return null;
 
-    const fitScore = Math.max(0, Math.min(100, Number(job.fitScore) || 0));
+    let fitScore = Math.max(0, Math.min(100, Number(job.fitScore) || 0));
     const status = ['pending', 'applied', 'dismissed'].includes(job.status) ? job.status : 'pending';
-    const priority = ['high', 'medium', 'low', 'dismissed'].includes(job.priority) ? job.priority : 'low';
+    let priority = ['high', 'medium', 'low', 'dismissed'].includes(job.priority) ? job.priority : 'low';
+    const gaps = stringArray(job.gaps);
+    if (hybridOutsideAndalusia(job)) {
+        fitScore = Math.min(fitScore, 10);
+        priority = 'low';
+        const mobilityGap = 'Modalidad híbrida fuera de Andalucía; no contempla mudanza desde Granada.';
+        if (!gaps.includes(mobilityGap)) gaps.push(mobilityGap);
+    }
     const now = new Date().toISOString();
 
     return {
@@ -57,11 +109,11 @@ function normalizeJob(job) {
         company: text(job.company, 500),
         location: text(job.location, 500),
         workMode: text(job.workMode, 100),
-        url: text(job.url, 2000),
+        url,
         summary: text(job.summary, 6000),
         technologies: JSON.stringify(stringArray(job.technologies)),
         matchReasons: JSON.stringify(stringArray(job.matchReasons)),
-        gaps: JSON.stringify(stringArray(job.gaps)),
+        gaps: JSON.stringify(gaps),
         fitScore,
         recommendedCv: text(job.recommendedCv, 100),
         priority,
@@ -211,3 +263,5 @@ export default {
         }
     }
 };
+
+export { canonicalJobUrl, hybridOutsideAndalusia, normalizeJob };

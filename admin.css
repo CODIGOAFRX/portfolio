@@ -42,7 +42,7 @@ button, input, select { font: inherit; }
 .status-tab { flex: none; padding: 0 0 .45rem; border: 0; border-bottom: 1px solid transparent; background: transparent; color: var(--soft); font-size: .9rem; cursor: pointer; }
 .status-tab.active { color: var(--ink); border-color: var(--ink); }
 .jobs-list { border-top: 1px solid var(--line); }
-.job-card { display: grid; grid-template-columns: 100px minmax(0, 1fr) minmax(220px, .45fr); gap: clamp(1.2rem, 3vw, 4rem); padding: 2rem 0; border-bottom: 1px solid var(--line); }
+.job-card { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: clamp(1.2rem, 3vw, 4rem); padding: 2.2rem 0; border-bottom: 1px solid var(--line); }
 .fit-score { align-self: start; width: 76px; height: 76px; border: 1px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-size: 1.25rem; font-weight: 600; letter-spacing: -.04em; }
 .fit-score small { font-size: .7rem; font-weight: 400; }
 .job-kicker { margin-bottom: .7rem; color: var(--soft); font-size: .72rem; letter-spacing: .07em; text-transform: uppercase; }
@@ -51,13 +51,16 @@ button, input, select { font: inherit; }
 .job-summary { max-width: 760px; margin-top: 1.4rem; color: var(--muted); line-height: 1.7; }
 .tag-list { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.3rem; }
 .tag { padding: .35rem .65rem; border: 1px solid #d8d8d8; border-radius: 99px; color: #4f4f4f; font-size: .72rem; }
-.job-aside { display: flex; flex-direction: column; gap: 1.1rem; }
-.job-meta { display: grid; gap: .5rem; color: var(--muted); font-size: .82rem; }
+.job-aside { grid-column: 2; display: grid; grid-template-columns: minmax(180px, .45fr) minmax(260px, 1fr); gap: 1rem 3rem; padding-top: 1.2rem; border-top: 1px solid var(--line); }
+.job-meta { display: grid; align-content: start; gap: .5rem; color: var(--muted); font-size: .82rem; }
 .job-meta strong { color: var(--ink); font-weight: 500; }
 .reason-list { display: grid; gap: .45rem; color: var(--muted); font-size: .82rem; list-style: none; }
 .reason-list li::before { content: '— '; color: var(--ink); }
-.job-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: auto; }
-.job-actions a, .job-actions button { padding: .7rem 0; border: 0; border-bottom: 1px solid var(--ink); background: transparent; color: var(--ink); font-size: .82rem; font-weight: 500; cursor: pointer; }
+.job-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: .8rem; padding-top: .35rem; }
+.job-actions a, .job-actions button, .job-actions span { padding: .8rem 1rem; border: 1px solid var(--ink); background: transparent; color: var(--ink); font-size: .82rem; font-weight: 600; cursor: pointer; }
+.job-actions .apply-button { min-width: 180px; background: var(--ink); color: var(--bg); text-align: center; }
+.job-actions .apply-button:hover { opacity: .72; }
+.job-actions .apply-button.unavailable { border-color: var(--line); background: var(--wash); color: var(--soft); cursor: not-allowed; }
 .job-actions .secondary { color: var(--muted); border-color: #bdbdbd; }
 .job-actions button:disabled { opacity: .35; cursor: wait; }
 .empty-state { padding: 4rem 0; border-bottom: 1px solid var(--line); color: var(--muted); }
@@ -82,5 +85,7 @@ button, input, select { font: inherit; }
     .section-heading { align-items: start; flex-direction: column; }
     .job-card { grid-template-columns: 1fr; }
     .fit-score { width: 62px; height: 62px; }
-    .job-aside { grid-column: 1; }
+    .job-aside { grid-column: 1; grid-template-columns: 1fr; }
+    .job-actions { grid-column: 1; }
+    .job-actions .apply-button { width: 100%; }
 }
