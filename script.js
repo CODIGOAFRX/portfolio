@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const projectAction = project.private
                 ? '<span class="project-link project-link-disabled" aria-label="Repositorio privado">Privado</span>'
-                : `<a href="${project.href}" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Abrir ${project.name} en ${project.linkLabel}">${project.linkLabel} ↗</a>`;
+                : `<a href="${project.href}" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Abrir ${project.name} en ${project.linkLabel}">${project.linkLabel}</a>`;
 
             article.innerHTML = `
                 <div class="project-header">
@@ -184,19 +184,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Minimal wireframe globe. Its horizontal rotation follows the page scroll.
+    // A single persistent wireframe globe grows into the page background,
+    // adapts to dark sections and settles back into the contact composition.
+    const globeShell = document.querySelector('.page-globe');
     const globeCanvas = document.getElementById('scroll-globe');
+    const projectsSection = document.getElementById('projects');
+    const contactSection = document.getElementById('contact');
 
-    if (globeCanvas) {
+    if (globeShell && globeCanvas && projectsSection && contactSection) {
         const context = globeCanvas.getContext('2d');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const baseRotation = -0.45;
         const tilt = -0.16;
+        const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+        const mix = (start, end, progress) => start + (end - start) * progress;
+        const smoothstep = (value) => value * value * (3 - 2 * value);
+        const colorMix = (light, dark, progress, alpha = 1) => {
+            const channels = light.map((channel, index) => Math.round(mix(channel, dark[index], progress)));
+            return `rgba(${channels[0]}, ${channels[1]}, ${channels[2]}, ${alpha})`;
+        };
+
         let width = 0;
         let height = 0;
         let currentRotation = baseRotation;
         let targetRotation = baseRotation;
+        let automaticRotation = 0;
+        let currentScale = 1;
+        let targetScale = 1;
+        let currentX = 0;
+        let targetX = 0;
+        let currentY = 0;
+        let targetY = 0;
+        let currentOpacity = 0;
+        let targetOpacity = 0;
+        let currentTheme = 0;
+        let targetTheme = 0;
+        let contactProgress = 0;
         let animationFrame = 0;
+        let lastFrameTime = performance.now();
+        let lastDrawTime = 0;
+        let initialized = false;
 
         const continents = [
             [[-168, 70], [-145, 61], [-128, 52], [-124, 42], [-112, 31], [-98, 20], [-82, 25], [-80, 38], [-65, 48], [-58, 60], [-90, 72], [-130, 73], [-168, 70]],
@@ -244,10 +271,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const centerX = width / 2;
             const centerY = height / 2;
             const radius = Math.min(width, height) * 0.445;
+            const gridFront = colorMix([184, 184, 184], [230, 230, 226], currentTheme);
+            const gridBack = colorMix([227, 227, 227], [105, 105, 102], currentTheme);
+            const landFront = colorMix([17, 17, 17], [250, 250, 247], currentTheme);
+            const landBack = colorMix([209, 209, 209], [135, 135, 131], currentTheme);
+            const fillAlpha = mix(0.58, 0.06, currentTheme);
 
             context.beginPath();
             context.arc(centerX, centerY, radius, 0, Math.PI * 2);
-            context.fillStyle = 'rgba(249, 249, 249, 0.58)';
+            context.fillStyle = colorMix([249, 249, 249], [17, 17, 17], currentTheme, fillAlpha);
             context.fill();
 
             for (let latitude = -60; latitude <= 60; latitude += 30) {
@@ -255,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 for (let longitude = -180; longitude <= 180; longitude += 4) {
                     latitudeLine.push([longitude, latitude]);
                 }
-                drawCurve(latitudeLine, radius, centerX, centerY, '#b8b8b8', '#e3e3e3', 0.7);
+                drawCurve(latitudeLine, radius, centerX, centerY, gridFront, gridBack, 0.7);
             }
 
             for (let longitude = -150; longitude <= 180; longitude += 30) {
@@ -263,62 +295,171 @@ document.addEventListener('DOMContentLoaded', () => {
                 for (let latitude = -90; latitude <= 90; latitude += 3) {
                     longitudeLine.push([longitude, latitude]);
                 }
-                drawCurve(longitudeLine, radius, centerX, centerY, '#b8b8b8', '#e3e3e3', 0.7);
+                drawCurve(longitudeLine, radius, centerX, centerY, gridFront, gridBack, 0.7);
             }
 
             continents.forEach(continent => {
-                drawCurve(continent, radius, centerX, centerY, '#111111', '#d1d1d1', 1.45);
+                drawCurve(continent, radius, centerX, centerY, landFront, landBack, 1.45);
             });
 
             context.beginPath();
             context.arc(centerX, centerY, radius, 0, Math.PI * 2);
-            context.strokeStyle = '#111111';
+            context.strokeStyle = landFront;
             context.lineWidth = 1.5;
             context.stroke();
 
             globeCanvas.dataset.rotation = currentRotation.toFixed(3);
         };
 
-        const renderRotation = () => {
-            currentRotation += (targetRotation - currentRotation) * 0.14;
-            drawGlobe();
+        const updateLayoutTargets = () => {
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const maximumSize = globeShell.clientWidth || 1;
+            const mobile = viewportWidth <= 768;
+            const compact = viewportWidth <= 1180;
+            const startSize = mobile
+                ? 280
+                : compact
+                    ? clamp(viewportWidth * 0.3, 280, 390)
+                    : clamp(viewportWidth * 0.29, 320, 520);
+            const contactSize = mobile
+                ? Math.min(360, viewportWidth * 0.82)
+                : compact
+                    ? Math.min(430, viewportWidth * 0.42)
+                    : Math.min(520, viewportWidth * 0.32);
+            const growProgress = smoothstep(clamp(window.scrollY / Math.max(viewportHeight * 0.95, 1), 0, 1));
+            const projectsBounds = projectsSection.getBoundingClientRect();
+            const contactBounds = contactSection.getBoundingClientRect();
+            const overDarkSection = projectsBounds.top < viewportHeight * 0.7
+                && projectsBounds.bottom > viewportHeight * 0.3;
 
-            if (Math.abs(targetRotation - currentRotation) > 0.001) {
-                animationFrame = window.requestAnimationFrame(renderRotation);
-            } else {
+            contactProgress = smoothstep(clamp(
+                (viewportHeight * 0.82 - contactBounds.top) / Math.max(viewportHeight * 0.65, 1),
+                0,
+                1
+            ));
+
+            const startX = viewportWidth * (mobile ? 0.9 : compact ? 0.87 : 0.82);
+            const backgroundX = viewportWidth * (mobile ? 1 : compact ? 0.88 : 0.83);
+            const contactX = viewportWidth * (mobile ? 0.86 : compact ? 0.82 : 0.8);
+            const startY = viewportHeight * (mobile ? 0.62 : 0.5);
+            const backgroundY = viewportHeight * 0.5;
+            const contactY = viewportHeight * (mobile ? 0.56 : 0.52);
+            const startOpacity = mobile ? 0.13 : compact ? 0.4 : 0.72;
+            const backgroundOpacity = overDarkSection
+                ? mobile ? 0.11 : compact ? 0.16 : 0.2
+                : mobile ? 0.055 : compact ? 0.085 : 0.11;
+            const contactOpacity = mobile ? 0.14 : compact ? 0.34 : 0.54;
+
+            targetScale = mix(startSize / maximumSize, 1, growProgress);
+            targetScale = mix(targetScale, contactSize / maximumSize, contactProgress);
+            targetX = mix(startX, backgroundX, growProgress);
+            targetX = mix(targetX, contactX, contactProgress);
+            targetY = mix(startY, backgroundY, growProgress);
+            targetY = mix(targetY, contactY, contactProgress);
+            targetOpacity = mix(startOpacity, backgroundOpacity, growProgress);
+            targetOpacity = mix(targetOpacity, contactOpacity, contactProgress);
+            targetTheme = overDarkSection ? 1 : 0;
+            targetRotation = baseRotation
+                + (reducedMotion ? 0 : window.scrollY * (mobile ? 0.0018 : 0.0022))
+                + automaticRotation;
+
+            const phase = contactProgress > 0.55
+                ? 'contact'
+                : overDarkSection
+                    ? 'dark'
+                    : growProgress > 0.85
+                        ? 'background'
+                        : 'hero';
+            globeShell.dataset.phase = phase;
+            globeShell.dataset.theme = overDarkSection ? 'dark' : 'light';
+
+            if (!initialized) {
+                currentScale = targetScale;
+                currentX = targetX;
+                currentY = targetY;
+                currentOpacity = targetOpacity;
+                currentTheme = targetTheme;
                 currentRotation = targetRotation;
+                initialized = true;
+                globeShell.classList.add('is-ready');
+            }
+        };
+
+        const renderGlobe = (time) => {
+            const deltaTime = Math.min(time - lastFrameTime, 40);
+            lastFrameTime = time;
+            const automatic = !reducedMotion && contactProgress > 0.55;
+
+            if (automatic) {
+                automaticRotation += deltaTime * 0.000075 * contactProgress;
+                targetRotation = baseRotation
+                    + window.scrollY * (window.innerWidth <= 768 ? 0.0018 : 0.0022)
+                    + automaticRotation;
+            }
+
+            const easing = reducedMotion ? 1 : 0.12;
+            currentScale += (targetScale - currentScale) * easing;
+            currentX += (targetX - currentX) * easing;
+            currentY += (targetY - currentY) * easing;
+            currentOpacity += (targetOpacity - currentOpacity) * easing;
+            currentTheme += (targetTheme - currentTheme) * easing;
+            currentRotation += (targetRotation - currentRotation) * (reducedMotion ? 1 : 0.14);
+
+            const layoutMoving = Math.abs(targetScale - currentScale) > 0.0005
+                || Math.abs(targetX - currentX) > 0.1
+                || Math.abs(targetY - currentY) > 0.1
+                || Math.abs(targetOpacity - currentOpacity) > 0.001;
+            const themeMoving = Math.abs(targetTheme - currentTheme) > 0.001;
+            const rotationMoving = Math.abs(targetRotation - currentRotation) > 0.001;
+
+            if (layoutMoving || !globeShell.dataset.positioned) {
+                globeShell.style.setProperty('--globe-x', `${currentX.toFixed(2)}px`);
+                globeShell.style.setProperty('--globe-y', `${currentY.toFixed(2)}px`);
+                globeShell.style.setProperty('--globe-scale', currentScale.toFixed(4));
+                globeShell.style.setProperty('--globe-opacity', currentOpacity.toFixed(4));
+                globeShell.dataset.positioned = 'true';
+            }
+
+            if (!automatic || time - lastDrawTime >= 32 || themeMoving || layoutMoving) {
                 drawGlobe();
+                lastDrawTime = time;
+            }
+
+            if (automatic || layoutMoving || themeMoving || rotationMoving) {
+                animationFrame = window.requestAnimationFrame(renderGlobe);
+            } else {
                 animationFrame = 0;
             }
         };
 
-        const requestRotationFrame = () => {
+        const requestGlobeFrame = () => {
             if (!animationFrame) {
-                animationFrame = window.requestAnimationFrame(renderRotation);
+                lastFrameTime = performance.now();
+                animationFrame = window.requestAnimationFrame(renderGlobe);
             }
         };
 
-        const syncRotationWithScroll = () => {
-            if (!reducedMotion) {
-                targetRotation = baseRotation + window.scrollY * 0.0022;
-                requestRotationFrame();
-            }
+        const syncGlobeWithPage = () => {
+            updateLayoutTargets();
+            requestGlobeFrame();
         };
 
         const resizeGlobe = () => {
-            const bounds = globeCanvas.getBoundingClientRect();
             const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-            width = bounds.width;
-            height = bounds.height;
+            width = globeShell.clientWidth;
+            height = globeShell.clientHeight;
             globeCanvas.width = Math.round(width * pixelRatio);
             globeCanvas.height = Math.round(height * pixelRatio);
             context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-            drawGlobe();
+            syncGlobeWithPage();
         };
 
-        window.addEventListener('scroll', syncRotationWithScroll, { passive: true });
+        window.addEventListener('scroll', syncGlobeWithPage, { passive: true });
         window.addEventListener('resize', resizeGlobe);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) requestGlobeFrame();
+        });
         resizeGlobe();
-        syncRotationWithScroll();
     }
 });

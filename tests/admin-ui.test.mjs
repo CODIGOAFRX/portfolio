@@ -17,5 +17,5 @@ test('opening an offer never marks it as applied automatically', async () => {
 
     assert.doesNotMatch(script, /markAppliedAfterOpening/);
     assert.match(script, /'Marcar solicitada'/);
-    assert.match(script, /'Abrir oferta ↗'/);
+    assert.match(script, /'Abrir oferta'/);
 });

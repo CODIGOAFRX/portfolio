@@ -160,7 +160,7 @@ function createJobCard(job) {
     const actions = node('div', 'job-actions');
     const url = validExternalUrl(job.url);
     if (url) {
-        const link = node('a', 'apply-button', 'Abrir oferta ↗');
+        const link = node('a', 'apply-button', 'Abrir oferta');
         link.href = url;
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
