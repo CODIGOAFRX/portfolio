@@ -21,10 +21,12 @@ test('the globe is a fixed page-level layer instead of a hero-only decoration', 
     assert.match(styles, /\.content-wrapper\s*{[\s\S]*?z-index:\s*2;/);
 });
 
-test('the globe supports scroll growth, dark contrast and autonomous contact rotation', () => {
+test('the globe supports scroll growth, dark contrast and continuous autonomous rotation', () => {
     assert.match(script, /targetScale = mix\(startSize \/ maximumSize, 1, growProgress\)/);
     assert.match(script, /targetTheme = overDarkSection \? 1 : 0/);
-    assert.match(script, /contactProgress > 0\.55/);
-    assert.match(script, /automaticRotation \+= deltaTime/);
+    assert.match(script, /const automaticRotationSpeed = 0\.0001/);
+    assert.match(script, /const automatic = !reducedMotion;/);
+    assert.match(script, /automaticRotation \+= deltaTime \* automaticRotationSpeed/);
+    assert.doesNotMatch(script, /automaticRotation \+= deltaTime[^;]*contactProgress/);
     assert.match(script, /globeShell\.dataset\.phase = phase/);
 });

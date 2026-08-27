@@ -195,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const context = globeCanvas.getContext('2d');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const baseRotation = -0.45;
+        const automaticRotationSpeed = 0.0001;
         const tilt = -0.16;
         const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
         const mix = (start, end, progress) => start + (end - start) * progress;
@@ -389,10 +390,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const renderGlobe = (time) => {
             const deltaTime = Math.min(time - lastFrameTime, 40);
             lastFrameTime = time;
-            const automatic = !reducedMotion && contactProgress > 0.55;
+            const automatic = !reducedMotion;
 
             if (automatic) {
-                automaticRotation += deltaTime * 0.000075 * contactProgress;
+                automaticRotation += deltaTime * automaticRotationSpeed;
                 targetRotation = baseRotation
                     + window.scrollY * (window.innerWidth <= 768 ? 0.0018 : 0.0022)
                     + automaticRotation;
