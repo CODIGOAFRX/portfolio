@@ -1,0 +1,3 @@
+# Build publicado de Tune?: artefactos, no fuente.
+# Sin conversión de fin de línea para que lleguen byte a byte a producción.
+proyecto/tune-interrogacion/** -text
