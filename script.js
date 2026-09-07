@@ -69,6 +69,17 @@ document.addEventListener('DOMContentLoaded', () => {
             featured: true
         },
         {
+            name: 'Tune?',
+            status: 'Herramienta de audio · Primera versión',
+            description: 'Analizador de tonalidad y tempo para beats y canciones que funciona en el navegador.',
+            goal: 'Encontrar una estimación de BPM, tonalidad y código Camelot sin enviar el audio a un servidor.',
+            tech: 'React, Essentia.js, WebAssembly, Vite, Web Audio API y Web Workers.',
+            features: 'Carga de audio, análisis armónico y rítmico, alternativas de interpretación y reproducción local. Interfaz adaptable a móvil.',
+            result: 'Segunda versión contrastada con bases reales: seguimiento del ritmo, perfiles de tonalidad y aviso de lecturas ambiguas. Los resultados siguen siendo estimaciones.',
+            href: '/proyecto/tune-interrogacion/',
+            linkLabel: 'Abrir Tune?'
+        },
+        {
             name: 'ORBIS',
             status: 'Prototipo técnico · Proyecto final DAM',
             description: 'Visualizador que transforma el espectro de una señal de audio en geometría 3D orgánica en tiempo real.',
@@ -89,16 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
             result: 'En el ejemplo documentado reduce a la mitad las brechas de FPR y FNR, manteniendo todo el flujo en local.',
             href: 'https://github.com/CODIGOAFRX/sesgo_framework',
             linkLabel: 'GitHub'
-        },
-        {
-            name: 'Biblioteca App',
-            status: 'En uso · privado',
-            description: 'Sistema para gestionar el catálogo de una escuela e integrarlo con su plataforma interna.',
-            goal: 'Ofrecer una API única para usuarios, libros, revistas y trabajos de fin de estudios.',
-            tech: 'PHP, PostgreSQL, Composer y Docker. El proyecto nació como backend en Java y Spring Boot.',
-            features: 'Autenticación, perfiles, catálogo completo, trabajos académicos y carga de portadas.',
-            result: 'La adaptación a PHP conserva el contrato del backend original en Java y encaja con la infraestructura existente.',
-            private: true
         },
         {
             name: 'TrackMix',

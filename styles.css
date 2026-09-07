@@ -1130,6 +1130,12 @@ button:focus-visible {
     border-bottom: 1px solid currentColor;
 }
 
+.case-link-muted {
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid #cbc9c3;
+    color: var(--text-tertiary);
+}
+
 .projects {
     min-height: auto;
     padding-top: 14vh;
