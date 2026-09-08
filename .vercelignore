@@ -2,5 +2,10 @@
 .github/
 worker/
 tests/
+e2e/
+scripts/
+test-results/
+playwright-report/
+playwright.config.js
 coverage/
 *.log

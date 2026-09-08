@@ -2,6 +2,46 @@
 <html lang="es"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <meta name="theme-color" content="#121413"/><meta name="description" content="Encuentra el tempo y la tonalidad de tus beats. Tune? analiza el audio en tu dispositivo, sin subirlo a un servidor."/>
 <title>Tune? — Analizador de tonalidad y BPM</title><link rel="canonical" href="https://www.pedrogomez.dev/proyecto/tune-interrogacion/"/><link rel="icon" type="image/svg+xml" href="/proyecto/tune-interrogacion/favicon.svg"/>
-  <script type="module" crossorigin src="/proyecto/tune-interrogacion/assets/index-CpZVmlKu.js"></script>
+  <script type="module" src="/proyecto/tune-interrogacion/app.js?v=0.3.0"></script>
   <link rel="stylesheet" crossorigin href="/proyecto/tune-interrogacion/assets/index-BZCSvglv.css">
-</head><body><div id="root"></div></body></html>
+  <link rel="stylesheet" href="/proyecto/tune-interrogacion/app.css">
+</head><body>
+<div class="app-shell">
+  <header class="topbar"><a class="back" href="/#projects">← Portfolio de Pedro</a><span class="edition">AUDIO TOOLS / 001</span></header>
+  <main>
+    <section class="intro"><div><div class="eyebrow"><span></span> ESCUCHA. ENCUENTRA. CREA.</div><h1>Tune<span>?</span></h1></div><p>Tu beat, en su tono.<br><span>Encuentra su tonalidad y tempo.</span></p></section>
+    <div class="workspace">
+      <section id="dropzone" class="dropzone" aria-label="Cargar audio">
+        <span class="section-index">01 / TU AUDIO</span><div id="glyph" class="upload-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V3m-5 5 5-5 5 5M4 16v5h16v-5"/></svg></div>
+        <h2 id="upload-title">Suelta aquí tu beat</h2><p id="upload-subtitle">o selecciónalo desde tu dispositivo</p>
+        <input id="audio-file" type="file" class="file-input" accept=".wav,.mp3,.flac,.m4a,.aac,.ogg,.aif,.aiff,.webm" aria-label="Seleccionar archivo de audio">
+        <button id="select-audio" class="primary">Seleccionar audio <span>↗</span></button>
+        <button id="cancel" class="secondary" hidden>Cancelar análisis ×</button>
+        <span class="formats">WAV · MP3 · FLAC · M4A y más<br>Hasta 50 MB · Entre 6 s y 10 min<br>La compatibilidad depende de tu navegador.</span>
+        <div class="privacy"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 10h12v11H6zm3 0V6a3 3 0 0 1 6 0v4"/></svg>Tu archivo se queda en este dispositivo.</div>
+      </section>
+      <section id="results" class="result-panel" aria-label="Resultados del análisis" aria-busy="false">
+        <div class="result-heading"><span class="section-index">02 / EL RESULTADO</span><span id="status" class="status">Esperando audio</span></div>
+        <div class="metrics">
+          <div class="metric key-metric"><span class="metric-label">TONALIDAD</span><div class="metric-value"><b id="key">—</b><span id="scale"></span></div><p id="key-note">La nota que lo une todo</p></div>
+          <div class="metric"><span class="metric-label">TEMPO</span><div class="metric-value"><b id="bpm">—</b><span>BPM</span></div><p id="tempo-note">El ritmo de tu siguiente idea</p></div>
+        </div>
+        <div class="secondary-metrics"><div><span>CAMELOT</span><strong id="camelot">—</strong></div><div><span>LECTURA TONAL</span><strong id="key-reading">—</strong></div></div>
+        <div id="waveform" class="waveform"><div class="wave-line"></div><span>Todo empieza con un sonido.</span></div>
+        <div class="track-meta"><span id="filename">Ningún archivo seleccionado</span><span id="duration">00:00</span></div>
+      </section>
+    </div>
+    <p id="announcement" class="sr-only" role="status" aria-live="polite"></p>
+    <div id="error" class="error" role="alert" hidden></div>
+    <section id="details" class="details" hidden>
+      <div><h2 id="detail-title">Escucha el resultado con contexto.</h2><p id="detail-text"></p><p id="analysis-note" class="analysis-note"></p>
+        <div id="tempo-options" class="tempo-options" hidden><span>Interpretar el pulso:</span><button id="half-tempo" class="secondary"></button><button id="original-tempo" class="secondary"></button><button id="double-tempo" class="secondary"></button></div>
+      </div>
+      <audio id="player" controls preload="none" aria-label="Escuchar el archivo analizado"></audio>
+    </section>
+    <div class="underbar"><span><span class="tiny-dot"></span> Sin subidas. Sin registro.</span><span>Hasta 3 minutos de audio, omitiendo el silencio inicial.</span></div>
+  </main>
+  <footer><span class="footer-brand">Tune?</span><span>Hecho por <a href="/">Pedro Gómez</a></span><a class="version" href="/proyecto/tune-interrogacion/source.html">ESSENTIA · V0.3 · CÓDIGO Y LICENCIAS</a></footer>
+</div>
+<noscript>Activa JavaScript para analizar audio en este dispositivo.</noscript>
+</body></html>

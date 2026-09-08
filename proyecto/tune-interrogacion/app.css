@@ -1,0 +1,7 @@
+[hidden] { display: none !important; }
+.metric-value b { font: inherit; }
+.tempo-options { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 16px; font-size: .75rem; color: var(--muted); }
+.tempo-options .secondary { min-height: 36px; padding: 7px 10px; font-size: .75rem; }
+.tempo-options [aria-pressed="true"] { background: #d5fa6520; border-color: var(--accent); }
+.upload-glyph { font-size: 2.2rem; }
+.details > div { min-width: 0; }

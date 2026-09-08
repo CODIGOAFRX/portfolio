@@ -1,14 +1,26 @@
-/* Tune? 0.2 — audio stays in this worker. See source.html for source and notices. */
-// The web-only distribution assumes document; this distribution supports worker environments.
-var exports={};
-importScripts('./vendor/essentia-wasm.umd.js','./vendor/essentia.js-core.min.js','./analysis-core.js');
-const ready=Promise.resolve(new Essentia(exports.EssentiaWASM));
-self.onmessage = async ({ data }) => {
+/* Tune? 0.3 — AGPL-3.0-or-later. Local audio only. See source.html. */
+var exports = {};
+let essentia;
+let initializationError;
+try {
+  importScripts('./vendor/essentia-wasm.umd.js', './vendor/essentia.js-core.min.js', './analysis-core.js');
+  essentia = new Essentia(exports.EssentiaWASM);
+} catch (error) {
+  initializationError = error;
+  console.error('Tune: engine initialization failed', error);
+}
+self.onmessage = ({ data }) => {
+  const id = data?.id;
+  if (initializationError) {
+    self.postMessage({ id, error: 'No se pudo cargar el motor de audio. Comprueba la conexión, recarga la página y vuelve a intentarlo.', code: 'ENGINE_INIT' });
+    return;
+  }
   try {
-    const essentia=await ready;
-    const result=TuneAnalysis.analyze(essentia,data.samples,data.sampleRate);
-    self.postMessage({ result });
-  } catch {
-    self.postMessage({ error: 'No se pudo analizar este audio. Recarga la página y prueba con un fragmento más corto en WAV o MP3.' });
+    const result = TuneAnalysis.analyze(essentia, data.samples, data.sampleRate,
+      phase => self.postMessage({ id, phase }));
+    self.postMessage({ id, result });
+  } catch (error) {
+    console.error('Tune: analysis failed', error);
+    self.postMessage({ id, error: 'No se pudo analizar este audio. Prueba con un fragmento más corto en WAV o MP3.', code: 'ANALYSIS_FAILED' });
   }
 };

@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Tune? — Código y licencias</title><link rel="stylesheet" href="./assets/index-BZCSvglv.css"><link rel="stylesheet" href="./app.css"></head>
+<body><div class="app-shell"><header class="topbar"><a href="./">← Volver a Tune?</a><span class="edition">CÓDIGO Y LICENCIAS</span></header>
+<main><h1>Tune<span>?</span></h1><h2>Analizador local · versión 0.3</h2>
+<p>El audio se decodifica y analiza en tu navegador. No se envían archivos a servidores.</p>
+<h2>Código fuente de esta versión</h2>
+<ul><li><a href="./app.js">Interfaz y estados de análisis</a></li><li><a href="./audio-input.js">Preparación del audio</a></li><li><a href="./analyzer.worker.js">Worker</a></li><li><a href="./analysis-core.js">Motor de análisis</a></li><li><a href="./README.md">Arquitectura, instrucciones y límites</a></li><li><a href="https://github.com/CODIGOAFRX/portfolio">Repositorio del portfolio</a></li></ul>
+<h2>Essentia</h2><p>Usamos Essentia.js, con Essentia C++ compilado a WebAssembly. Copyright Music Technology Group, Universitat Pompeu Fabra. El motor incluido informa la versión 2.1-beta6-dev.</p>
+<ul><li><a href="./vendor/essentia-wasm.umd.js">Distribución WebAssembly incluida</a></li><li><a href="./vendor/essentia.js-core.min.js">API JavaScript incluida</a></li><li><a href="https://github.com/MTG/essentia.js">Código y compilación de Essentia.js</a></li><li><a href="https://github.com/MTG/essentia">Código C++ de Essentia</a></li></ul>
+<p>Tune y Essentia se distribuyen bajo GNU Affero General Public License, versión 3 o posterior. Consulta el <a href="./LICENSE-AGPL-3.0.txt">texto de la licencia</a>. Se conservan los avisos de terceros en los archivos distribuidos.</p>
+<h2>Cómo interpretar el resultado</h2><p>La tonalidad y el tempo son estimaciones. Los relativos mayor/menor, los cambios de tono y la mitad/doble velocidad pueden admitir varias lecturas. Los resultados no representan una garantía de exactitud.</p>
+</main><footer><a href="./">Volver al analizador</a><span>Hecho por Pedro Gómez</span></footer></div></body></html>
