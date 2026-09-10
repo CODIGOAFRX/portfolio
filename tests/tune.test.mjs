@@ -1,20 +1,44 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { loadEngine, music } from './helpers/tune-engine.mjs';
+import { loadEngine, music, groove, patterns } from './helpers/tune-engine.mjs';
 import { prepareSamples, validateFile, tempoLabel, camelotLabel } from '../proyecto/tune-interrogacion/audio-input.js';
 
 const { engine, analysis } = loadEngine();
 const rate = 44100;
 const audioBuffer = channels => ({ sampleRate: rate, numberOfChannels: channels.length, length: channels[0].length, duration: channels[0].length / rate, getChannelData: i => channels[i] });
+const ownTempo = pcm => analysis.trackTempo(analysis.downsample(pcm), rate / 2, null);
 
-test('known tempos retain their actual beat rate, including slow music', () => {
-  for (const bpm of [60, 70, 100, 120, 174, 200]) {
+test('known tempos retain their actual beat rate, including slow and fast music', () => {
+  for (const bpm of [60, 70, 100, 120, 157, 174, 200]) {
     const actual = analysis.analyze(engine, music({ bpm }), rate);
-    assert.ok(Math.abs(actual.bpm - bpm) < .5, `${bpm} BPM detected as ${actual.bpm}`);
+    assert.equal(actual.bpm, bpm, `${bpm} BPM detected as ${actual.bpm}`);
   }
   assert.equal(tempoLabel(70), '70');
   assert.equal(tempoLabel(119.94), '119.9');
+});
+
+// Arrangements, not metronomes: sixteenth hats, snares on the backbeat and syncopated kicks are
+// what pull a tempo reading to half or double the written one.
+test('written drum patterns report the quarter note, not the bar or the subdivision', () => {
+  for (const [name, bpm] of [['trap', 130], ['trap', 150], ['trap', 157], ['trap', 168], ['boombap', 90], ['boombap', 96], ['house', 124], ['house', 128], ['halftime', 75], ['halftime', 140]]) {
+    const actual = ownTempo(groove({ bpm, pattern: patterns[name] }));
+    assert.ok(actual, `${name} at ${bpm} BPM produced no pulse at all`);
+    assert.equal(analysis.snapTempo(actual.bpm), bpm, `${name} at ${bpm} BPM detected as ${actual.bpm.toFixed(2)}`);
+  }
+  // A twelve second excerpt carries a quarter of the evidence and must still land on the beat.
+  const short = ownTempo(groove({ bpm: 150, pattern: patterns.trap, seconds: 12 }));
+  assert.equal(analysis.snapTempo(short.bpm), 150);
+});
+
+test('tempo is reported as the round number a producer would have written', () => {
+  assert.equal(analysis.snapTempo(149.9), 150);
+  assert.equal(analysis.snapTempo(148.32), 148);
+  assert.equal(analysis.snapTempo(0), null);
+  assert.equal(analysis.snapTempo(null), null);
+  const actual = analysis.analyze(engine, music({ bpm: 149.7 }), rate);
+  assert.equal(actual.bpm, 150);
+  assert.ok(Math.abs(actual.preciseBpm - 149.7) < .5, `measured ${actual.preciseBpm}`);
 });
 
 test('all 24 major and minor fixture transpositions have the expected key', () => {

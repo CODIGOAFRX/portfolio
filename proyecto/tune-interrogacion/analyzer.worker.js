@@ -1,4 +1,4 @@
-/* Tune? 0.3 — AGPL-3.0-or-later. Local audio only. See source.html. */
+/* Tune? 0.4 — AGPL-3.0-or-later. Local audio only. See source.html. */
 var exports = {};
 let essentia;
 let initializationError;

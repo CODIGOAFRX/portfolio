@@ -1,4 +1,4 @@
-# Tune? 0.3 — código fuente y analizador local
+# Tune? 0.4 — código fuente y analizador local
 
 La interfaz es ahora HTML/CSS/JavaScript mantenible en este repositorio, sin
 necesitar el proyecto React/Vite original. Se conserva el diseño anterior.
@@ -30,19 +30,43 @@ No hay un paso de build. Vercel publica estos archivos estáticos directamente.
 - `audio-input.js`: límites, conversión mono con protección contra cancelación
   de fase, selección de hasta 180 segundos después del silencio inicial.
 - `analyzer.worker.js`: carga del motor, progreso, errores y ejecución aislada.
-- `analysis-core.js`: comprobaciones espectrales, tempo multifeature, refinamiento
-  por intervalos de beats y contraste de perfiles tonales EDMA/BGATE.
+- `analysis-core.js`: comprobaciones espectrales, seguimiento de pulso propio,
+  segunda opinión de Essentia y contraste de perfiles tonales EDMA/BGATE.
 - `vendor/`: distribución recuperada de Essentia.js con C++ compilado a WASM.
   El motor informa `2.1-beta6-dev`. No se ha modificado su binario.
 
-Web Audio decodifica y remuestrea a 44.1 kHz. RhythmExtractor2013 recibe esa
-frecuencia y hasta 120 segundos, con rango de búsqueda 40–208 BPM. El análisis
-tonal usa filtrado antialias antes de bajar a 22.05 kHz, HPCP de 36 componentes
-y corrección de desafinación. Las puntuaciones internas no son porcentajes de
-acierto. Se descartan tonalidades sin evidencia suficiente y tempos débiles.
-Una comprobación independiente de ataques en la banda grave puede corregir
-mitad/doble tempo si al menos 12 ataques son regulares y el 90 % de sus intervalos
-coinciden dentro del 8 %. Esas correcciones se siguen indicando como ambiguas.
+Web Audio decodifica y remuestrea a 44.1 kHz. El análisis tonal usa filtrado
+antialias antes de bajar a 22.05 kHz, HPCP de 36 componentes y corrección de
+desafinación. Las puntuaciones internas no son porcentajes de acierto. Se
+descartan tonalidades sin evidencia suficiente.
+
+## Cómo se mide el tempo
+
+La cadena es la misma que usan librosa y madmom, escrita aquí para funcionar sin
+red y sin dependencias:
+
+1. **Envolvente de ataques.** A 22.05 kHz, ventanas de 1024 muestras con salto de
+   220 (unas 100 tramas por segundo), banco de 42 filtros triangulares espaciados
+   logarítmicamente entre 30 Hz y 10.5 kHz y flujo espectral SuperFlux (Böck y
+   Widmer, 2013): subida de magnitud logarítmica contra la trama anterior suavizada
+   en frecuencia, de modo que el vibrato y las subidas lentas no cuentan como
+   ataque. Dos tramas reales viajan en una sola FFT compleja.
+2. **Autocorrelación generalizada** (p = 0.5) promediada en ventanas solapadas de
+   12 segundos, con realce armónico al estilo de Percival y Tzanetakis (2014). Cada
+   múltiplo aporta como mucho lo que aporta el propio desfase, así que un compás
+   entero no puede ganarle al pulso apoyándose en sus armónicos.
+3. **Nivel métrico.** Se escoge el pulso más rápido que el audio sostiene igual de
+   bien que el mejor candidato. Nunca se baja de nivel: informar del compás como si
+   fuera el tempo es justo la lectura a mitad de velocidad que nadie quiere.
+4. **Seguimiento de beats por programación dinámica** (Ellis, 2007) y mediana de
+   tramos largos entre beats para fijar el valor con precisión.
+5. **Redondeo al entero.** Los beats se producen en cifras redondas: 149.9 medido
+   se informa como 150. El valor medido aparece en la nota del análisis.
+
+RhythmExtractor2013 sigue ejecutándose sobre los 44.1 kHz originales, hasta 120
+segundos y con rango 40–210 BPM, pero ya no puede vetar un tempo. Solo actúa como
+segunda opinión: confirma la lectura o, cuando está seguro, desempata el nivel
+métrico. Si el motor nativo falla, el analizador propio responde igualmente.
 
 ## Fallos corregidos
 
@@ -56,8 +80,15 @@ Una futura recompilación de Essentia con Emscripten sin ejecución dinámica
 permitiría reducir este permiso; no se deben parchear a ciegas los bindings.
 
 El tempo se forzaba dos veces al rango 90–210: en el motor y en la interfaz.
-Ahora se muestra la estimación decimal original. Mitad/doble son elecciones
-visibles del usuario. Se han eliminado la dependencia de metadatos del elemento
+Mitad/doble son elecciones visibles del usuario.
+
+La versión 0.3 devolvía «No hay un pulso claro» cuando la confianza de
+RhythmExtractor2013 quedaba por debajo de 1, cosa habitual en beats densos y
+rápidos: un archivo de 157 BPM no obtenía ningún tempo. Ese filtro ya no existe.
+El analizador propio de la versión 0.4 mide el pulso por su cuenta y el motor
+nativo pasa a ser una segunda opinión. También se ha retirado la corrección de
+mitad/doble por ataques en la banda grave, sustituida por la decisión de nivel
+métrico descrita arriba. Se han eliminado la dependencia de metadatos del elemento
 Audio (algunos contenedores reportan duración infinita), los errores de inicio
 sin capturar y el enlace roto a `source.html`.
 
@@ -78,12 +109,16 @@ El análisis está limitado a un fragmento continuo, no resume toda una canción
 de 10 minutos. Los formatos dependen de los códecs del navegador; no hay decoder
 FFmpeg incluido. Máximo 50 MB, 6–600 segundos, mono o estéreo.
 
-Verificación del 8 de septiembre de 2026 (Node 24 y Edge en Windows):
-19 pruebas de proyecto aprobadas y 4 pruebas de navegador aprobadas. El conjunto
-sintético pasó las 24 tonalidades y 60, 70, 100, 120, 174 y 200 BPM con desviación
-menor de 0.5 BPM. Silencio, ruido blanco continuo y seno aislado devolvieron
-tonalidad/tempo sin determinar; la percusión de prueba devolvió tempo sin
-tonalidad. También se ejecutó el evaluador de manifest con una señal de 70 BPM.
+Verificación del 10 de septiembre de 2026 (Node 24 y Edge en Windows):
+21 pruebas de proyecto aprobadas y 4 pruebas de navegador aprobadas. El conjunto
+sintético acertó el entero exacto en 60, 70, 100, 120, 157, 174 y 200 BPM y en las
+24 tonalidades. Los patrones escritos de trap (130, 150, 157, 168), boom bap
+(90, 96), house (124, 128) y medio tiempo (75, 140) devolvieron la negra correcta,
+igual que un extracto de doce segundos. Silencio, ruido blanco continuo y seno
+aislado devolvieron tonalidad/tempo sin determinar; la percusión de prueba devolvió
+tempo sin tonalidad. Un beat sintético de 149.7 BPM se informó como 150.
+La etapa de tempo añade cerca de dos segundos y medio sobre una pista de dos
+minutos y medio frente a la versión 0.3.
 
 Para comparar versiones con tus propios audios etiquetados:
 

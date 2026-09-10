@@ -8,7 +8,7 @@ test('actual WASM runs under production CSP; 48 kHz decode, slow tempo and safe 
   page.on('pageerror', error => failures.push(error.message));
   const response = await page.goto(path);
   expect(response.headers()['content-security-policy']).not.toContain('unsafe-eval');
-  const worker = await request.get(path + 'analyzer.worker.js?v=0.3.0');
+  const worker = await request.get(path + 'analyzer.worker.js?v=0.4.0');
   expect(worker.headers()['content-security-policy']).toContain("'unsafe-eval'");
   await upload(page, music({ bpm: 70, rate: 48000 }), '<img onerror=alert(1)>.wav', 48000);
   await expect(page.locator('#status')).toHaveText('Analizado');

@@ -1,4 +1,4 @@
-/* Tune? 0.3 — AGPL-3.0-or-later. See source.html. */
+/* Tune? 0.4 — AGPL-3.0-or-later. See source.html. */
 import { RATE, validateFile, prepareSamples, keyNames, keyLabel, camelotLabel, tempoLabel, timeLabel } from './audio-input.js';
 const $ = id => document.getElementById(id);
 let job = null;
@@ -51,7 +51,7 @@ function bounded(promise, signal, timeout, text) {
 
 function analyze(samples, current) {
   return new Promise((resolve, reject) => {
-    const worker = new Worker(new URL('./analyzer.worker.js?v=0.3.0', import.meta.url));
+    const worker = new Worker(new URL('./analyzer.worker.js?v=0.4.0', import.meta.url));
     current.worker = worker;
     worker.onmessage = ({ data }) => {
       if (data.id !== current.id || job !== current) return;
@@ -92,7 +92,8 @@ function display(analysis, prepared, file) {
   $('detail-title').textContent = result.keyAmbiguous ? 'Hay más de una lectura tonal posible.' : 'Escucha el resultado con contexto.';
   $('detail-text').textContent = key < 0 ? 'El audio puede ser percusivo, monofónico o tonalmente ambiguo.' : result.keyAmbiguous ? `Lectura principal: ${keyLabel(key)}. Alternativa: ${keyLabel(result.alternateKey)}.` : `Lectura tonal orientativa: ${keyLabel(key)}.`;
   if (result.bpm) $('detail-text').textContent += ' El pulso puede sentirse a la mitad o al doble; compara las interpretaciones escuchando el audio.';
-  $('analysis-note').textContent = `Fragmento desde ${timeLabel(prepared.offsetSeconds)} · Tonalidad: ${timeLabel(result.seconds)} · Tempo: ${timeLabel(result.rhythmSeconds)}. Las estimaciones pueden variar con el arreglo y los cambios de tono.${prepared.phaseFallback ? ' Se ha usado un canal para evitar cancelación de fase.' : ''}`;
+  const rounded = result.bpm && Math.abs(result.preciseBpm - result.bpm) >= .05 ? ` Pulso medido en ${result.preciseBpm.toFixed(1)} BPM y redondeado a ${result.bpm}.` : '';
+  $('analysis-note').textContent = `Fragmento desde ${timeLabel(prepared.offsetSeconds)} · Tonalidad: ${timeLabel(result.seconds)} · Tempo: ${timeLabel(result.rhythmSeconds)}.${rounded} Las estimaciones pueden variar con el arreglo y los cambios de tono.${prepared.phaseFallback ? ' Se ha usado un canal para evitar cancelación de fase.' : ''}`;
   $('tempo-options').hidden = !result.bpm;
   for (const [id, factor] of [['half-tempo', .5], ['original-tempo', 1], ['double-tempo', 2]]) {
     $(id).textContent = `${tempoLabel(result.bpm * factor)} BPM${factor === 1 ? ' · detectado' : ''}`;
