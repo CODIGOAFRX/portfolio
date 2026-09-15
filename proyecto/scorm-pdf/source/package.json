@@ -1,0 +1,6 @@
+{
+  "name": "scorm-pdf", "version": "0.1.0", "private": true, "type": "module",
+  "scripts": {"dev": "vite --host 127.0.0.1", "build": "tsc --noEmit && vite build", "preview": "vite preview --host 127.0.0.1", "test": "playwright test"},
+  "dependencies": {"dompurify": "^3.3.0", "html-to-pdfmake": "^2.5.0", "jszip": "^3.10.1", "pdfmake": "~0.2.20"},
+  "devDependencies": {"@playwright/test": "^1.58.0", "@types/html-to-pdfmake": "^2.4.4", "@types/pdfmake": "^0.2.11", "typescript": "^5.9.0", "vite": "^7.1.0"}
+}

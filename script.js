@@ -80,6 +80,17 @@ document.addEventListener('DOMContentLoaded', () => {
             linkLabel: 'Abrir Tune?'
         },
         {
+            name: 'SCORM a PDF',
+            status: 'Herramienta educativa · Disponible',
+            description: 'Convierte cursos SCORM en un temario PDF legible, directamente en el navegador.',
+            goal: 'Recuperar el contenido de cursos publicados para consultarlo, revisarlo e imprimirlo sin subir archivos a un servidor.',
+            tech: 'TypeScript, Vite, JSZip, DOMPurify y pdfmake.',
+            features: 'Vista previa, selección de lecciones, imágenes, índice con páginas y anexos opcionales de actividades y soluciones.',
+            result: 'Validado con un curso Rise real: seis lecciones, 18 imágenes y 27 preguntas. Admite Rise y SCORM HTML estático; otros formatos pueden necesitar adaptación.',
+            href: '/proyecto/scorm-pdf/',
+            linkLabel: 'Abrir herramienta'
+        },
+        {
             name: 'ORBIS',
             status: 'Prototipo técnico · Proyecto final DAM',
             description: 'Visualizador que transforma el espectro de una señal de audio en geometría 3D orgánica en tiempo real.',

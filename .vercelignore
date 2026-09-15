@@ -8,4 +8,5 @@ test-results/
 playwright-report/
 playwright.config.js
 coverage/
+proyecto/scorm-pdf/source/
 *.log
