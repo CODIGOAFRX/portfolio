@@ -102,6 +102,17 @@ document.addEventListener('DOMContentLoaded', () => {
             linkLabel: 'GitHub'
         },
         {
+            name: 'ORBIS 2',
+            status: 'Experimento audiovisual · Prototipo web',
+            description: 'Visualizador que transforma tu música en una esfera 3D orgánica, directamente en el navegador.',
+            goal: 'Explorar el sonido a través de la forma: los graves expanden, los medios crean relieve y los agudos estrechan la esfera.',
+            tech: 'React, TypeScript, Three.js, Web Audio API y Vite.',
+            features: 'Audio local, demo, reproducción, tres materiales, color, sensibilidad, movimiento, suavizado y pantalla completa.',
+            result: 'Prototipo web funcional basado en ORBIS, el proyecto final DAM desarrollado con David Erik García. El audio se procesa en el dispositivo.',
+            href: '/proyecto/orbis-2/',
+            linkLabel: 'Abrir ORBIS 2'
+        },
+        {
             name: 'GSMFair',
             status: 'Machine Learning responsable',
             description: 'Mini-framework local para auditar y reducir disparidades entre grupos en sistemas automáticos de clasificación de CV.',
