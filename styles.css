@@ -21,7 +21,8 @@
 }
 
 html {
-    scroll-behavior: smooth;
+    /* Keep native selection autoscroll immediate; navigation opts into smooth scrolling in JS. */
+    scroll-behavior: auto;
     font-size: 16px;
     background-color: var(--bg-color);
     overflow-x: clip;
@@ -914,7 +915,7 @@ button:focus-visible {
 
 .proof-strip {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr 2fr;
     margin-top: clamp(4rem, 8vh, 7rem);
     border-top: 1px solid var(--text-primary);
     border-bottom: 1px solid var(--border-color);
