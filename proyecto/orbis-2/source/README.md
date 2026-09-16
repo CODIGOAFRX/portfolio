@@ -60,7 +60,7 @@ El análisis ocurre antes del control de volumen. Silenciar la escucha no detien
 - `src/audio.ts`: ciclo de vida del audio, URLs locales, grafo Web Audio y suavizado.
 - `src/analysis.ts`: análisis matemático y contrato graves/agudos → geometría.
 - `src/deformation.ts`: ondas fluidas y normalización exacta del volumen por tetraedros de la malla cerrada.
-- `src/Orb.tsx`: cámara ortográfica fija, estudio de reflejos neutros, materiales y recursos GPU.
+- `src/Orb.tsx`: cámara ortográfica fija, reflejos fotográficos HDR locales, materiales y recursos GPU.
 - `src/App.tsx`: sesión, controles, carga, accesibilidad y reproducción.
 - `src/style.css`: diseño adaptable.
 - `scripts/generate-demo.mjs`: genera de forma reproducible `public/demo.wav`.
@@ -82,3 +82,6 @@ El proyecto se ha preparado tras revisar [pedrogomez.dev](https://www.pedrogomez
 ORBIS original: **Pedro Jesús Gómez Pérez y David Erik García Arenas**, proyecto final DAM 2024/2025, MEDAC Nevada. El repositorio original declara una licencia académica con derechos reservados. Este prototipo reimplementa la experiencia en la web; no distribuye Blender, CRIWARE, grabaciones ni ejecutables del proyecto original.
 
 Las licencias de las dependencias distribuidas se incluyen en `public/licenses/` y se copian al build.
+
+
+Reflejos: [Venice Sunset](https://polyhaven.com/a/venice_sunset), Greg Zaal / Poly Haven, CC0. El HDR se sirve localmente; no se envía audio a servicios externos.

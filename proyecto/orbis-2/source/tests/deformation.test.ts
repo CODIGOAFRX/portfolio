@@ -3,7 +3,7 @@ import { SphereGeometry } from "three";
 import { deformSurface, meshVolume } from "../src/deformation";
 import { silence, type Bands } from "../src/analysis";
 
-const geometry = new SphereGeometry(1, 128, 96);
+const geometry = new SphereGeometry(1, 192, 128);
 const original = new Float32Array(geometry.attributes.position.array);
 const indices = geometry.index!.array;
 const baseline = meshVolume(original, indices);
@@ -51,12 +51,30 @@ describe("the rendered surface conserves volume, not just axis scales", () => {
             maxHeightError,
             Math.abs(extent(output, 1) / 2 - 1),
           );
-          expect(extent(output, 0)).toBeLessThan(2.65);
+          expect(extent(output, 0)).toBeLessThan(2.9);
           expect(output.every(Number.isFinite)).toBe(true);
         }
     expect(maxVolumeError).toBeLessThan(1e-6);
     expect(maxHeightError).toBeLessThan(0.08);
     console.log({ maxVolumeError, maxHeightError, cases: 105 });
+  });
+  it("ordinary music levels produce clearly visible local deformation", () => {
+    const quiet = new Float32Array(original.length),
+      playing = new Float32Array(original.length);
+    deformSurface(original, quiet, indices, baseline, silence(), 1.2, 2);
+    deformSurface(
+      original,
+      playing,
+      indices,
+      baseline,
+      { low: 0.3, mid: 0.2, high: 0.1, rms: 0.2, dominant: 80 },
+      1.2,
+      2,
+    );
+    let sum = 0;
+    for (let i = 0; i < quiet.length; i++) sum += (quiet[i] - playing[i]) ** 2;
+    // RMS coordinate displacement exceeds 5% of the unit radius at default settings.
+    expect(Math.sqrt(sum / quiet.length)).toBeGreaterThan(0.05);
   });
   it("a louder RMS value alone never inflates the figure", () => {
     const a = new Float32Array(original.length),

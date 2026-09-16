@@ -81,8 +81,8 @@ export class AudioEngine {
     for (const key of ["low", "mid", "high", "rms"] as const) {
       const speed =
         target[key] > this.levels[key]
-          ? 0.025 + smoothing * 0.12
-          : 0.06 + smoothing * 0.35;
+          ? 0.008 + smoothing * 0.035
+          : 0.055 + smoothing * 0.15;
       this.levels[key] +=
         (target[key] - this.levels[key]) * (1 - Math.exp(-dt / speed));
     }

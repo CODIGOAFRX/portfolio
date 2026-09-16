@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { AudioEngine } from "./audio";
 import { deformSurface, meshVolume } from "./deformation";
 
@@ -102,10 +103,42 @@ export default function Orb({
     const scene = new THREE.Scene();
     const env = studioEnvironment(renderer);
     scene.environment = env.texture;
+    let disposed = false;
+    let reflection: THREE.DataTexture | undefined;
+    // Local CC0 photographic HDR: retain real sky, architecture and sun edges.
+    new RGBELoader()
+      .setDataType(THREE.FloatType)
+      .load(
+        `${import.meta.env.BASE_URL}environment/venice-sunset-2k.hdr`,
+        (texture) => {
+          if (disposed) {
+            texture.dispose();
+            return;
+          }
+          // Neutral silver with a trace of sky colour, rather than coloured metal.
+          const pixels = texture.image.data as Float32Array;
+          for (let i = 0; i < pixels.length; i += 4) {
+            const luminance =
+              pixels[i] * 0.2126 +
+              pixels[i + 1] * 0.7152 +
+              pixels[i + 2] * 0.0722;
+            for (let c = 0; c < 3; c++)
+              pixels[i + c] = Math.pow(
+                Math.max(0, luminance * 0.7 + pixels[i + c] * 0.3),
+                1.15,
+              );
+          }
+          texture.needsUpdate = true;
+          texture.mapping = THREE.EquirectangularReflectionMapping;
+          reflection = texture;
+          scene.environment = texture;
+          scene.environmentRotation.set(0, 1.7, 0);
+        },
+      );
     // Orthographic, fixed framing: audio never changes the camera or zoom.
     const camera = new THREE.OrthographicCamera(-2, 2, 2, -2, 0.1, 30);
     camera.position.set(0, 0, 6);
-    const geometry = new THREE.SphereGeometry(1, 128, 96),
+    const geometry = new THREE.SphereGeometry(1, 192, 128),
       positions = geometry.attributes.position as THREE.BufferAttribute;
     const original = new Float32Array(positions.array),
       indices = geometry.index!.array;
@@ -113,7 +146,7 @@ export default function Orb({
     const material = new THREE.MeshStandardMaterial({
       color: "#ffffff",
       metalness: 1,
-      roughness: 0.055,
+      roughness: 0.018,
       envMapIntensity: 1,
     });
     const mesh = new THREE.Mesh(geometry, material);
@@ -136,8 +169,6 @@ export default function Orb({
     observer.observe(host);
     resize();
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let qualityWindow = performance.now(),
-      renderedFrames = 0;
     let frame = 0,
       time = 0,
       last = performance.now(),
@@ -162,7 +193,11 @@ export default function Orb({
       if (!visible) return;
       const s = current.current,
         bands = engine.sample(dt, s.smoothing);
-      time += dt * s.movement * 1.6 * (reduced.matches ? 0.15 : 1);
+      time +=
+        dt *
+        s.movement *
+        (1.6 + bands.low * 2.5 + bands.mid * 2) *
+        (reduced.matches ? 0.15 : 1);
       deformSurface(
         original,
         positions.array as Float32Array,
@@ -179,22 +214,9 @@ export default function Orb({
       material.wireframe = s.material === "wire";
       material.metalness =
         s.material === "metal" ? 1 : s.material === "pearl" ? 0.18 : 0;
-      material.roughness = s.material === "metal" ? 0.055 : 0.38;
+      material.roughness = s.material === "metal" ? 0.018 : 0.38;
       material.envMapIntensity = s.material === "metal" ? 1 : 1.3;
       renderer.render(scene, camera);
-      renderedFrames++;
-      if (now - qualityWindow > 1800) {
-        const fps = (renderedFrames * 1000) / (now - qualityWindow);
-        const ratio = renderer.getPixelRatio();
-        // Preserve the dense mesh and its physical volume. On slower GPUs only
-        // reduce raster resolution, so the larger canvas can stay fluid.
-        if (fps < 32 && ratio > 0.65) {
-          renderer.setPixelRatio(Math.max(0.65, ratio * 0.8));
-          resize();
-        }
-        qualityWindow = now;
-        renderedFrames = 0;
-      }
       // Test instrumentation reads the rendered mesh, never a nominal target value.
       if (import.meta.env.DEV && frameCount++ % 15 === 0) {
         renderer.domElement.dataset.volumeRatio = String(
@@ -211,6 +233,8 @@ export default function Orb({
     };
     frame = requestAnimationFrame(animate);
     return () => {
+      disposed = true;
+      reflection?.dispose();
       cancelAnimationFrame(frame);
       observer.disconnect();
       document.removeEventListener("visibilitychange", visibility);

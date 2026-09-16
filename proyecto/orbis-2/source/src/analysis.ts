@@ -59,8 +59,10 @@ export function shape(bands: Bands, sensitivity: number) {
     y,
     z: 1 / (x * y),
     flow: Math.tanh(
-      (bands.low * 0.4 + bands.mid * 0.8 + bands.high * 0.35) * sensitivity,
+      (bands.low * 0.65 + bands.mid * 0.85 + bands.high * 0.5) *
+        sensitivity *
+        2.4,
     ),
-    detail: Math.tanh(bands.high * sensitivity),
+    detail: Math.tanh(bands.high * sensitivity * 2),
   };
 }

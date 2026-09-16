@@ -34,7 +34,7 @@ export function deformSurface(
   time: number,
 ) {
   const s = shape(bands, sensitivity);
-  const strength = 0.008 + s.flow * 0.105;
+  const strength = 0.008 + s.flow * 0.46;
   for (let i = 0; i < original.length; i += 3) {
     const x = original[i],
       y = original[i + 1],
@@ -49,12 +49,16 @@ export function deformSurface(
       Math.sin(x * 8.2 + y * 5.5 + z * 3.8 + time * 1.1) *
       Math.cos(z * 6.1 - y * 3.7 - time * 0.73);
     const d =
-      strength * (broad * 0.72 + folds * 0.28) + s.detail * 0.009 * ripple;
+      strength * (broad * 0.6 + folds * 0.4) + s.detail * 0.055 * ripple;
     output[i] = x * (1 + d) * s.x;
-    output[i + 1] = y * (1 + d * 0.48) * s.y;
+    output[i + 1] = y * (1 + d * 0.12) * s.y;
     output[i + 2] = z * (1 + d) * s.z;
   }
   const volume = meshVolume(output, indices);
-  const correction = Math.cbrt(referenceVolume / Math.max(volume, 1e-12));
-  for (let i = 0; i < output.length; i++) output[i] *= correction;
+  const correction = Math.sqrt(referenceVolume / Math.max(volume, 1e-12));
+  // Correct the two horizontal axes only: preserve height and total volume.
+  for (let i = 0; i < output.length; i += 3) {
+    output[i] *= correction;
+    output[i + 2] *= correction;
+  }
 }
