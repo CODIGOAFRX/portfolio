@@ -38,15 +38,32 @@ createServer(async (req, res) => {
   }
   try {
     const body = await readFile(path);
-    res.writeHead(200, {
+    // Match Vercel byte ranges so HTMLAudioElement can seek in the demo.
+    const range = /^bytes=(\d+)-(\d*)$/.exec(req.headers.range || "");
+    const start = range ? Number(range[1]) : 0;
+    const end =
+      range && range[2]
+        ? Math.min(Number(range[2]), body.length - 1)
+        : body.length - 1;
+    if (start >= body.length || end < start) {
+      res.writeHead(416, { "Content-Range": `bytes */${body.length}` });
+      res.end();
+      return;
+    }
+    const payload = range ? body.subarray(start, end + 1) : body;
+    res.writeHead(range ? 206 : 200, {
+      "Accept-Ranges": "bytes",
+      ...(range
+        ? { "Content-Range": `bytes ${start}-${end}/${body.length}` }
+        : {}),
       "Content-Type": mime[extname(path)] || "application/octet-stream",
-      "Content-Length": body.length,
+      "Content-Length": payload.length,
       "Content-Security-Policy": csp,
       "X-Content-Type-Options": "nosniff",
       "Cross-Origin-Opener-Policy": "same-origin",
       "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
     });
-    res.end(body);
+    res.end(payload);
   } catch {
     res.writeHead(404);
     res.end();

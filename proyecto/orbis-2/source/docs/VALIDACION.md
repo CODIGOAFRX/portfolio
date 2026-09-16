@@ -1,13 +1,14 @@
-# Validación de ORBIS 2.0.2 — 16/09/2026
+# Validación — recuperación de la lectura espectral
 
-- Build de producción: correcto (TypeScript + Vite).
-- 14 pruebas matemáticas aprobadas. Incluyen señales por bandas y conservación del volumen de la malla real de 192 × 128 segmentos.
-- 105 combinaciones de silencio/bandas/señal mixta, sensibilidad e instante: error relativo de volumen inferior a 10^-6 y variación de altura inferior al 8 %. El RMS por sí solo no modifica la geometría.
-- Cámara ortográfica fija: no depende del audio. La instrumentación de desarrollo comprueba volumen real y encuadre durante tonos WAV reproducidos.
-- 5 pruebas de navegador aprobadas sobre el build bajo /proyecto/orbis-2/ y la CSP del portfolio: lienzo blanco completo, panel de ajustes inferior, materiales/colores/fondo, controles de reproducción, tonos reales, recuperación ante archivos inválidos, bucle, arrastre local, móvil de 390 y 320 px.
-- Revisión visual de escritorio, panel inferior, móvil y tonos graves/agudos.
-- Resolución nítida estable, sin reducción automática del raster. Malla de 24.897 vértices. La nueva prueba de respuesta exige desplazamiento RMS superior al 5 % del radio con niveles musicales moderados. No se promete una tasa fija de fotogramas en cualquier equipo.
-- npm audit: 0 vulnerabilidades detectadas.
+- TypeScript y build Vite correctos.
+- 16 pruebas matemáticas aprobadas. La malla real conserva el volumen con error relativo inferior a 10^-6 en 105 combinaciones.
+- Graves moderados: ancho superior a 2,4 y altura inferior a 1,75 (esfera inicial: 2 × 2).
+- Agudos moderados: altura superior a 2,5 y ancho inferior a 1,85.
+- Agudos añadidos a una base de graves: aumento de altura superior al 30 %.
+- Las señales puras producen un elipsoide completo, sin picos; silencio redondo y estacionario.
+- WAV reproducidos en Chromium: graves 2,50 × 1,69; agudos 1,80 × 2,64; mezcla 2,25 × 2,23. Volumen constante en la malla renderizada.
+- Prueba de reproducción de la demo y revisión visual de graves, agudos y mezcla.
 
-Límites: navegador Chromium sobre Windows, sin verificación en dispositivos físicos iOS/Android ni Safari/Firefox. La exportación de vídeo no forma parte de esta revisión. Vite avisa del tamaño de la biblioteca 3D (~197 kB comprimidos del JavaScript principal); la compilación es correcta.
-`nRevisión del cromado: la prueba extensa de controles superó el límite original de 45 s con renderizado de software; pasó al ejecutarla sola con un límite de 90 s (1,1 min). Las otras cuatro pruebas pasaron con el límite original.
+El límite de la prueba extensa de controles es de 90 s para el renderizado de software del navegador de pruebas. La tasa de fotogramas depende de la GPU. Sin verificación en dispositivos físicos iOS/Android ni Safari/Firefox. No se incluye exportación de vídeo.
+
+Las cinco pruebas de navegador de producción han pasado (cuatro en la batería y la de controles tras corregir el soporte HTTP Range del servidor de pruebas).

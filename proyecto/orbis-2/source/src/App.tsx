@@ -602,10 +602,10 @@ export default function App() {
           </button>
           <h2 id="help-title">Sonido en movimiento.</h2>
           <p>
-            Los graves expanden la esfera hacia los lados; los agudos la
-            recogen. Los medios dibujan ondas que fluyen por su superficie. La
-            altura cambia suavemente y el volumen de la figura se mantiene
-            constante.
+            Los graves ensanchan y aplastan toda la esfera. Los agudos la
+            estiran en vertical y la estrechan. Los medios añaden una ondulación
+            suave. En silencio vuelve a ser redonda. El volumen de la figura se
+            conserva: lo que cambia es su proporción.
           </p>
           <p>
             En Ajustes puedes cambiar el material, el color, el fondo y la

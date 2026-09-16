@@ -34,24 +34,18 @@ export function deformSurface(
   time: number,
 ) {
   const s = shape(bands, sensitivity);
-  const strength = 0.008 + s.flow * 0.46;
+  // The whole ellipsoid carries the frequency meaning. Small smooth waves
+  // decorate it without turning bass into spikes or hiding vertical stretch.
+  const strength = s.flow * 0.022;
   for (let i = 0; i < original.length; i += 3) {
     const x = original[i],
       y = original[i + 1],
       z = original[i + 2];
-    const broad =
-      Math.sin(x * 3.1 + y * 1.8 + time * 0.82) *
-      Math.cos(z * 2.9 - y * 1.2 - time * 0.58);
-    const folds =
-      Math.sin(x * 5.4 - z * 3.2 - time * 0.7) *
-      Math.cos(y * 4.1 + z * 2.3 + time * 0.42);
-    const ripple =
-      Math.sin(x * 8.2 + y * 5.5 + z * 3.8 + time * 1.1) *
-      Math.cos(z * 6.1 - y * 3.7 - time * 0.73);
-    const d =
-      strength * (broad * 0.6 + folds * 0.4) + s.detail * 0.055 * ripple;
+    const wave =
+      Math.sin(x * 2.8 + y * 2 + time) * Math.cos(z * 2.6 - y - time * 0.7);
+    const d = strength * wave;
     output[i] = x * (1 + d) * s.x;
-    output[i + 1] = y * (1 + d * 0.12) * s.y;
+    output[i + 1] = y * (1 + d) * s.y;
     output[i + 2] = z * (1 + d) * s.z;
   }
   const volume = meshVolume(output, indices);
