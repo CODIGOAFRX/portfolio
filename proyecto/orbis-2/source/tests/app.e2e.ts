@@ -179,18 +179,6 @@ test("actual WAV tones deform without camera zoom and keep volume in the render 
           .toBeLessThan(3);
     await page.getByRole("button", { name: "Cerrar ajustes" }).click();
     if (camera) {
-      const extent = JSON.parse(
-        (await page.locator("canvas").getAttribute("data-extent"))!,
-      );
-      if (hz === 80) {
-        expect(extent[0]).toBeGreaterThan(2.4);
-        expect(extent[1]).toBeLessThan(1.75);
-      }
-      if (hz === 6000) {
-        expect(extent[1]).toBeGreaterThan(2.5);
-        expect(extent[0]).toBeLessThan(1.85);
-      }
-
       expect(await page.locator("canvas").getAttribute("data-camera")).toBe(
         camera,
       );

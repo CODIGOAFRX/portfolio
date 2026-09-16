@@ -1,18 +1,33 @@
-# ORBIS 2 — lectura de frecuencias recuperada
+# ORBIS 2 — revisión minimalista
 
-## Contrato visual
+## Requisitos de la revisión (16/09/2026)
 
-- Graves: toda la esfera se ensancha y se aplasta.
-- Agudos: toda la esfera se estira en vertical y se estrecha.
-- Medios: ondulación secundaria pequeña (máximo 2,2 %), sin picos.
-- Silencio: esfera redonda e inmóvil.
+- Lienzo que ocupa toda la ventana desde la entrada. Identidad ORBIS pequeña arriba a la izquierda y carga de archivo justo debajo.
+- Fondo blanco y cromo neutro brillante por defecto. La esfera es el elemento central y mayoritario.
+- Se elimina la barra lateral. Apariencia, colores, material, fondo, sensibilidad, fluidez, suavizado y medidores están en Ajustes, un panel inferior plegable. Reproductor compacto anclado abajo.
+- La forma debe fluir sin inflarse con el volumen del audio. El movimiento vertical es contenido.
+- Publicación directa en el portfolio una vez validado.
 
-Las envolventes de graves y agudos se transforman por separado. Un golpe de agudos eleva la esfera incluso sobre una base de graves. Las escalas son exponenciales, positivas y acotadas; la profundidad compensa X/Y para conservar volumen. Después se corrige el volumen real de los triángulos, incluyendo las ondas. La cámara permanece fija y deja espacio para el estiramiento vertical máximo. La malla conserva 192 × 128 segmentos.
+## Motor de deformación
 
-## Cromado
+La FFT conserva sus bandas. El ataque de la envolvente es de unos 31 ms por defecto, con liberación de 153 ms. La deformación local aumenta de 0,105 a 0,46 y las bandas activan pliegues incluso con energía moderada. La diferencia de graves/agudos dirige una pequeña escala lateral exponencial. La profundidad compensa el producto de escalas y el eje vertical solo recibe un cambio pequeño (máximo nominal 2,5%). Tres ondas espaciales continuas, acotadas y de distintas direcciones animan la superficie. Los desplazamientos locales en Y se atenúan.
 
-Entorno HDR generado en código con cielo, horizonte y ondas de mar abierto. Sin fotografías urbanas ni descargas. Material metálico blanco, rugosidad 0,018. Resolución estable, DPR máximo 1,75. Fondo blanco y controles inferiores conservados.
+Después de cada deformación se calcula el volumen real de la malla cerrada mediante la suma de tetraedros firmados. Los ejes X/Z reciben una corrección cuadrática necesaria para recuperar el volumen de referencia. No basta con conservar el producto de escalas: esta corrección incluye el volumen añadido por las ondas locales.
 
-## Validación
+Se elimina por completo la expansión global por RMS. El RMS no determina el tamaño de la figura. La cámara es ortográfica y su encuadre depende únicamente del viewport, nunca del audio. La malla tiene 192 × 128 segmentos y normales recalculadas. Las ondas se interpolan con el suavizado temporal de las bandas.
 
-Pruebas matemáticas de volumen, límites de encuadre, graves/agudos a niveles musicales, ausencia de picos en señales puras, agudos sobre graves, silencio estacionario y continuidad. Pruebas WAV en navegador verifican las dimensiones de la malla real y cámara fija. Pruebas de producción bajo la subruta y CSP del portfolio cubren controles, carga, arrastre, recuperación y móvil.
+## Apariencia
+
+Material metálico blanco (metalness 1, roughness 0,018), reflejos fotográficos HDR 2K Venice Sunset (Greg Zaal / Poly Haven, CC0), servidos desde el propio sitio. Saturación atenuada para acabado de plata. No se reduce la resolución del lienzo por debajo de la del dispositivo (DPR máximo 1,75). Se conserva Nácar y Malla y se permite elegir color y fondo. El ajuste predeterminado siempre empieza en blanco/cromo.
+
+## Comprobación
+
+Pruebas matemáticas sobre la malla de resolución real: silencio, graves, medios, agudos y señal mixta; tres sensibilidades y siete instantes. Se comprueba volumen, extensión vertical, límites laterales, continuidad de un fotograma al siguiente y ausencia de expansión por RMS.
+
+Pruebas de navegador: lienzo blanco sin desplazamiento de página, disposición inferior de los ajustes, estilos y fondo, reproducción y controles, tonos WAV reales, volumen/cámara en el render de desarrollo, errores recuperables, arrastre local y viewports de 390 y 320 px. La batería se repite sobre el build bajo la subruta del portfolio con su CSP.
+
+## Antecedentes
+
+La investigación inicial revisó el README, analizador Python, puente de Blender, mockups y créditos de https://github.com/CODIGOAFRX/ORBIS. Esta revisión sustituye el diseño inicial de panel lateral oscuro y la expansión por RMS. Mantiene la arquitectura React + TypeScript + Three.js + Web Audio, la demo sintetizada, la privacidad local y el alojamiento estático.
+
+La exportación de vídeo sigue fuera de esta revisión.

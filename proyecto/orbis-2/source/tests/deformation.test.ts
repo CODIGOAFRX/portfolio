@@ -51,47 +51,12 @@ describe("the rendered surface conserves volume, not just axis scales", () => {
             maxHeightError,
             Math.abs(extent(output, 1) / 2 - 1),
           );
-          expect(extent(output, 0)).toBeLessThan(3.5);
+          expect(extent(output, 0)).toBeLessThan(2.9);
           expect(output.every(Number.isFinite)).toBe(true);
         }
     expect(maxVolumeError).toBeLessThan(1e-6);
-    expect(maxHeightError).toBeLessThan(0.75);
-    expect(maxHeightError).toBeGreaterThan(0.5);
+    expect(maxHeightError).toBeLessThan(0.08);
     console.log({ maxVolumeError, maxHeightError, cases: 105 });
-  });
-  it("bass widens the entire silhouette and treble stretches vertically at musical levels", () => {
-    const render = (bands: Bands) => {
-      const out = new Float32Array(original.length);
-      deformSurface(original, out, indices, baseline, bands, 1.2, 2);
-      return out;
-    };
-    const bass = render({ ...silence(), low: 0.3 });
-    const treble = render({ ...silence(), high: 0.15 });
-    expect(extent(bass, 0)).toBeGreaterThan(2.4);
-    expect(extent(bass, 1)).toBeLessThan(1.75);
-    expect(extent(treble, 1)).toBeGreaterThan(2.5);
-    expect(extent(treble, 0)).toBeLessThan(1.85);
-    // Every vertex follows one global ellipsoid for pure bass/treble: no spikes.
-    for (const out of [bass, treble]) {
-      const radii = [0, 1, 2].map((axis) => extent(out, axis) / 2);
-      for (let i = 0; i < out.length; i += 3) {
-        const radiusSquared =
-          (out[i] / radii[0]) ** 2 +
-          (out[i + 1] / radii[1]) ** 2 +
-          (out[i + 2] / radii[2]) ** 2;
-        expect(radiusSquared).toBeCloseTo(1, 5);
-      }
-    }
-    const bed = render({ ...silence(), low: 0.6, mid: 0.3, high: 0.01 });
-    const hit = render({ ...silence(), low: 0.6, mid: 0.3, high: 0.2 });
-    expect(extent(hit, 1) / extent(bed, 1)).toBeGreaterThan(1.3);
-  });
-  it("silence is round and stationary regardless of animation time", () => {
-    for (const time of [0, 2, 10]) {
-      const out = new Float32Array(original.length);
-      deformSurface(original, out, indices, baseline, silence(), 1.2, time);
-      expect(out).toEqual(original);
-    }
   });
   it("ordinary music levels produce clearly visible local deformation", () => {
     const quiet = new Float32Array(original.length),

@@ -60,7 +60,7 @@ El análisis ocurre antes del control de volumen. Silenciar la escucha no detien
 - `src/audio.ts`: ciclo de vida del audio, URLs locales, grafo Web Audio y suavizado.
 - `src/analysis.ts`: análisis matemático y contrato graves/agudos → geometría.
 - `src/deformation.ts`: ondas fluidas y normalización exacta del volumen por tetraedros de la malla cerrada.
-- `src/Orb.tsx`: cámara ortográfica fija, reflejos de cielo y mar generados en código, materiales y recursos GPU.
+- `src/Orb.tsx`: cámara ortográfica fija, reflejos fotográficos HDR locales, materiales y recursos GPU.
 - `src/App.tsx`: sesión, controles, carga, accesibilidad y reproducción.
 - `src/style.css`: diseño adaptable.
 - `scripts/generate-demo.mjs`: genera de forma reproducible `public/demo.wav`.
@@ -84,4 +84,4 @@ ORBIS original: **Pedro Jesús Gómez Pérez y David Erik García Arenas**, proy
 Las licencias de las dependencias distribuidas se incluyen en `public/licenses/` y se copian al build.
 
 
-Reflejos de cielo y mar generados en código, sin imágenes urbanas. Graves: ancho y aplastamiento; agudos: estiramiento vertical; medios: ondulación secundaria. No se envía audio a servicios externos.
+Reflejos: [Venice Sunset](https://polyhaven.com/a/venice_sunset), Greg Zaal / Poly Haven, CC0. El HDR se sirve localmente; no se envía audio a servicios externos.

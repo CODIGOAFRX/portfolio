@@ -50,17 +50,19 @@ export function analyze(
   };
 }
 
-/** Independent envelopes: a treble hit must still lift the shape over a bass bed. */
 export function shape(bands: Bands, sensitivity: number) {
-  const bass = 1 - Math.exp(-bands.low * sensitivity * 2.4);
-  const treble = 1 - Math.exp(-bands.high * sensitivity * 4);
-  const x = Math.exp(bass * 0.42 - treble * 0.2);
-  const y = Math.exp(treble * 0.52 - bass * 0.32);
+  const balance = Math.tanh((bands.low - bands.high) * sensitivity);
+  const x = Math.exp(balance * 0.15);
+  const y = Math.exp(-balance * 0.025);
   return {
     x,
     y,
     z: 1 / (x * y),
-    flow: Math.tanh(bands.mid * sensitivity * 2),
-    detail: treble,
+    flow: Math.tanh(
+      (bands.low * 0.65 + bands.mid * 0.85 + bands.high * 0.5) *
+        sensitivity *
+        2.4,
+    ),
+    detail: Math.tanh(bands.high * sensitivity * 2),
   };
 }
