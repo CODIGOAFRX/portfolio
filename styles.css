@@ -915,23 +915,24 @@ button:focus-visible {
 
 .proof-strip {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.65fr);
     margin-top: clamp(4rem, 8vh, 7rem);
     border-top: 1px solid var(--text-primary);
     border-bottom: 1px solid var(--border-color);
 }
 
 .proof-strip div {
-    min-height: 160px;
-    padding: 1.5rem 1.5rem 1.5rem 0;
+    min-height: 190px;
+    padding: 2rem 2rem 2rem 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 1rem;
     border-right: 1px solid var(--border-color);
 }
 
 .proof-strip div:not(:first-child) {
-    padding-left: 1.5rem;
+    padding-left: 2rem;
 }
 
 .proof-strip div:last-child {
@@ -940,13 +941,20 @@ button:focus-visible {
 
 .proof-strip strong {
     font-family: var(--font-heading);
-    font-size: clamp(1.9rem, 3.2vw, 3.6rem);
+    font-size: clamp(1.65rem, 2.4vw, 2.5rem);
     font-weight: 400;
+    line-height: 1.1;
     letter-spacing: -0.04em;
 }
 
+.proof-products strong {
+    font-size: clamp(4rem, 6.2vw, 7.4rem);
+    line-height: 0.91;
+    letter-spacing: -0.055em;
+}
+
 .proof-strip span {
-    max-width: 220px;
+    max-width: 330px;
     color: var(--text-secondary);
     font-size: 0.85rem;
 }
