@@ -32,7 +32,13 @@ describe("frequency to geometry contract", () => {
         4096,
       ),
     ).toEqual(silence());
-    expect(shape(silence(), 3)).toEqual({ x: 1, y: 1, roughness: 0, pulse: 0 });
+    expect(shape(silence(), 3)).toEqual({
+      x: 1,
+      y: 1,
+      z: 1,
+      flow: 0,
+      detail: 0,
+    });
   });
   it("bass flattens and widens, treble narrows and stretches", () => {
     const bass = shape({ ...silence(), low: 0.8 }, 1);
@@ -46,6 +52,6 @@ describe("frequency to geometry contract", () => {
     const max = shape({ low: 1, mid: 1, high: 1, rms: 1, dominant: 100 }, 3);
     expect(max.x).toBeGreaterThan(0);
     expect(max.y).toBeGreaterThan(0);
-    expect(max.roughness).toBeLessThanOrEqual(0.28);
+    expect(max.x * max.y * max.z).toBeCloseTo(1, 12);
   });
 });

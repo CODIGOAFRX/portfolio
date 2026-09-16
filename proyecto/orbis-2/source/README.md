@@ -1,6 +1,6 @@
 # ORBIS 2 — El sonido toma forma
 
-Prototipo web de ORBIS para Pedro Gómez. React + TypeScript + Three.js + Web Audio API. Procesa audio local y transforma su espectro en una esfera 3D: los graves ensanchan y comprimen, los agudos estrechan y alargan, y los medios crean relieve.
+Prototipo web de ORBIS para Pedro Gómez. React + TypeScript + Three.js + Web Audio API. Procesa audio local y transforma su espectro en una esfera 3D: los graves la expanden lateralmente, los agudos la recogen y los medios crean ondas fluidas. El volumen geométrico se conserva y la cámara permanece fija.
 
 ## Empezar
 
@@ -27,10 +27,10 @@ npm run test:production # misma batería, build bajo /proyecto/orbis-2/ con CSP 
 - Carga por selector o arrastrar y soltar. El archivo nunca se envía a un servidor.
 - Reproducir, pausar, volver al inicio, buscar posición, repetir, volumen y silencio.
 - Esfera 3D de malla deformable, iluminación y reflejos procedurales.
-- Tres presets: Órbita, Nácar y Trama. Metal, nácar y malla, cinco colores y selector libre.
+- Lienzo blanco a ventana completa, esfera cromada y ajustes desplegables en la parte inferior. Tres presets: Cromo, Nácar y Trama; colores libres y fondo blanco u oscuro.
 - Sensibilidad, movimiento y suavizado independientes.
-- Medidores de tres bandas y RMS digital. No se presentan como una valoración de la mezcla.
-- Modo inmersivo y pantalla completa cuando el navegador la admite.
+- Medidores de tres bandas dentro de Ajustes. No se presentan como una valoración de la mezcla.
+- Vista inmersiva permanente y pantalla completa real cuando el navegador la admite.
 - Atajos: Espacio (play/pausa), F (pantalla completa), Esc (salir). Los atajos no interfieren con campos ni botones enfocados.
 - Diseño móvil, controles semánticos, foco visible, reducción del movimiento ambiental y mensajes de error.
 - Fuentes incluidas localmente: la app no depende de Google Fonts, APIs ni cuentas.
@@ -49,7 +49,7 @@ Archivo local / demo
 
 AnalyserNode → energía por bandas + RMS
             → envolventes de ataque/relajación
-            → escala X/Y/Z + desplazamiento de vértices
+            → ondas suaves + compensación del volumen de la malla
             → Three.js
 ```
 
@@ -59,7 +59,8 @@ El análisis ocurre antes del control de volumen. Silenciar la escucha no detien
 
 - `src/audio.ts`: ciclo de vida del audio, URLs locales, grafo Web Audio y suavizado.
 - `src/analysis.ts`: análisis matemático y contrato graves/agudos → geometría.
-- `src/Orb.tsx`: escena, materiales, deformación y liberación de recursos GPU.
+- `src/deformation.ts`: ondas fluidas y normalización exacta del volumen por tetraedros de la malla cerrada.
+- `src/Orb.tsx`: cámara ortográfica fija, estudio de reflejos neutros, materiales y recursos GPU.
 - `src/App.tsx`: sesión, controles, carga, accesibilidad y reproducción.
 - `src/style.css`: diseño adaptable.
 - `scripts/generate-demo.mjs`: genera de forma reproducible `public/demo.wav`.

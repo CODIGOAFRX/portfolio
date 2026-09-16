@@ -1,11 +1,12 @@
-# Validación — 15 de septiembre de 2026
+# Validación de ORBIS 2.0.2 — 16/09/2026
 
 - Build de producción: correcto (TypeScript + Vite).
-- Vitest: 9 pruebas aprobadas. Clasificación de 80/800/6000 Hz a 44.1 y 48 kHz, silencio, dirección de la deformación y límites de escala.
-- Playwright Chromium: 6 pruebas aprobadas sobre el build servido bajo /proyecto/orbis-2/ y la Content-Security-Policy del portfolio real.
-- Casos: demo; play/pausa; buscar; volver al inicio; volumen/silencio; presets; pantalla completa; ayuda; WAV reales graves/medios/agudos; caída al silencio; archivo corrupto; sustitución y recuperación; fin y replay; drag-and-drop; ausencia de subidas; móvil de 390 px sin desbordamiento; repetición más allá del final; rechazo de archivos no sonoros sin bloquear la pausa.
-- Revisión visual de capturas de escritorio, móvil y tonos graves/agudos.
-- npm audit: 0 vulnerabilidades detectadas tras actualizar la herramienta de pruebas. Auditoría de dependencias de producción: 0.
-- Después de la batería, se ajustó únicamente el CSS para ocultar anotaciones que podían coincidir con la esfera durante reproducción. La compilación final volvió a pasar.
+- 13 pruebas matemáticas aprobadas. Incluyen señales por bandas y conservación del volumen de la malla real de 128 × 96 segmentos.
+- 105 combinaciones de silencio/bandas/señal mixta, sensibilidad e instante: error relativo máximo de volumen 2,31 × 10^-9; variación máxima de altura 5,95 %. El RMS por sí solo no modifica la geometría.
+- Cámara ortográfica fija: no depende del audio. La instrumentación de desarrollo comprueba volumen real y encuadre durante tonos WAV reproducidos.
+- 5 pruebas de navegador aprobadas sobre el build bajo /proyecto/orbis-2/ y la CSP del portfolio: lienzo blanco completo, panel de ajustes inferior, materiales/colores/fondo, controles de reproducción, tonos reales, recuperación ante archivos inválidos, bucle, arrastre local, móvil de 390 y 320 px.
+- Revisión visual de escritorio, panel inferior, móvil y tonos graves/agudos.
+- Renderizado con resolución de raster adaptativa cuando la GPU tarda demasiado. Conserva la densidad de la malla; no promete una tasa fija de fotogramas en cualquier equipo.
+- npm audit: 0 vulnerabilidades detectadas.
 
-Límites: validación automática con Chromium en Windows, no con dispositivos físicos ni Safari/Firefox. El rendimiento depende del hardware. No se ha publicado ni modificado remotamente el portfolio. Vite avisa del tamaño del paquete de renderizado 3D (~200 kB comprimidos del JavaScript principal); no es un error de compilación.
+Límites: navegador Chromium sobre Windows, sin verificación en dispositivos físicos iOS/Android ni Safari/Firefox. La exportación de vídeo no forma parte de esta revisión. Vite avisa del tamaño de la biblioteca 3D (~197 kB comprimidos del JavaScript principal); la compilación es correcta.

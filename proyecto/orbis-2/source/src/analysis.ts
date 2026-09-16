@@ -51,12 +51,16 @@ export function analyze(
 }
 
 export function shape(bands: Bands, sensitivity: number) {
-  const low = Math.min(1.3, bands.low * sensitivity);
-  const high = Math.min(1.3, bands.high * sensitivity);
+  const balance = Math.tanh((bands.low - bands.high) * sensitivity);
+  const x = Math.exp(balance * 0.15);
+  const y = Math.exp(-balance * 0.025);
   return {
-    x: 1 + low * 0.52 - high * 0.25,
-    y: 1 - low * 0.32 + high * 0.58,
-    roughness: Math.min(0.28, bands.mid * sensitivity * 0.22 + high * 0.045),
-    pulse: Math.min(0.16, bands.rms * sensitivity * 0.28),
+    x,
+    y,
+    z: 1 / (x * y),
+    flow: Math.tanh(
+      (bands.low * 0.4 + bands.mid * 0.8 + bands.high * 0.35) * sensitivity,
+    ),
+    detail: Math.tanh(bands.high * sensitivity),
   };
 }

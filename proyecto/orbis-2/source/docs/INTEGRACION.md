@@ -1,6 +1,6 @@
 # Añadir ORBIS 2 a pedrogomez.dev
 
-La estructura pública del portfolio usa páginas estáticas bajo `proyecto/` y Vercel. ORBIS se entrega sin cambios remotos ni publicación: queda preparado para que Pedro lo incorpore a su repositorio.
+La estructura pública del portfolio usa páginas estáticas bajo `proyecto/` y Vercel. ORBIS está integrado en ese repositorio bajo `proyecto/orbis-2/`; su fuente editable se conserva en `proyecto/orbis-2/source/`. Los pasos siguientes sirven para actualizar o reinstalar la herramienta.
 
 ## Opción rápida: carpeta compilada
 

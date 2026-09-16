@@ -1,24 +1,72 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { AudioEngine } from "./audio";
-import { shape } from "./analysis";
+import { deformSurface, meshVolume } from "./deformation";
 
 export type Settings = {
   color: string;
   material: "metal" | "pearl" | "wire";
+  background: "light" | "dark";
   sensitivity: number;
   movement: number;
   smoothing: number;
 };
 export const defaults: Settings = {
-  color: "#dba58e",
+  color: "#ffffff",
   material: "metal",
+  background: "light",
   sensitivity: 1.2,
-  movement: 0.35,
-  smoothing: 0.5,
+  movement: 0.45,
+  smoothing: 0.65,
 };
 
+/** Neutral studio reflections: broad softboxes and black flags make real chrome,
+ * without a tinted diffuse surface or any downloaded environment textures. */
+function studioEnvironment(renderer: THREE.WebGLRenderer) {
+  // Continuous studio lighting avoids hard rectangular reflections on the sphere.
+  const width = 1024,
+    height = 512,
+    pixels = new Float32Array(width * height * 4);
+  for (let y = 0; y < height; y++)
+    for (let x = 0; x < width; x++) {
+      const u = x / width,
+        v = y / height;
+      const h =
+        v +
+        0.055 * Math.sin(u * Math.PI * 2) +
+        0.025 * Math.sin(u * Math.PI * 4 + 0.7);
+      const gaussian = (center: number, spread: number) =>
+        Math.exp(-(((h - center) / spread) ** 2));
+      let light =
+        (0.3 + 1.4 * gaussian(0.76, 0.24) + 0.85 * gaussian(0.25, 0.085)) *
+        (1 - 0.998 * gaussian(0.49, 0.09));
+      const strip =
+        Math.exp(-(((u - 0.22) / 0.025) ** 2)) +
+        Math.exp(-(((u - 0.74) / 0.05) ** 2));
+      light += strip * 1.7 * gaussian(0.6, 0.3);
+      const i = (y * width + x) * 4;
+      pixels[i] = pixels[i + 1] = pixels[i + 2] = Math.max(0.008, light);
+      pixels[i + 3] = 1;
+    }
+  const texture = new THREE.DataTexture(
+    pixels,
+    width,
+    height,
+    THREE.RGBAFormat,
+    THREE.FloatType,
+  );
+  if (renderer.extensions.has("OES_texture_float_linear")) {
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+  }
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+  texture.needsUpdate = true;
+  const generator = new THREE.PMREMGenerator(renderer),
+    env = generator.fromEquirectangular(texture);
+  texture.dispose();
+  generator.dispose();
+  return env;
+}
 export default function Orb({
   engine,
   settings,
@@ -26,8 +74,8 @@ export default function Orb({
   engine: AudioEngine;
   settings: Settings;
 }) {
-  const mount = useRef<HTMLDivElement>(null);
-  const current = useRef(settings);
+  const mount = useRef<HTMLDivElement>(null),
+    current = useRef(settings);
   const [error, setError] = useState("");
   current.current = settings;
   useEffect(() => {
@@ -42,9 +90,9 @@ export default function Orb({
       return;
     }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
-    renderer.setClearColor(0x000000, 0);
+    renderer.setClearColor(0, 0);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.35;
+    renderer.toneMappingExposure = 1.05;
     renderer.domElement.setAttribute(
       "aria-label",
       "Esfera 3D reactiva al audio",
@@ -52,49 +100,49 @@ export default function Orb({
     renderer.domElement.setAttribute("role", "img");
     host.appendChild(renderer.domElement);
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(37, 1, 0.1, 50);
-    camera.position.set(0, 0, 5.4);
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    const room = new RoomEnvironment();
-    const environment = pmrem.fromScene(room, 0.04);
-    room.dispose();
-    pmrem.dispose();
-    scene.environment = environment.texture;
-    const geometry = new THREE.SphereGeometry(1, 112, 80);
-    const positions = geometry.attributes.position as THREE.BufferAttribute;
-    const original = new Float32Array(positions.array);
+    const env = studioEnvironment(renderer);
+    scene.environment = env.texture;
+    // Orthographic, fixed framing: audio never changes the camera or zoom.
+    const camera = new THREE.OrthographicCamera(-2, 2, 2, -2, 0.1, 30);
+    camera.position.set(0, 0, 6);
+    const geometry = new THREE.SphereGeometry(1, 128, 96),
+      positions = geometry.attributes.position as THREE.BufferAttribute;
+    const original = new Float32Array(positions.array),
+      indices = geometry.index!.array;
+    const referenceVolume = meshVolume(original, indices);
     const material = new THREE.MeshStandardMaterial({
-      color: defaults.color,
+      color: "#ffffff",
       metalness: 1,
-      roughness: 0.23,
-      envMapIntensity: 2,
+      roughness: 0.055,
+      envMapIntensity: 1,
     });
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
-    const key = new THREE.DirectionalLight(0xffe8d6, 3.5);
-    key.position.set(-3, 4, 3);
-    scene.add(key);
-    const rim = new THREE.DirectionalLight(0xa5c6ff, 3);
-    rim.position.set(3, -1, -2);
-    scene.add(rim);
-    const fill = new THREE.DirectionalLight(0xffffff, 1);
-    fill.position.set(1, 0, 4);
+    const fill = new THREE.DirectionalLight(0xffffff, 2);
+    fill.position.set(-3, 4, 4);
     scene.add(fill);
     const resize = () => {
       const { width, height } = host.getBoundingClientRect();
       renderer.setSize(width, height);
-      camera.aspect = width / Math.max(1, height);
-      camera.position.z = camera.aspect < 0.9 ? 6.2 : 5.4;
+      const aspect = width / Math.max(height, 1),
+        half = 1.55;
+      camera.left = -half * Math.max(aspect, 1);
+      camera.right = -camera.left;
+      camera.top = half * Math.max(1 / aspect, 1);
+      camera.bottom = -camera.top;
       camera.updateProjectionMatrix();
     };
     const observer = new ResizeObserver(resize);
     observer.observe(host);
     resize();
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let last = performance.now(),
+    let qualityWindow = performance.now(),
+      renderedFrames = 0;
+    let frame = 0,
       time = 0,
-      frame = 0,
-      visible = true;
+      last = performance.now(),
+      visible = !document.hidden,
+      frameCount = 0;
     const visibility = () => {
       visible = !document.hidden;
       last = performance.now();
@@ -112,49 +160,54 @@ export default function Orb({
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
       if (!visible) return;
-      const s = current.current;
-      const levels = engine.sample(dt, s.smoothing);
-      const deformation = shape(levels, s.sensitivity);
-      const extent = 1 + deformation.pulse + deformation.roughness + 0.045;
-      const fit =
-        ((Math.max(deformation.y, deformation.x / camera.aspect) * extent) /
-          Math.tan(THREE.MathUtils.degToRad(18.5))) *
-        1.3;
-      const baseDistance = camera.aspect < 0.9 ? 6.2 : 5.4;
-      camera.position.z +=
-        (Math.max(baseDistance, fit) - camera.position.z) *
-        (1 - Math.exp(-dt * 8));
-      time += dt * s.movement * (reduced.matches ? 0.2 : 1);
-      const activity = Math.min(1, levels.low + levels.mid + levels.high);
-      for (let i = 0; i < positions.count; i++) {
-        const x = original[i * 3],
-          y = original[i * 3 + 1],
-          z = original[i * 3 + 2];
-        const waves =
-          Math.sin(x * 5 + time) *
-          Math.cos(y * 4 - time * 0.7) *
-          Math.sin(z * 5 + time * 0.5);
-        const fine =
-          Math.sin(y * 22 + x * 8 + time * 2) * Math.cos(z * 12 - time);
-        const radius =
-          1 +
-          waves * (0.025 + deformation.roughness) +
-          fine * activity * 0.016 +
-          deformation.pulse;
-        positions.setXYZ(i, x * radius, y * radius, z * radius);
-      }
+      const s = current.current,
+        bands = engine.sample(dt, s.smoothing);
+      time += dt * s.movement * 1.6 * (reduced.matches ? 0.15 : 1);
+      deformSurface(
+        original,
+        positions.array as Float32Array,
+        indices,
+        referenceVolume,
+        bands,
+        s.sensitivity,
+        time,
+      );
       positions.needsUpdate = true;
       geometry.computeVertexNormals();
-      mesh.scale.set(deformation.x, deformation.y, deformation.x);
-      // Only rotate around Y: the gravity/treble axis stays visually vertical.
-      mesh.rotation.y = time * 0.22;
+      mesh.rotation.y = time * 0.06;
       material.color.set(s.color);
       material.wireframe = s.material === "wire";
       material.metalness =
-        s.material === "metal" ? 1 : s.material === "pearl" ? 0.12 : 0.3;
-      material.roughness = s.material === "pearl" ? 0.35 : 0.23;
-      material.envMapIntensity = s.material === "metal" ? 2 : 1.1;
+        s.material === "metal" ? 1 : s.material === "pearl" ? 0.18 : 0;
+      material.roughness = s.material === "metal" ? 0.055 : 0.38;
+      material.envMapIntensity = s.material === "metal" ? 1 : 1.3;
       renderer.render(scene, camera);
+      renderedFrames++;
+      if (now - qualityWindow > 1800) {
+        const fps = (renderedFrames * 1000) / (now - qualityWindow);
+        const ratio = renderer.getPixelRatio();
+        // Preserve the dense mesh and its physical volume. On slower GPUs only
+        // reduce raster resolution, so the larger canvas can stay fluid.
+        if (fps < 32 && ratio > 0.65) {
+          renderer.setPixelRatio(Math.max(0.65, ratio * 0.8));
+          resize();
+        }
+        qualityWindow = now;
+        renderedFrames = 0;
+      }
+      // Test instrumentation reads the rendered mesh, never a nominal target value.
+      if (import.meta.env.DEV && frameCount++ % 15 === 0) {
+        renderer.domElement.dataset.volumeRatio = String(
+          meshVolume(positions.array, indices) / referenceVolume,
+        );
+        renderer.domElement.dataset.camera = JSON.stringify([
+          camera.left,
+          camera.right,
+          camera.top,
+          camera.bottom,
+          camera.position.z,
+        ]);
+      }
     };
     frame = requestAnimationFrame(animate);
     return () => {
@@ -164,7 +217,7 @@ export default function Orb({
       renderer.domElement.removeEventListener("webglcontextlost", lost);
       geometry.dispose();
       material.dispose();
-      environment.dispose();
+      env.dispose();
       renderer.dispose();
       renderer.domElement.remove();
     };

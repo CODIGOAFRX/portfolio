@@ -10,3 +10,4 @@ playwright.config.js
 coverage/
 proyecto/scorm-pdf/source/
 *.log
+proyecto/orbis-2/source/
