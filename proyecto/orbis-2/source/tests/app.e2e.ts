@@ -321,8 +321,8 @@ test("project scroll docks the same orb, keeps audio and restores fullscreen", a
     page.getByRole("heading", { name: "Otra forma de escuchar." }),
   ).toBeInViewport();
   const dock = (await page.locator("canvas").boundingBox())!;
-  expect(dock.x).toBeGreaterThan(850);
-  expect(dock.width).toBeLessThan(500);
+  expect(dock.x + dock.width / 2).toBeGreaterThan(1100);
+  expect(dock.width).toBeLessThan(800);
   expect(
     await canvas!.evaluate((el) => el === document.querySelector("canvas")),
   ).toBe(true);
@@ -358,7 +358,9 @@ test("project scroll docks the same orb, keeps audio and restores fullscreen", a
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
-    const returnLink = page.getByRole("link", { name: "Volver al visualizador" });
+    const returnLink = page.getByRole("link", {
+      name: "Volver al visualizador",
+    });
     await returnLink.scrollIntoViewIfNeeded();
     await expect(returnLink).toBeInViewport();
     const linkBox = (await returnLink.boundingBox())!;
@@ -367,4 +369,61 @@ test("project scroll docks the same orb, keeps audio and restores fullscreen", a
   }
   await page.getByRole("link", { name: "Volver al visualizador" }).click();
   await expect(page.locator(".app")).toHaveAttribute("data-reading", "false");
+});
+
+test("orb stays drawn while scrolling in both directions without reallocating its buffer", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await expect(page.locator("canvas")).toBeVisible();
+  await page.getByRole("button", { name: "Probar demo", exact: true }).click();
+  await page.getByRole("button", { name: "Reproducir", exact: true }).click();
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.waitForTimeout(500);
+    const result = await page.evaluate(async () => {
+      const canvas = document.querySelector("canvas")!;
+      const copy = document.createElement("canvas");
+      copy.width = copy.height = 64;
+      const ctx = copy.getContext("2d", { willReadFrequently: true })!;
+      const raf = () =>
+        new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+      await raf();
+      await raf();
+      let reallocations = 0,
+        emptyFrames = 0;
+      const observer = new MutationObserver((records) => {
+        reallocations += records.length;
+      });
+      observer.observe(canvas, {
+        attributes: true,
+        attributeFilter: ["width", "height"],
+      });
+      const positions: number[] = [];
+      for (let i = 0; i < 48; i++) {
+        const p = i < 24 ? i / 23 : (47 - i) / 23;
+        window.scrollTo({ top: innerHeight * 0.8 * p, behavior: "instant" });
+        await raf();
+        ctx.clearRect(0, 0, 64, 64);
+        ctx.drawImage(canvas, 0, 0, 64, 64);
+        const pixels = ctx.getImageData(0, 0, 64, 64).data;
+        let visible = 0;
+        for (let j = 3; j < pixels.length; j += 4)
+          if (pixels[j] > 30) visible++;
+        if (visible < 50) emptyFrames++;
+        const rect = canvas.getBoundingClientRect();
+        positions.push(rect.x + rect.width / 2);
+      }
+      await raf();
+      observer.disconnect();
+      return {
+        reallocations,
+        emptyFrames,
+        travel: Math.max(...positions) - Math.min(...positions),
+      };
+    });
+    expect(result.reallocations).toBe(0);
+    expect(result.emptyFrames).toBe(0);
+    expect(result.travel).toBeGreaterThan(width * 0.2);
+  }
 });

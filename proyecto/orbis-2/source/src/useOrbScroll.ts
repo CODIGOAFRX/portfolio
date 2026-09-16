@@ -22,13 +22,21 @@ export function useOrbScroll(
       const p = progress * progress * (3 - 2 * progress);
       const dock = mobile ? 120 : Math.min(470, w * 0.34, h * 0.55);
       const right = mobile ? 0 : 24;
-      const endY = h - bottom - dock - (mobile ? 4 : 24);
-      const lerp = (a: number, b: number) => a + (b - a) * p;
+      const canvasHeight = Math.max(1, h - top - bottom);
+      const scale = 1 + (dock / Math.min(w, canvasHeight) - 1) * p;
+      const centerX = w / 2 + (w - dock / 2 - right - w / 2) * p;
+      const centerY =
+        canvasHeight / 2 +
+        (h - bottom - dock / 2 - (mobile ? 4 : 24) - top - canvasHeight / 2) *
+          p;
+      // Layout dimensions only change with the viewport. Scroll uses the
+      // compositor, so WebGL keeps its drawing buffer throughout the journey.
       Object.assign(stage.current.style, {
-        left: `${lerp(0, w - dock - right)}px`,
-        top: `${lerp(top, endY)}px`,
-        width: `${lerp(w, dock)}px`,
-        height: `${lerp(h - top - bottom, dock)}px`,
+        left: "0px",
+        top: `${top}px`,
+        width: `${w}px`,
+        height: `${canvasHeight}px`,
+        transform: `translate3d(${centerX - (w * scale) / 2}px, ${centerY - (canvasHeight * scale) / 2}px, 0) scale(${scale})`,
       });
       root.current.dataset.reading = progress > 0.85 ? "true" : "false";
     };

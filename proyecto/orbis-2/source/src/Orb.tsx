@@ -154,8 +154,11 @@ export default function Orb({
     const fill = new THREE.DirectionalLight(0xffffff, 2);
     fill.position.set(-3, 4, 4);
     scene.add(fill);
+    let resizePending = true;
     const resize = () => {
-      const { width, height } = host.getBoundingClientRect();
+      // Read layout dimensions, not the CSS-transformed visual bounds.
+      const width = host.clientWidth,
+        height = host.clientHeight;
       renderer.setSize(width, height);
       const aspect = width / Math.max(height, 1),
         half = 1.55;
@@ -165,9 +168,10 @@ export default function Orb({
       camera.bottom = -camera.top;
       camera.updateProjectionMatrix();
     };
-    const observer = new ResizeObserver(resize);
+    const observer = new ResizeObserver(() => {
+      resizePending = true;
+    });
     observer.observe(host);
-    resize();
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0,
       time = 0,
@@ -216,6 +220,12 @@ export default function Orb({
         s.material === "metal" ? 1 : s.material === "pearl" ? 0.18 : 0;
       material.roughness = s.material === "metal" ? 0.018 : 0.38;
       material.envMapIntensity = s.material === "metal" ? 1 : 1.3;
+      // A real viewport resize clears the buffer; redraw in this same callback
+      // before the browser can paint, rather than clearing in ResizeObserver.
+      if (resizePending) {
+        resize();
+        resizePending = false;
+      }
       renderer.render(scene, camera);
       // Test instrumentation reads the rendered mesh, never a nominal target value.
       if (import.meta.env.DEV && frameCount++ % 15 === 0) {
