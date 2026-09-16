@@ -18,6 +18,8 @@ import {
 import Orb, { defaults, type Settings } from "./Orb";
 import { AudioEngine } from "./audio";
 import { silence } from "./analysis";
+import ProjectStory from "./ProjectStory";
+import { useOrbScroll } from "./useOrbScroll";
 
 const palette = [
   { color: "#ffffff", name: "Cromo" },
@@ -97,6 +99,8 @@ export default function App() {
     settingsButton = useRef<HTMLButtonElement>(null),
     closeSettings = useRef<HTMLButtonElement>(null);
   const previousVolume = useRef(0.65);
+  const stage = useRef<HTMLElement>(null);
+  useOrbScroll(root, stage);
   useEffect(() => {
     const audio = engine.element;
     const ready = () => {
@@ -236,6 +240,7 @@ export default function App() {
   return (
     <div
       ref={root}
+      id="inicio"
       className={`app theme-${settings.background}`}
       onDragOver={(e) => {
         e.preventDefault();
@@ -250,9 +255,10 @@ export default function App() {
         loadFile(e.dataTransfer.files[0]);
       }}
     >
-      <main className="canvas-stage" aria-label="Visualizador">
+      <section ref={stage} className="canvas-stage" aria-label="Visualizador">
         <Orb engine={engine} settings={settings} />
-      </main>
+      </section>
+      <ProjectStory />
       <header className="identity">
         <h1>
           ORBIS<span>2</span>

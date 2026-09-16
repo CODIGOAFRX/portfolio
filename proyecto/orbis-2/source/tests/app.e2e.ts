@@ -40,7 +40,7 @@ test("full-window white canvas, bottom settings and complete playback controls",
   ).toBe("rgb(255, 255, 255)");
   expect(
     await page.evaluate(
-      () => document.documentElement.scrollHeight <= innerHeight,
+      () => document.documentElement.scrollHeight > innerHeight,
     ),
   ).toBe(true);
   await expect(
@@ -283,7 +283,7 @@ test("mobile canvas and bottom controls fit; sheet scrolls and remains closable"
       await page.evaluate(
         () =>
           document.documentElement.scrollWidth <= innerWidth &&
-          document.documentElement.scrollHeight <= innerHeight,
+          document.documentElement.scrollHeight > innerHeight,
       ),
     ).toBe(true);
     const upload = await page
@@ -306,4 +306,65 @@ test("mobile canvas and bottom controls fit; sheet scrolls and remains closable"
     await page.getByRole("button", { name: "Pausar", exact: true }).click();
     await page.screenshot({ path: `test-results/mobile-${width}.png` });
   }
+});
+
+test("project scroll docks the same orb, keeps audio and restores fullscreen", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "Probar demo", exact: true }).click();
+  await page.getByRole("button", { name: "Reproducir", exact: true }).click();
+  const canvas = await page.locator("canvas").elementHandle();
+  await page.getByRole("link", { name: "Descubre el proyecto" }).click();
+  await expect(page.locator(".app")).toHaveAttribute("data-reading", "true");
+  await expect(
+    page.getByRole("heading", { name: "Otra forma de escuchar." }),
+  ).toBeInViewport();
+  const dock = (await page.locator("canvas").boundingBox())!;
+  expect(dock.x).toBeGreaterThan(850);
+  expect(dock.width).toBeLessThan(500);
+  expect(
+    await canvas!.evaluate((el) => el === document.querySelector("canvas")),
+  ).toBe(true);
+  await expect(
+    page.getByRole("button", { name: "Pausar", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Pantalla completa", exact: true })
+    .click();
+  await expect(page.locator(".project-story")).toBeHidden();
+  await expect
+    .poll(async () => (await page.locator("canvas").boundingBox())!.width)
+    .toBe(1440);
+  await page
+    .getByRole("button", { name: "Salir de pantalla completa" })
+    .click();
+  await expect(page.locator(".project-story")).toBeVisible();
+  await page.getByRole("button", { name: "Ajustes", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Cerrar ajustes" }),
+  ).toBeInViewport();
+  await page.getByRole("button", { name: "Cerrar ajustes" }).click();
+  for (const width of [390, 320]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page
+      .getByRole("heading", { name: "Detrás de la esfera." })
+      .scrollIntoViewIfNeeded();
+    await expect
+      .poll(async () => (await page.locator("canvas").boundingBox())!.width)
+      .toBe(120);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    const returnLink = page.getByRole("link", { name: "Volver al visualizador" });
+    await returnLink.scrollIntoViewIfNeeded();
+    await expect(returnLink).toBeInViewport();
+    const linkBox = (await returnLink.boundingBox())!;
+    const playerBox = (await page.locator(".player").boundingBox())!;
+    expect(linkBox.y + linkBox.height).toBeLessThan(playerBox.y);
+  }
+  await page.getByRole("link", { name: "Volver al visualizador" }).click();
+  await expect(page.locator(".app")).toHaveAttribute("data-reading", "false");
 });
