@@ -228,8 +228,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return `rgba(${channels[0]}, ${channels[1]}, ${channels[2]}, ${alpha})`;
         };
 
+        // Geometry is cached from ResizeObserver/resize events so scroll and frame
+        // callbacks never force a synchronous layout.
         let width = 0;
         let height = 0;
+        let viewportWidth = window.innerWidth;
+        let viewportHeight = window.innerHeight;
         let currentRotation = baseRotation;
         let targetRotation = baseRotation;
         let automaticRotation = 0;
@@ -336,9 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const updateLayoutTargets = () => {
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-            const maximumSize = globeShell.clientWidth || 1;
+            const maximumSize = width || 1;
             const mobile = viewportWidth <= 768;
             const compact = viewportWidth <= 1180;
             const startSize = mobile
@@ -418,7 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (automatic) {
                 automaticRotation += deltaTime * automaticRotationSpeed;
                 targetRotation = baseRotation
-                    + window.scrollY * (window.innerWidth <= 768 ? 0.0018 : 0.0022)
+                    + window.scrollY * (viewportWidth <= 768 ? 0.0018 : 0.0022)
                     + automaticRotation;
             }
 
@@ -469,21 +471,30 @@ document.addEventListener('DOMContentLoaded', () => {
             requestGlobeFrame();
         };
 
-        const resizeGlobe = () => {
+        const resizeGlobe = ([entry]) => {
             const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-            width = globeShell.clientWidth;
-            height = globeShell.clientHeight;
+            width = entry.contentRect.width;
+            height = entry.contentRect.height;
+            viewportWidth = window.innerWidth;
+            viewportHeight = window.innerHeight;
             globeCanvas.width = Math.round(width * pixelRatio);
             globeCanvas.height = Math.round(height * pixelRatio);
             context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
             syncGlobeWithPage();
         };
 
-        window.addEventListener('scroll', syncGlobeWithPage, { passive: true });
-        window.addEventListener('resize', resizeGlobe);
+        window.addEventListener('scroll', () => {
+            if (initialized) syncGlobeWithPage();
+        }, { passive: true });
+        window.addEventListener('resize', () => {
+            viewportWidth = window.innerWidth;
+            viewportHeight = window.innerHeight;
+            if (initialized) syncGlobeWithPage();
+        });
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden) requestGlobeFrame();
         });
-        resizeGlobe();
+        // Fires after the first layout with the shell's size, and again whenever it changes.
+        new ResizeObserver(resizeGlobe).observe(globeShell);
     }
 });
