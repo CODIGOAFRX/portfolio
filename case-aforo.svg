@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title">
+<title id="title">AFORO, demo de reservas de concierto</title>
+<defs><pattern id="seats" width="42" height="44" patternUnits="userSpaceOnUse"><rect x="5" y="6" width="27" height="27" rx="6" fill="#f8f8f3" stroke="#a5ad99"/></pattern></defs>
+<rect width="960" height="540" fill="#f6f7f0"/>
+<text x="54" y="59" font-family="Arial,sans-serif" font-size="13" letter-spacing="4" fill="#59634e">RESERVAS DE CONCIERTO / DEMO INTERACTIVA</text>
+<text x="48" y="162" font-family="Georgia,serif" font-size="94" fill="#242b20">AFORO.</text>
+<text x="54" y="209" font-family="Arial,sans-serif" font-size="22" fill="#626e55">Elige asiento. Ponlo a prueba.</text>
+<path d="M55 263H905" stroke="#c8cfbd"/>
+<text x="55" y="326" font-family="Georgia,serif" font-size="36" fill="#242b20">Una sala.</text>
+<text x="55" y="370" font-family="Georgia,serif" font-size="36" fill="#242b20">Varias solicitudes.</text>
+<text x="55" y="449" font-family="Arial,sans-serif" font-size="14" fill="#626e55">60 ASIENTOS · 30 COMPRADORES</text>
+<rect x="462" y="280" width="420" height="176" fill="url(#seats)"/>
+<g fill="#566647"><rect x="467" y="288" width="27" height="27" rx="6"/><rect x="509" y="288" width="27" height="27" rx="6"/><rect x="551" y="288" width="27" height="27" rx="6"/><rect x="593" y="288" width="27" height="27" rx="6"/><rect x="467" y="332" width="27" height="27" rx="6"/><rect x="509" y="332" width="27" height="27" rx="6"/></g>
+<path d="M500 475Q670 455 842 475" fill="none" stroke="#a5ad99"/>
+<text x="627" y="505" font-family="Arial,sans-serif" font-size="11" letter-spacing="3" fill="#626e55">ESCENARIO</text>
+</svg>

@@ -3,6 +3,14 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/proyecto/aforo",
+      "destination": "https://aforo.pedrojgomezperez.workers.dev/proyecto/aforo"
+    },
+    {
+      "source": "/proyecto/aforo/:path*",
+      "destination": "https://aforo.pedrojgomezperez.workers.dev/proyecto/aforo/:path*"
+    },
+    {
       "source": "/admin",
       "destination": "/api/admin"
     },
