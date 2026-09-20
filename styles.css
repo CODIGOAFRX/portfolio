@@ -1078,6 +1078,12 @@ button:focus-visible {
     transform: scale(1.025);
 }
 
+#aforo .case-browser img {
+    height: auto;
+    object-fit: contain;
+    transform: none;
+}
+
 .case-index {
     margin-bottom: 1.3rem;
     color: var(--text-tertiary);
