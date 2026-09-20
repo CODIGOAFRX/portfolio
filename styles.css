@@ -1084,6 +1084,16 @@ button:focus-visible {
     transform: none;
 }
 
+/* La captura de FinanX es 1216x825, no 16/9. Sin height:auto el atributo
+   height del HTML fija la caja en 825px y object-fit:cover recorta los
+   laterales del panel. Se muestra entera, como la ilustración de AFORO. */
+#finanx .case-browser img {
+    height: auto;
+    aspect-ratio: 1216 / 825;
+    object-fit: contain;
+    transform: none;
+}
+
 .case-index {
     margin-bottom: 1.3rem;
     color: var(--text-tertiary);
