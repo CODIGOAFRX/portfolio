@@ -28,13 +28,14 @@
     <meta name="twitter:description"
         content="Desarrollo de principio a fin. Productos web en producción y automatización con Java, Python y TypeScript.">
     <meta name="twitter:image" content="https://www.pedrogomez.dev/og.png">
-    <link rel="stylesheet" href="styles.css?v=20260918-lcp">
+    <link rel="stylesheet" href="styles.css?v=20261005-afr">
 </head>
 
 <body>
     <nav class="navbar hidden-element" aria-label="Navegación principal">
         <a href="#hero" class="logo">Pedro Gómez.</a>
         <div class="nav-links">
+            <a href="#afr-mind">AFR-MIND</a>
             <a href="#about">Perfil</a>
             <a href="#timeline">Trayectoria</a>
             <a href="#production">En producción</a>
@@ -61,6 +62,7 @@
                 </p>
                 <p class="availability hero-reveal"><span aria-hidden="true"></span>Abierto a nuevas oportunidades</p>
                 <div class="hero-links hero-reveal">
+                    <a href="#afr-mind" class="text-link text-link-accent">Mi CV como red neuronal</a>
                     <a href="https://github.com/CODIGOAFRX" target="_blank" rel="noopener noreferrer"
                         class="text-link">GitHub</a>
                     <a href="https://www.linkedin.com/in/pedro-jes%C3%BAs-g%C3%B3mez-p%C3%A9rez-2b5534157/"
@@ -98,11 +100,63 @@
             </div>
         </section>
 
+
+        <!-- AFR-MIND: proyecto principal -->
+        <section id="afr-mind" class="afr" aria-labelledby="afr-title">
+            <div class="content-wrapper">
+                <div class="afr-heading hidden-element">
+                    <h3 class="section-label">02 / Proyecto principal</h3>
+                    <h2 id="afr-title" class="afr-title">AFR-MIND</h2>
+                    <div class="afr-row">
+                    <p class="afr-sub">Mi stack, convertido en una red neuronal.</p>
+                    <div class="afr-intro">
+                        <p>He programado desde cero, sin librerías de IA, una red neuronal que aprende cómo se conectan
+                            los conocimientos. Aquí está entrenada con mis dos CV: cada tecnología, proyecto y experiencia
+                            es una neurona.</p>
+                        <p>Pulsa <strong>Java</strong>, <strong>Playwright</strong> o <strong>React</strong> y la red te
+                            dirá con qué lo relaciona y en qué proyectos lo he usado.</p>
+                    </div>
+                    </div>
+                </div>
+
+                <figure class="afr-live hidden-element">
+                    <div class="afr-bar">
+                        <span>pedrogomez.dev/proyecto/afr-mind</span>
+                        <strong><i aria-hidden="true"></i>Red entrenándose en vivo</strong>
+                    </div>
+                    <iframe src="/proyecto/afr-mind/?preset=cv&amp;embed=1"
+                        title="AFR-MIND: el CV de Pedro Gómez como red neuronal interactiva" loading="lazy"></iframe>
+                    <figcaption>Arrastra para girar el cerebro. Las etiquetas «nueva» son relaciones que la red ha deducido
+                        sin que aparezcan juntas en el CV.</figcaption>
+                </figure>
+
+                <div class="afr-proof hidden-element" aria-label="AFR-MIND en cifras">
+                    <div><strong>0</strong><span>librerías de IA: backpropagation, softmax y Adam escritos a mano</span></div>
+                    <div><strong>12</strong><span>neuronas internas que puedes inspeccionar una a una</span></div>
+                    <div><strong>3</strong><span>plugins para entender una red por dentro: neurona, entrenamiento y ablación</span></div>
+                </div>
+
+                <div class="afr-grid hidden-element">
+                    <dl class="case-facts afr-facts">
+                        <div><dt>Qué es</dt><dd>Un cerebro personal: escribes lo que sabes, la red aprende qué conceptos van juntos, los coloca en 3D y deduce relaciones que no escribiste.</dd></div>
+                        <div><dt>Interpretabilidad</dt><dd>Neuronas internas inspeccionables, ablación (apagar una neurona y medir cuánto empeora la red) y detección de superposición.</dd></div>
+                        <div><dt>Mi aportación</dt><dd>Idea, diseño, motor de la red, visualización 3D en Canvas y despliegue en producción.</dd></div>
+                        <div><dt>Stack</dt><dd>JavaScript · Canvas 2D · Redes neuronales sin librerías · Cloudflare Workers · GitHub Actions</dd></div>
+                    </dl>
+                    <div class="case-links afr-links">
+                        <a href="/proyecto/afr-mind/?preset=cv">Explorar mi CV como red</a>
+                        <a href="/proyecto/afr-mind/">Crear tu propio cerebro</a>
+                        <a href="https://github.com/CODIGOAFRX/AFR-Mind" target="_blank" rel="noopener noreferrer">Ver código</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Timeline Section (Experience & Education) -->
         <section id="timeline" class="timeline">
             <div class="content-wrapper hidden-element">
                 <div class="timeline-header">
-                    <h3 class="section-label">02 / Experiencia y Educación</h3>
+                    <h3 class="section-label">03 / Experiencia y Educación</h3>
                     <div class="line"></div>
                 </div>
 
@@ -150,7 +204,7 @@
             <div class="content-wrapper">
                 <div class="production-heading hidden-element">
                     <div>
-                        <h3 class="section-label">03 / Productos en producción</h3>
+                        <h3 class="section-label">04 / Productos en producción</h3>
                         <h2>Software que ya trabaja fuera del portfolio.</h2>
                     </div>
                     <p>Proyectos completos en los que diseño la experiencia, desarrollo la lógica y mantengo la
@@ -278,7 +332,7 @@
         <section id="projects" class="projects">
             <div class="content-wrapper">
                 <div class="projects-heading hidden-element">
-                    <h3 class="section-label">04 / Otros proyectos</h3>
+                    <h3 class="section-label">05 / Otros proyectos</h3>
                     <h2>Más allá del frontend.</h2>
                     <p>Arquitectura backend, datos, automatización y experimentación técnica. Una selección corta,
                         centrada en los proyectos que mejor explican cómo trabajo.</p>
@@ -293,7 +347,7 @@
         <!-- Tech Stack Section -->
         <section id="stack" class="stack">
             <div class="content-wrapper hidden-element">
-                <h3 class="section-label">05 / Tecnologías y Habilidades</h3>
+                <h3 class="section-label">06 / Tecnologías y Habilidades</h3>
                 <div class="tech-grid-blueprint">
                     <div class="tech-blueprint-row">
                         <span class="tech-blueprint-label">BACKEND & CORE</span>
@@ -337,7 +391,7 @@
         <section id="recommendation" class="recommendation">
             <div class="content-wrapper recommendation-grid hidden-element">
                 <div>
-                    <h3 class="section-label">06 / Recomendación</h3>
+                    <h3 class="section-label">07 / Recomendación</h3>
                     <p class="recommendation-context">Una referencia pública sobre mi etapa formativa y mi forma de
                         afrontar los proyectos.</p>
                 </div>
@@ -356,7 +410,7 @@
         <!-- Contact Section -->
         <section id="contact" class="contact">
             <div class="content-wrapper hidden-element">
-                <h3 class="section-label">07 / Contacto</h3>
+                <h3 class="section-label">08 / Contacto</h3>
                 <p class="contact-kicker">Disponible para oportunidades de desarrollo backend, full-stack y automatización.</p>
                 <h2 class="contact-title">Hablemos de lo próximo.</h2>
                 <a href="mailto:info@pedrogomez.dev" class="huge-link">info@pedrogomez.dev</a>
