@@ -172,6 +172,11 @@ section {
     opacity: var(--globe-opacity);
 }
 
+/* La escena de tecnologías (scenes.js) dibuja este mismo globo mientras lo anima */
+.page-globe.is-borrowed {
+    visibility: hidden;
+}
+
 .page-globe canvas {
     display: block;
     width: 100%;
@@ -1750,10 +1755,12 @@ button:focus-visible {
     height: 100svh;
 }
 
+/* Los escenarios a pantalla completa miden 100lvh: en iOS las barras del navegador se
+   esconden al hacer scroll y con 100svh quedaba una franja sin cubrir abajo */
 .galaxy-stage {
     position: relative;
     height: 100vh;
-    height: 100svh;
+    height: 100lvh;
     overflow: hidden;
     background: #0a0a0a;
 }
@@ -1892,10 +1899,10 @@ button:focus-visible {
     z-index: 2;
     width: 100vw;
     height: 100vh;
-    height: 100svh;
+    height: 100lvh;
     margin-left: calc(50% - 50vw);
     margin-bottom: -100vh;
-    margin-bottom: -100svh;
+    margin-bottom: -100lvh;
     overflow: hidden;
     pointer-events: none;
 }
@@ -1943,4 +1950,132 @@ button:focus-visible {
     display: block;
     height: 170vh;
     height: 170svh;
+}
+
+/* ---------- Tecnologías: amanecer sobre el globo y órbitas ----------
+   scenes.js añade .orbit-on. El escenario se queda fijo: el globo de fondo viaja al centro,
+   amanece en él (fases, como la luna) y su luz tiñe la pantalla de blanco; después cada
+   categoría es una órbita con sus tecnologías como satélites y se activan una a una con el
+   scroll mientras a la izquierda se despliega la categoría activa. El canvas dibuja fondo,
+   globo y órbitas; la lista HTML sigue siendo el contenido real. */
+.orbit-stage {
+    width: 100%;
+}
+
+.stack.orbit-on {
+    display: block;
+    height: 620vh;
+    height: 620svh;
+    padding: 0;
+}
+
+.orbit-on .orbit-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100lvh;
+    overflow: hidden;
+    background: var(--text-primary);
+}
+
+.orbit-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.orbit-on .orbit-stage .content-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    padding: 0 var(--padding-x);
+    opacity: var(--orbit-panel, 0);
+    transform: translateY(calc((1 - var(--orbit-panel, 0)) * 16px));
+    transition: none;
+    pointer-events: none;
+}
+
+.orbit-on .tech-grid-blueprint {
+    width: min(440px, 36vw);
+    border-top-width: 1px;
+}
+
+.orbit-on .tech-blueprint-row {
+    grid-template-columns: 1fr;
+    padding: 0.85rem 0;
+    transition: none;
+}
+
+.orbit-on .tech-blueprint-row:hover {
+    background: none;
+    padding-left: 0;
+}
+
+.orbit-on .tech-blueprint-label {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.85rem;
+    color: var(--text-tertiary);
+    transition: color 0.35s ease;
+}
+
+.orbit-on .tech-blueprint-label::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.35;
+    transition: background-color 0.35s ease, opacity 0.35s ease;
+}
+
+.orbit-on .tech-blueprint-data {
+    display: block;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    font-size: 1rem;
+    line-height: 1.55;
+    transition: max-height 0.5s ease, opacity 0.35s ease, margin-top 0.5s ease;
+}
+
+.orbit-on .tech-blueprint-row.is-active .tech-blueprint-label {
+    color: var(--text-primary);
+}
+
+.orbit-on .tech-blueprint-row.is-active .tech-blueprint-label::before {
+    background: #e5322d;
+    opacity: 1;
+}
+
+.orbit-on .tech-blueprint-row.is-active .tech-blueprint-data {
+    max-height: 12rem;
+    margin-top: 0.75rem;
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .stack.orbit-on {
+        height: 560vh;
+        height: 560svh;
+    }
+
+    /* En móvil el globo va arriba y debajo sólo la categoría activa */
+    .orbit-on .orbit-stage .content-wrapper {
+        justify-content: flex-end;
+        padding-bottom: calc(7vh + env(safe-area-inset-bottom));
+        /* el escenario mide 100lvh: se deja libre lo que tapan las barras del navegador */
+        padding-bottom: calc(100lvh - 100svh + 6svh + env(safe-area-inset-bottom));
+    }
+
+    .orbit-on .tech-grid-blueprint {
+        width: 100%;
+    }
+
+    .orbit-on .tech-blueprint-row:not(.is-active) {
+        display: none;
+    }
 }

@@ -1,3 +1,99 @@
+// Shared wireframe globe: drawn by the page background globe below and borrowed by the
+// technology scene in scenes.js. WireGlobe.live mirrors the background globe's current
+// on-screen state so the scene can take it over and hand it back without a jump.
+window.WireGlobe = (() => {
+    const tilt = -0.16;
+    const mix = (start, end, progress) => start + (end - start) * progress;
+    const colorMix = (light, dark, progress, alpha = 1) => {
+        const channels = light.map((channel, index) => Math.round(mix(channel, dark[index], progress)));
+        return `rgba(${channels[0]}, ${channels[1]}, ${channels[2]}, ${alpha})`;
+    };
+    const continents = [
+        [[-168, 70], [-145, 61], [-128, 52], [-124, 42], [-112, 31], [-98, 20], [-82, 25], [-80, 38], [-65, 48], [-58, 60], [-90, 72], [-130, 73], [-168, 70]],
+        [[-82, 12], [-68, 8], [-50, -5], [-38, -15], [-50, -25], [-58, -40], [-70, -55], [-75, -35], [-80, -5], [-82, 12]],
+        [[-12, 36], [5, 44], [30, 45], [45, 55], [80, 58], [120, 50], [145, 58], [160, 48], [130, 35], [105, 22], [80, 10], [55, 25], [38, 35], [25, 32], [15, 37], [-12, 36]],
+        [[-17, 35], [10, 37], [32, 30], [45, 10], [38, -12], [25, -35], [12, -34], [0, -20], [-8, 5], [-17, 35]],
+        [[112, -12], [135, -10], [153, -25], [145, -42], [118, -35], [112, -12]],
+        [[-52, 82], [-20, 78], [-28, 65], [-48, 60], [-60, 70], [-52, 82]]
+    ];
+
+    // theme: 0 = dark lines for light backgrounds, 1 = light lines for dark backgrounds.
+    // lineScale keeps strokes consistent with a canvas that is scaled with CSS.
+    // fill: false skips the translucent disc fill.
+    const draw = (context, { centerX, centerY, radius, rotation, theme, lineScale = 1, fill = true }) => {
+        const projectPoint = (longitude, latitude) => {
+            const lon = longitude * Math.PI / 180 + rotation;
+            const lat = latitude * Math.PI / 180;
+            const sphereX = Math.cos(lat) * Math.sin(lon);
+            const sphereY = Math.sin(lat);
+            const sphereZ = Math.cos(lat) * Math.cos(lon);
+            const tiltedY = sphereY * Math.cos(tilt) - sphereZ * Math.sin(tilt);
+            const tiltedZ = sphereY * Math.sin(tilt) + sphereZ * Math.cos(tilt);
+
+            return {
+                x: centerX + sphereX * radius,
+                y: centerY - tiltedY * radius,
+                z: tiltedZ
+            };
+        };
+
+        const drawCurve = (points, frontColor, backColor, lineWidth) => {
+            for (let index = 1; index < points.length; index += 1) {
+                const start = projectPoint(points[index - 1][0], points[index - 1][1]);
+                const end = projectPoint(points[index][0], points[index][1]);
+
+                context.beginPath();
+                context.moveTo(start.x, start.y);
+                context.lineTo(end.x, end.y);
+                context.strokeStyle = (start.z + end.z) / 2 >= 0 ? frontColor : backColor;
+                context.lineWidth = lineWidth * lineScale;
+                context.stroke();
+            }
+        };
+
+        const gridFront = colorMix([184, 184, 184], [230, 230, 226], theme);
+        const gridBack = colorMix([227, 227, 227], [105, 105, 102], theme);
+        const landFront = colorMix([17, 17, 17], [250, 250, 247], theme);
+        const landBack = colorMix([209, 209, 209], [135, 135, 131], theme);
+        const fillAlpha = mix(0.58, 0.06, theme);
+
+        if (fill) {
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            context.fillStyle = colorMix([249, 249, 249], [17, 17, 17], theme, fillAlpha);
+            context.fill();
+        }
+
+        for (let latitude = -60; latitude <= 60; latitude += 30) {
+            const latitudeLine = [];
+            for (let longitude = -180; longitude <= 180; longitude += 4) {
+                latitudeLine.push([longitude, latitude]);
+            }
+            drawCurve(latitudeLine, gridFront, gridBack, 0.7);
+        }
+
+        for (let longitude = -150; longitude <= 180; longitude += 30) {
+            const longitudeLine = [];
+            for (let latitude = -90; latitude <= 90; latitude += 3) {
+                longitudeLine.push([longitude, latitude]);
+            }
+            drawCurve(longitudeLine, gridFront, gridBack, 0.7);
+        }
+
+        continents.forEach(continent => {
+            drawCurve(continent, landFront, landBack, 1.45);
+        });
+
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        context.strokeStyle = landFront;
+        context.lineWidth = 1.5 * lineScale;
+        context.stroke();
+    };
+
+    return { draw, tilt, live: null };
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
     // Scroll reveals using Intersection Observer
     const observerOptions = {
@@ -213,20 +309,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const globeCanvas = document.getElementById('scroll-globe');
     const projectsSection = document.getElementById('projects');
     const contactSection = document.getElementById('contact');
+    const stackSection = document.getElementById('stack');
 
     if (globeShell && globeCanvas && projectsSection && contactSection) {
         const context = globeCanvas.getContext('2d');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const baseRotation = -0.45;
         const automaticRotationSpeed = 0.0001;
-        const tilt = -0.16;
         const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
         const mix = (start, end, progress) => start + (end - start) * progress;
         const smoothstep = (value) => value * value * (3 - 2 * value);
-        const colorMix = (light, dark, progress, alpha = 1) => {
-            const channels = light.map((channel, index) => Math.round(mix(channel, dark[index], progress)));
-            return `rgba(${channels[0]}, ${channels[1]}, ${channels[2]}, ${alpha})`;
-        };
 
         // Geometry is cached from ResizeObserver/resize events so scroll and frame
         // callbacks never force a synchronous layout.
@@ -253,89 +345,17 @@ document.addEventListener('DOMContentLoaded', () => {
         let lastDrawTime = 0;
         let initialized = false;
 
-        const continents = [
-            [[-168, 70], [-145, 61], [-128, 52], [-124, 42], [-112, 31], [-98, 20], [-82, 25], [-80, 38], [-65, 48], [-58, 60], [-90, 72], [-130, 73], [-168, 70]],
-            [[-82, 12], [-68, 8], [-50, -5], [-38, -15], [-50, -25], [-58, -40], [-70, -55], [-75, -35], [-80, -5], [-82, 12]],
-            [[-12, 36], [5, 44], [30, 45], [45, 55], [80, 58], [120, 50], [145, 58], [160, 48], [130, 35], [105, 22], [80, 10], [55, 25], [38, 35], [25, 32], [15, 37], [-12, 36]],
-            [[-17, 35], [10, 37], [32, 30], [45, 10], [38, -12], [25, -35], [12, -34], [0, -20], [-8, 5], [-17, 35]],
-            [[112, -12], [135, -10], [153, -25], [145, -42], [118, -35], [112, -12]],
-            [[-52, 82], [-20, 78], [-28, 65], [-48, 60], [-60, 70], [-52, 82]]
-        ];
-
-        const projectPoint = (longitude, latitude, radius, centerX, centerY) => {
-            const lon = longitude * Math.PI / 180 + currentRotation;
-            const lat = latitude * Math.PI / 180;
-            const sphereX = Math.cos(lat) * Math.sin(lon);
-            const sphereY = Math.sin(lat);
-            const sphereZ = Math.cos(lat) * Math.cos(lon);
-            const tiltedY = sphereY * Math.cos(tilt) - sphereZ * Math.sin(tilt);
-            const tiltedZ = sphereY * Math.sin(tilt) + sphereZ * Math.cos(tilt);
-
-            return {
-                x: centerX + sphereX * radius,
-                y: centerY - tiltedY * radius,
-                z: tiltedZ
-            };
-        };
-
-        const drawCurve = (points, radius, centerX, centerY, frontColor, backColor, lineWidth) => {
-            for (let index = 1; index < points.length; index += 1) {
-                const start = projectPoint(points[index - 1][0], points[index - 1][1], radius, centerX, centerY);
-                const end = projectPoint(points[index][0], points[index][1], radius, centerX, centerY);
-
-                context.beginPath();
-                context.moveTo(start.x, start.y);
-                context.lineTo(end.x, end.y);
-                context.strokeStyle = (start.z + end.z) / 2 >= 0 ? frontColor : backColor;
-                context.lineWidth = lineWidth;
-                context.stroke();
-            }
-        };
-
         const drawGlobe = () => {
             if (!width || !height) return;
 
             context.clearRect(0, 0, width, height);
-            const centerX = width / 2;
-            const centerY = height / 2;
-            const radius = Math.min(width, height) * 0.445;
-            const gridFront = colorMix([184, 184, 184], [230, 230, 226], currentTheme);
-            const gridBack = colorMix([227, 227, 227], [105, 105, 102], currentTheme);
-            const landFront = colorMix([17, 17, 17], [250, 250, 247], currentTheme);
-            const landBack = colorMix([209, 209, 209], [135, 135, 131], currentTheme);
-            const fillAlpha = mix(0.58, 0.06, currentTheme);
-
-            context.beginPath();
-            context.arc(centerX, centerY, radius, 0, Math.PI * 2);
-            context.fillStyle = colorMix([249, 249, 249], [17, 17, 17], currentTheme, fillAlpha);
-            context.fill();
-
-            for (let latitude = -60; latitude <= 60; latitude += 30) {
-                const latitudeLine = [];
-                for (let longitude = -180; longitude <= 180; longitude += 4) {
-                    latitudeLine.push([longitude, latitude]);
-                }
-                drawCurve(latitudeLine, radius, centerX, centerY, gridFront, gridBack, 0.7);
-            }
-
-            for (let longitude = -150; longitude <= 180; longitude += 30) {
-                const longitudeLine = [];
-                for (let latitude = -90; latitude <= 90; latitude += 3) {
-                    longitudeLine.push([longitude, latitude]);
-                }
-                drawCurve(longitudeLine, radius, centerX, centerY, gridFront, gridBack, 0.7);
-            }
-
-            continents.forEach(continent => {
-                drawCurve(continent, radius, centerX, centerY, landFront, landBack, 1.45);
+            window.WireGlobe.draw(context, {
+                centerX: width / 2,
+                centerY: height / 2,
+                radius: Math.min(width, height) * 0.445,
+                rotation: currentRotation,
+                theme: currentTheme
             });
-
-            context.beginPath();
-            context.arc(centerX, centerY, radius, 0, Math.PI * 2);
-            context.strokeStyle = landFront;
-            context.lineWidth = 1.5;
-            context.stroke();
-
             globeCanvas.dataset.rotation = currentRotation.toFixed(3);
         };
 
@@ -356,8 +376,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const growProgress = smoothstep(clamp(window.scrollY / Math.max(viewportHeight * 0.95, 1), 0, 1));
             const projectsBounds = projectsSection.getBoundingClientRect();
             const contactBounds = contactSection.getBoundingClientRect();
+            // The technology scene (scenes.js) opens on the same dark background and only
+            // lights up a little after it is pinned; it flags that stretch as night.
+            const darkStack = stackSection && stackSection.classList.contains('orbit-on')
+                && (stackSection.getBoundingClientRect().top > 0 || stackSection.dataset.night === '1');
             const overDarkSection = projectsBounds.top < viewportHeight * 0.7
-                && projectsBounds.bottom > viewportHeight * 0.3;
+                && (projectsBounds.bottom > viewportHeight * 0.3 || darkStack);
 
             contactProgress = smoothstep(clamp(
                 (viewportHeight * 0.82 - contactBounds.top) / Math.max(viewportHeight * 0.65, 1),
@@ -431,6 +455,16 @@ document.addEventListener('DOMContentLoaded', () => {
             currentOpacity += (targetOpacity - currentOpacity) * easing;
             currentTheme += (targetTheme - currentTheme) * easing;
             currentRotation += (targetRotation - currentRotation) * (reducedMotion ? 1 : 0.14);
+
+            window.WireGlobe.live = {
+                x: currentX,
+                y: currentY,
+                scale: currentScale,
+                opacity: currentOpacity,
+                theme: currentTheme,
+                rotation: currentRotation,
+                size: width
+            };
 
             const layoutMoving = Math.abs(targetScale - currentScale) > 0.0005
                 || Math.abs(targetX - currentX) > 0.1

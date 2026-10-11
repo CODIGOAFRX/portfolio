@@ -4,11 +4,13 @@
 //    después, así la inercia del scroll no se la salta.
 //  - Proyectos: zoom a la última «o» de «portfolio»; su interior se abre y se entra en los
 //    proyectos. Al subir se sale de la «o».
+//  - Tecnologías: amanece en el globo de la página y cada categoría es una órbita.
 // Sin JS o con movimiento reducido todo queda como una página normal.
 (() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+    const mix = (a, b, t) => a + (b - a) * t;
     const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
 
     // ---------- Trayectoria ----------
@@ -114,8 +116,8 @@
             stack.push(i - 1, i + 1, i - W, i + W);
         }
         if (fx1 - fx0 < 6 || fy1 - fy0 < 6) return null;
-        // Erosión cuadrada separable: ~2 px de margen respecto al trazo
-        const er = Math.round(2 * R);
+        // Erosión cuadrada separable: ~1,5 px de margen respecto al trazo
+        const er = Math.round(1.5 * R);
         const tmp = new Uint8Array(W * H), out = new Uint8Array(W * H);
         for (let y = fy0; y <= fy1; y++) for (let x = fx0; x <= fx1; x++) {
             let ok = 1;
@@ -127,30 +129,29 @@
             for (let d = -er; d <= er && ok; d++) ok = tmp[(y + d) * W + x];
             out[y * W + x] = ok;
         }
-        const margin = 2 * R;
-        const mw = fx1 - fx0 + 1 + margin * 2, mh = fy1 - fy0 + 1 + margin * 2;
-        const shape = document.createElement('canvas');
-        shape.width = mw; shape.height = mh;
-        const sg = shape.getContext('2d');
-        const img = sg.createImageData(mw, mh);
-        for (let y = fy0; y <= fy1; y++) for (let x = fx0; x <= fx1; x++) {
-            if (!out[y * W + x]) continue;
-            const j = ((y - fy0 + margin) * mw + (x - fx0 + margin)) * 4;
-            img.data[j + 3] = 255;
+        // Contorno de la contraforma (encogida) visto desde su centro en 256 direcciones:
+        // un trazado vectorial que sigue liso a cualquier escala
+        const cx0 = (fx0 + fx1) / 2, cy0 = (fy0 + fy1) / 2;
+        const radii = [];
+        for (let a = 0; a < 256; a++) {
+            const ang = (a / 256) * Math.PI * 2, dx = Math.cos(ang), dy = Math.sin(ang);
+            let r = 0;
+            while (r < W && out[Math.round(cy0 + dy * (r + 0.5)) * W + Math.round(cx0 + dx * (r + 0.5))]) r += 0.5;
+            radii.push(r);
         }
-        sg.putImageData(img, 0, 0);
-        const soft = document.createElement('canvas');
-        soft.width = mw; soft.height = mh;
-        const so = soft.getContext('2d');
-        so.filter = `blur(${0.6 * R}px)`;
-        so.drawImage(shape, 0, 0);
+        // Media circular del radio: quita los escalones de la rejilla, que ampliados 100x se
+        // verían como dientes (el margen de la erosión absorbe la diferencia)
+        const outline = radii.map((_, a) => {
+            let sum = 0;
+            for (let d = -6; d <= 6; d++) sum += radii[(a + d + 256) % 256];
+            const r = sum / 13, ang = (a / 256) * Math.PI * 2;
+            return [(Math.cos(ang) * r) / R, (Math.sin(ang) * r) / R];
+        });
         return {
-            img: soft,
-            // en px CSS, respecto al origen de la letra sobre la línea base
-            left: (fx0 - margin) / R - pad,
-            top: (fy0 - margin) / R - base,
-            width: mw / R,
-            height: mh / R,
+            outline, // en px CSS, respecto al centro
+            // centro en px CSS, respecto al origen de la letra sobre la línea base
+            cx: cx0 / R - pad,
+            cy: cy0 / R - base,
             innerW: (fx1 - fx0) / R,
             innerH: (fy1 - fy0) / R,
         };
@@ -261,7 +262,7 @@
                 ...shape,
                 groups, vw, vh, dpr,
                 bg: getComputedStyle(section).backgroundColor,
-                cx: o.x + shape.left + shape.width / 2, cy: o.y + shape.top + shape.height / 2,
+                cx: o.x + shape.cx, cy: o.y + shape.cy,
                 // escala a la que el hueco de la «o» cubre toda la pantalla
                 sMax: 1.3 * Math.hypot(vw / shape.innerW, vh / shape.innerH),
             };
@@ -296,9 +297,20 @@
             // El interior de la «o» se abre como un iris cuando la letra ya ocupa media pantalla
             const k = smooth(0.36, 0.6, p);
             if (k > 0.001) {
-                const w = geo.width * k, h = geo.height * k;
+                // Trazado suave por los puntos medios del contorno
+                const pts = geo.outline;
+                const at = n => pts[(n + pts.length) % pts.length];
+                const mid = n => [geo.cx + (at(n)[0] + at(n + 1)[0]) / 2 * k, geo.cy + (at(n)[1] + at(n + 1)[1]) / 2 * k];
                 ctx.globalCompositeOperation = 'destination-out';
-                ctx.drawImage(geo.img, geo.cx - w / 2, geo.cy - h / 2, w, h);
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.moveTo(...mid(-1));
+                for (let n = 0; n < pts.length; n++) {
+                    const [mx, my] = mid(n);
+                    ctx.quadraticCurveTo(geo.cx + at(n)[0] * k, geo.cy + at(n)[1] * k, mx, my);
+                }
+                ctx.closePath();
+                ctx.fill();
             }
             cases.style.transform = p > 0 && p < 1 ? `scale(${(1 + 0.16 * (1 - smooth(0.3, 0.95, p))).toFixed(4)})` : '';
             section.classList.toggle('portal-done', p >= 0.9);
@@ -309,9 +321,271 @@
             const r = scene.getBoundingClientRect();
             const target = clamp(-r.top / spacer.offsetHeight);
             current = current < 0 ? target : current + (target - current) * 0.25;
-            if (Math.abs(target - current) < 0.0005) current = target;
+            // Fuera del tramo fijo no se arrastra el suavizado: la escena ya se mueve con la página
+            if (Math.abs(target - current) < 0.0005 || target <= 0 || target >= 1) current = target;
             if (current !== drawnAt) { draw(current); drawnAt = current; }
             return current !== target;
+        };
+
+        measure();
+        return { measure, update };
+    }
+
+    // ---------- Tecnologías: amanecer sobre el globo y órbitas ----------
+    // Toma prestado el globo de fondo de la página (script.js) en el punto exacto en el que
+    // está, lo trae al centro, amanece en él como las fases de la luna y su luz tiñe la
+    // pantalla de blanco. Después cada categoría es una órbita con sus tecnologías como
+    // satélites, y el scroll las activa una a una. Al final devuelve el globo a su sitio.
+    function orbitScene(section) {
+        const G = window.WireGlobe;
+        const shell = document.querySelector('.page-globe');
+        const stage = section.querySelector('.orbit-stage');
+        const panel = stage && stage.querySelector('.content-wrapper');
+        const rows = [...section.querySelectorAll('.tech-blueprint-row')];
+        if (!G || !shell || !stage || !panel || rows.length < 2) return null;
+
+        // Tecnologías de cada categoría, tal y como están en la lista (sin la frase tras el <br>)
+        const cats = rows.map(row => {
+            const data = row.querySelector('.tech-blueprint-data');
+            const tmp = document.createElement('span');
+            tmp.innerHTML = data ? data.innerHTML.split(/<br\s*\/?>/i)[0] : '';
+            return { row, techs: tmp.textContent.split('·').map(t => t.replace(/\s+/g, ' ').trim()).filter(Boolean) };
+        });
+        const N = cats.length;
+        // Órbitas: radio (en radios del globo), inclinación y nodo en grados, sentido de giro
+        const INCL = [68, 16, 52, 30, 78, 22, 60];
+        const NODE = [12, 140, 255, 62, 200, 320, 108];
+        const orbits = cats.map((cat, k) => ({
+            rho: 1.34 + k * 0.125,
+            incl: INCL[k % INCL.length] * Math.PI / 180,
+            node: NODE[k % NODE.length] * Math.PI / 180,
+            dir: k % 2 ? -1 : 1,
+            phase: k * 0.9,
+            techs: cat.techs,
+        }));
+
+        section.classList.add('orbit-on');
+        const canvas = document.createElement('canvas');
+        canvas.className = 'orbit-canvas';
+        canvas.setAttribute('aria-hidden', 'true');
+        stage.insertBefore(canvas, panel);
+        const ctx = canvas.getContext('2d');
+        // El globo se pinta aparte y se compone con su opacidad, igual que el globo de fondo
+        const layer = document.createElement('canvas');
+        const lctx = layer.getContext('2d');
+
+        let vw = 0, vh = 0, dpr = 1;
+        let current = -1;
+        let active = -1;
+        let edge = '';
+        const start = performance.now();
+
+        const measure = () => {
+            vw = stage.clientWidth;
+            vh = stage.clientHeight;
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = layer.width = Math.round(vw * dpr);
+            canvas.height = layer.height = Math.round(vh * dpr);
+            current = -1;
+            edge = '';
+        };
+
+        // Punto de una órbita: círculo inclinado alrededor del globo, visto con la misma
+        // inclinación de cámara que el globo. z > 0 queda delante del globo.
+        const orbitPoint = (o, theta, cx, cy, R) => {
+            const x = o.rho * Math.cos(theta), z = o.rho * Math.sin(theta);
+            const y1 = -z * Math.sin(o.incl), z1 = z * Math.cos(o.incl);
+            const x2 = x * Math.cos(o.node) + z1 * Math.sin(o.node);
+            const z2 = -x * Math.sin(o.node) + z1 * Math.cos(o.node);
+            const ty = y1 * Math.cos(G.tilt) - z2 * Math.sin(G.tilt);
+            const tz = y1 * Math.sin(G.tilt) + z2 * Math.cos(G.tilt);
+            return { x: cx + x2 * R, y: cy - ty * R, z: tz };
+        };
+
+        // Parte iluminada del disco, como las fases de la luna: f = 0 nueva, 1 llena
+        const litPath = (c, x, y, r, f) => {
+            c.beginPath();
+            if (f >= 0.999) { c.arc(x, y, r, 0, Math.PI * 2); return; }
+            c.moveTo(x, y - r);
+            c.arc(x, y, r, -Math.PI / 2, Math.PI / 2, false);
+            c.ellipse(x, y, Math.max(r * Math.abs(Math.cos(Math.PI * f)), 0.01), r, 0, Math.PI / 2, -Math.PI / 2, f < 0.5);
+            c.closePath();
+        };
+
+        const fill = color => {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.fillStyle = color;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        };
+
+        const draw = p => {
+            const l = G.live;
+            if (!l || !l.size) return;
+            const mobile = vw <= 768;
+            // El globo tal y como está en el fondo de la página, y su sitio en la escena
+            const live = { x: l.x, y: l.y, r: 0.445 * l.size * l.scale, line: l.scale, opacity: l.opacity };
+            const R = mobile ? Math.min(vw * 0.2, vh * 0.12) : Math.min(vh * 0.2, vw * 0.13);
+            const home = { x: vw * (mobile ? 0.5 : 0.68), y: vh * (mobile ? 0.3 : 0.5), r: R };
+
+            const enter = smooth(0, 0.07, p);
+            // La salida termina antes del final del tramo fijo: al soltarse ya no queda nada por hacer
+            const exit = smooth(0.9, 0.98, p);
+            const lit = smooth(0.065, 0.135, p);
+            const flood = smooth(0.115, 0.2, p);
+            const k = enter * (1 - exit);
+            const gx = mix(live.x, home.x, k), gy = mix(live.y, home.y, k), gr = mix(live.r, home.r, k);
+            const line = mix(live.line, 1, k);
+            const opacity = mix(live.opacity, 1, k);
+            const rotation = l.rotation + Math.sin(Math.PI * p) * 0.9;
+
+            // Fondo: noche y la luz del globo derramándose hasta cubrir la pantalla
+            fill('#111111');
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            if (lit > 0 && flood < 1) {
+                const halo = ctx.createRadialGradient(gx, gy, gr * 0.9, gx, gy, gr * 2.4);
+                halo.addColorStop(0, `rgba(255, 255, 255, ${0.22 * lit})`);
+                halo.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                ctx.fillStyle = halo;
+                ctx.fillRect(0, 0, vw, vh);
+            }
+            if (flood > 0) {
+                const far = Math.hypot(Math.max(gx, vw - gx), Math.max(gy, vh - gy));
+                const inner = gr + (far * 1.05 - gr) * flood;
+                const feather = gr * 1.6 * (1 - flood) + 1;
+                const light = ctx.createRadialGradient(gx, gy, 0, gx, gy, inner + feather);
+                light.addColorStop(0, '#ffffff');
+                light.addColorStop(inner / (inner + feather), '#ffffff');
+                light.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                ctx.fillStyle = light;
+                ctx.fillRect(0, 0, vw, vh);
+            }
+
+            // Órbitas: se trazan tras el amanecer y se activan una por categoría
+            const orbitsIn = smooth(0.15, 0.26, p) * (1 - exit);
+            const cp = (p - 0.21) / 0.64 * N;
+            const finale = smooth(0.85, 0.89, p);
+            const spin = p * Math.PI * 1.2 + (performance.now() - start) / 1000 * 0.05;
+            const segs = 120;
+            const strokes = [];
+            orbits.forEach((o, i) => {
+                const drawn = smooth(i / N * 0.5, i / N * 0.5 + 0.5, orbitsIn);
+                if (drawn <= 0) return;
+                const emph = Math.max(smooth(i - 0.12, i + 0.12, cp) * (1 - smooth(i + 0.88, i + 1.12, cp)), 0.55 * finale);
+                const pts = [];
+                const n = Math.max(2, Math.round(segs * drawn));
+                for (let s = 0; s <= n; s++) pts.push(orbitPoint(o, o.phase + (s / segs) * Math.PI * 2, gx, gy, gr));
+                strokes.push({ o, pts, emph, drawn });
+            });
+            const strokeOrbits = front => {
+                for (const { pts, emph, drawn } of strokes) {
+                    ctx.lineWidth = 1 + 0.6 * emph;
+                    for (let s = 1; s < pts.length; s++) {
+                        const a = pts[s - 1], b = pts[s];
+                        if ((a.z + b.z >= 0) !== front) continue;
+                        const alpha = (0.14 + 0.76 * emph) * (front ? 1 : 0.45) * Math.min(1, drawn * 1.5);
+                        ctx.strokeStyle = `rgba(17, 17, 17, ${alpha.toFixed(3)})`;
+                        ctx.beginPath();
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.stroke();
+                    }
+                }
+            };
+            strokeOrbits(false);
+
+            // Globo: cara nocturna con las líneas claras y cara de día con las oscuras
+            lctx.setTransform(1, 0, 0, 1, 0, 0);
+            lctx.clearRect(0, 0, layer.width, layer.height);
+            lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            const opts = { centerX: gx, centerY: gy, radius: gr, rotation, lineScale: line };
+            if (lit < 1) G.draw(lctx, { ...opts, theme: 1 });
+            if (lit > 0) {
+                lctx.save();
+                litPath(lctx, gx, gy, gr, lit);
+                lctx.clip();
+                lctx.fillStyle = `rgba(255, 255, 255, ${1 - exit})`;
+                lctx.fillRect(gx - gr - 2, gy - gr - 2, gr * 2 + 4, gr * 2 + 4);
+                G.draw(lctx, { ...opts, theme: mix(0, l.theme, exit) });
+                lctx.restore();
+            }
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.globalAlpha = opacity;
+            ctx.drawImage(layer, 0, 0);
+            ctx.globalAlpha = 1;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            strokeOrbits(true);
+
+            // Satélites: las tecnologías de cada órbita; la activa lleva sus nombres
+            const fontSize = mobile ? 10.5 : 12;
+            ctx.font = `${fontSize}px "Courier New", Courier, monospace`;
+            ctx.textBaseline = 'middle';
+            for (const { o, emph, drawn } of strokes) {
+                const count = o.techs.length;
+                o.techs.forEach((tech, j) => {
+                    const theta = o.phase + o.dir * spin + (j / count) * Math.PI * 2;
+                    const around = (((theta - o.phase) % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+                    if (around > drawn * Math.PI * 2) return; // la órbita aún no ha llegado ahí
+                    const pt = orbitPoint(o, theta, gx, gy, gr);
+                    // Detrás del globo y dentro de su disco: tapado por la esfera
+                    if (pt.z < 0 && Math.hypot(pt.x - gx, pt.y - gy) < gr * 1.02) return;
+                    const depth = pt.z >= 0 ? 1 : 0.4;
+                    const lead = j === 0 && emph > 0.5;
+                    const alpha = (0.25 + 0.75 * emph) * depth * Math.min(1, drawn * 1.5);
+                    ctx.fillStyle = lead ? `rgba(229, 50, 45, ${alpha.toFixed(3)})` : `rgba(17, 17, 17, ${alpha.toFixed(3)})`;
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, 1.8 + 1.6 * emph, 0, Math.PI * 2);
+                    ctx.fill();
+                    const labelAlpha = emph * (1 - finale) * depth;
+                    if (labelAlpha > 0.02) {
+                        const dx = pt.x - gx, dy = pt.y - gy, d = Math.hypot(dx, dy) || 1;
+                        // Hacia fuera del globo; si no cabe en pantalla, al otro lado del satélite
+                        const width = ctx.measureText(tech).width;
+                        let right = dx >= 0;
+                        if (right && pt.x + 13 + width > vw - 6) right = false;
+                        else if (!right && pt.x - 13 - width < 6) right = true;
+                        ctx.textAlign = right ? 'left' : 'right';
+                        ctx.fillStyle = `rgba(17, 17, 17, ${labelAlpha.toFixed(3)})`;
+                        ctx.fillText(tech, pt.x + (right ? 9 : -9), pt.y + (dy / d) * 6);
+                    }
+                });
+            }
+
+            // Panel de la izquierda: la categoría activa se despliega
+            stage.style.setProperty('--orbit-panel', (smooth(0.18, 0.23, p) * (1 - smooth(0.88, 0.92, p))).toFixed(3));
+            const idx = clamp(Math.floor(cp), 0, N - 1);
+            if (idx !== active) {
+                active = idx;
+                cats.forEach((cat, i) => cat.row.classList.toggle('is-active', i === idx));
+            }
+        };
+
+        const update = () => {
+            const r = section.getBoundingClientRect();
+            const target = clamp(-r.top / Math.max(1, r.height - vh));
+            current = current < 0 ? target : current + (target - current) * 0.2;
+            // Fuera del tramo fijo el escenario ya se mueve con la página: si el globo siguiera
+            // dibujándose en él subiría con la sección y luego saltaría a su sitio. Se devuelve ya.
+            if (Math.abs(target - current) < 0.0005 || target <= 0 || target >= 1) current = target;
+            const inside = current > 0 && current < 1;
+            shell.classList.toggle('is-borrowed', inside);
+            // Mientras dura la noche el globo de fondo debe seguir en su tema oscuro (script.js)
+            section.dataset.night = current < 0.12 ? '1' : '';
+            if (inside) {
+                draw(current);
+                edge = '';
+            } else if (current >= 1 && edge !== 'end') {
+                // Ya de día: el globo vuelve a ser el de fondo
+                fill('#ffffff');
+                stage.style.setProperty('--orbit-panel', '0');
+                edge = 'end';
+            } else if (current <= 0 && edge !== 'start') {
+                fill('#111111');
+                stage.style.setProperty('--orbit-panel', '0');
+                edge = 'start';
+            }
+            // Mientras está fijada se redibuja siempre: el globo sigue girando solo
+            return inside || current !== target;
         };
 
         measure();
@@ -322,7 +596,9 @@
     const scenes = [];
     const timeline = document.getElementById('timeline');
     const production = document.getElementById('production');
-    [timeline && timelineScene(timeline), production && portalScene(production)].forEach(s => s && scenes.push(s));
+    const stack = document.getElementById('stack');
+    [timeline && timelineScene(timeline), production && portalScene(production), stack && orbitScene(stack)]
+        .forEach(s => s && scenes.push(s));
     if (!scenes.length) return;
 
     let frame = 0;
