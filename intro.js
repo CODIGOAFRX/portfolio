@@ -25,7 +25,7 @@
     const spring = (tau, omega) => (tau <= 0 ? 0 : 1 - (1 + omega * tau) * Math.exp(-omega * tau));
 
     // Tramo de la previsualización que controla el scroll: del nombre al globo formado
-    const T0 = 0.3, T1 = 5.6;
+    const T0 = 0.5, T1 = 5.6;
     const GUIDE_NAMES = ['ASCENDENTE', 'MAYÚSCULAS', 'ALTURA X', 'LÍNEA BASE'];
     const LONS = [-150, -120, -90, -60, -30, 0].map(d => d * Math.PI / 180);
 
@@ -257,9 +257,10 @@
 
     // El scroll mide el nombre y dibuja los círculos de construcción (hasta TRIGGER). Al llegar
     // ahí, la formación del globo se reproduce sola a ritmo fijo (RATE segundos de la
-    // previsualización por segundo real); al volver arriba se deshace igual. Tras el disparo
-    // queda un tramo fijo corto.
-    const TRIGGER = 0.82, T_SPLIT = 3.0, RATE = 0.75, REWIND = 1.3, HURRY = 3;
+    // previsualización por segundo real); al volver arriba se deshace igual. El disparo está al
+    // final del tramo fijo: si se sigue bajando, la página avanza en el acto y la formación
+    // termina sola (más deprisa) mientras tanto.
+    const TRIGGER = 0.985, T_SPLIT = 3.0, RATE = 0.75, REWIND = 1.3, HURRY = 3;
     const TEXT_AT = 3.75; // el nombre ya está casi en su sitio de cabecera
     const scrollTime = p => mix(T0, T_SPLIT, clamp(p / TRIGGER));
     let t = -1, last = 0;
