@@ -233,6 +233,7 @@
     // previsualización por segundo real); al volver arriba se deshace igual. En el resto del
     // recorrido la cabecera sigue fija con todo el texto a la vista.
     const TRIGGER = 0.45, T_SPLIT = 3.0, RATE = 0.75, REWIND = 1.3;
+    const TEXT_AT = 3.75; // el nombre ya está casi en su sitio de cabecera
     const scrollTime = p => mix(T0, T_SPLIT, clamp(p / TRIGGER));
     let t = -1, last = 0;
     function update(now = performance.now()) {
@@ -241,6 +242,8 @@
         last = now;
         const p = progress();
         const gone = hero.getBoundingClientRect().bottom <= 0;
+        // El indicador de scroll se recoge en cuanto se empieza a bajar
+        hero.classList.toggle('cue-hidden', p > 0.004);
         let animating = false;
         if (t < 0) {
             // Al cargar a media página se coloca directamente en su sitio
@@ -274,9 +277,10 @@
             seek(t);
             current = t;
         }
-        // Con el globo formado entra el resto de la cabecera (y se recoge al volver arriba)
-        if (!done && finished) { done = true; hero.classList.add('intro-done'); }
-        else if (done && t < T1 - 0.4) { done = false; hero.classList.remove('intro-done'); }
+        // El resto de la cabecera entra en cuanto el nombre se ha encogido y ya cabe debajo,
+        // mientras los círculos viajan: texto y globo terminan casi a la vez (se recoge al volver)
+        if (!done && t >= TEXT_AT) { done = true; hero.classList.add('intro-done'); }
+        else if (done && t < TEXT_AT - 0.2) { done = false; hero.classList.remove('intro-done'); }
         // Mientras la escena está en curso se redibuja siempre: el globo gira solo
         if ((!finished || animating) && !gone) frame = requestAnimationFrame(update);
         else last = 0;

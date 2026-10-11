@@ -2397,6 +2397,12 @@ html.has-intro .hero-content > :not(.name):not(.hero-links) {
     transform: translateY(1.1rem);
 }
 
+/* Al volver arriba se recoge rápido, antes de que el nombre vuelva a crecer */
+html.has-intro .hero:not(.intro-done) .hero-content > :not(.name):not(.hero-links),
+html.has-intro .hero:not(.intro-done) .hero-links a {
+    transition-duration: 0.3s;
+}
+
 html.has-intro .hero-links a {
     clip-path: inset(-20% 100% -60% 0);
 }
@@ -2426,4 +2432,72 @@ html.has-intro .hero.intro-done .hero-links a:nth-child(5) { transition-delay: 0
     html.has-intro .hero-stage {
         min-height: 780px;
     }
+}
+
+/* Indicador de scroll de la intro: una palabra espaciada y una guía vertical por la que baja
+   un trazo, el mismo lenguaje que las líneas que miden el nombre. Sólo existe con la intro. */
+.scroll-cue {
+    display: none;
+}
+
+html.has-intro .scroll-cue {
+    position: absolute;
+    left: 50%;
+    bottom: calc(4.5vh + env(safe-area-inset-bottom));
+    /* El escenario mide 100lvh: se deja libre lo que tapan las barras del navegador en iOS */
+    bottom: calc(100lvh - 100svh + 4.5svh + env(safe-area-inset-bottom));
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+    transform: translateX(-50%);
+    color: var(--text-secondary);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    pointer-events: none;
+    transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: cue-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.6s backwards;
+}
+
+/* La palabra queda centrada a pesar del espaciado de la última letra */
+.scroll-cue span {
+    margin-right: -0.24em;
+}
+
+.scroll-cue i {
+    position: relative;
+    width: 1px;
+    height: 3.5rem;
+    overflow: hidden;
+    background: rgba(17, 17, 17, 0.14);
+}
+
+.scroll-cue i::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 45%;
+    background: var(--text-primary);
+    transform: translateY(-100%);
+    animation: cue-line 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+html.has-intro .hero.cue-hidden .scroll-cue {
+    opacity: 0;
+    transform: translate(-50%, 0.75rem);
+}
+
+@keyframes cue-in {
+    from { opacity: 0; transform: translate(-50%, 0.75rem); }
+    to { opacity: 1; transform: translateX(-50%); }
+}
+
+@keyframes cue-line {
+    0% { transform: translateY(-100%); }
+    60%, 100% { transform: translateY(225%); }
 }
