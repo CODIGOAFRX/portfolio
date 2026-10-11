@@ -132,6 +132,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Mark the section currently in view in the navigation (aria-current).
+    const navLinks = [...document.querySelectorAll('.nav-links a[href^="#"]')];
+    const navTargets = navLinks
+        .map(link => [link, document.querySelector(link.getAttribute('href'))])
+        .filter(([, section]) => section);
+    if (navTargets.length && 'IntersectionObserver' in window) {
+        // The current section is the one crossing the middle line of the viewport
+        const spy = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                navTargets.forEach(([link, section]) => {
+                    if (section === entry.target) link.setAttribute('aria-current', 'true');
+                    else link.removeAttribute('aria-current');
+                });
+            });
+        }, { rootMargin: '-50% 0px -50% 0px' });
+        navTargets.forEach(([, section]) => spy.observe(section));
+    }
+
     // Handle Navbar hide/show on scroll
     let lastScrollTop = 0;
     const navbar = document.querySelector('.navbar');

@@ -12,3 +12,4 @@ proyecto/scorm-pdf/source/
 *.log
 proyecto/orbis-2/source/
 transicion-galaxia/
+.claude/

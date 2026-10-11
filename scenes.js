@@ -365,6 +365,59 @@
         }));
 
         section.classList.add('orbit-on');
+
+        // Controles: que se entienda que esto avanza con el scroll y que se pueda saltar de una
+        // categoría a otra con botones o pulsando la propia categoría
+        const goTo = i => {
+            const r = section.getBoundingClientRect();
+            const p = 0.21 + ((clamp(i, 0, N - 1) + 0.5) / N) * 0.64;
+            window.scrollTo({ top: window.scrollY + r.top + p * (r.height - vh), behavior: 'smooth' });
+        };
+        const label = panel.querySelector('.section-label');
+        const head = document.createElement('div');
+        head.className = 'orbit-head';
+        label.replaceWith(head);
+        const nav = document.createElement('div');
+        nav.className = 'orbit-nav';
+        const button = (text, aria, onClick) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'orbit-btn';
+            b.textContent = text;
+            b.setAttribute('aria-label', aria);
+            b.addEventListener('click', onClick);
+            return b;
+        };
+        const prev = button('↑', 'Categoría anterior', () => goTo(active - 1));
+        const next = button('↓', 'Categoría siguiente', () => goTo(active + 1));
+        const count = document.createElement('span');
+        count.className = 'orbit-count';
+        count.setAttribute('aria-live', 'polite');
+        nav.append(count, prev, next);
+        head.append(label, nav);
+        const progress = document.createElement('div');
+        progress.className = 'orbit-progress';
+        progress.setAttribute('aria-hidden', 'true');
+        const ticks = cats.map(() => progress.appendChild(document.createElement('i')));
+        const hint = document.createElement('p');
+        hint.className = 'orbit-hint';
+        hint.textContent = 'Desliza o elige una categoría';
+        const foot = document.createElement('div');
+        foot.className = 'orbit-foot';
+        foot.append(progress, hint);
+        panel.querySelector('.tech-grid-blueprint').after(foot);
+        cats.forEach((cat, i) => {
+            const old = cat.row.querySelector('.tech-blueprint-label');
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = old.className;
+            b.textContent = old.textContent;
+            b.setAttribute('aria-expanded', 'false');
+            b.addEventListener('click', () => goTo(i));
+            old.replaceWith(b);
+            cat.button = b;
+        });
+
         const canvas = document.createElement('canvas');
         canvas.className = 'orbit-canvas';
         canvas.setAttribute('aria-hidden', 'true');
@@ -552,11 +605,21 @@
             }
 
             // Panel de la izquierda: la categoría activa se despliega
-            stage.style.setProperty('--orbit-panel', (smooth(0.18, 0.23, p) * (1 - smooth(0.88, 0.92, p))).toFixed(3));
+            const panelIn = smooth(0.18, 0.23, p) * (1 - smooth(0.88, 0.92, p));
+            stage.style.setProperty('--orbit-panel', panelIn.toFixed(3));
+            // Sólo se puede pulsar cuando el panel se ve
+            section.classList.toggle('orbit-interactive', panelIn > 0.6);
             const idx = clamp(Math.floor(cp), 0, N - 1);
             if (idx !== active) {
                 active = idx;
-                cats.forEach((cat, i) => cat.row.classList.toggle('is-active', i === idx));
+                cats.forEach((cat, i) => {
+                    cat.row.classList.toggle('is-active', i === idx);
+                    cat.button.setAttribute('aria-expanded', String(i === idx));
+                });
+                ticks.forEach((tick, i) => tick.classList.toggle('is-on', i <= idx));
+                count.textContent = `${String(idx + 1).padStart(2, '0')} / ${String(N).padStart(2, '0')}`;
+                prev.disabled = idx === 0;
+                next.disabled = idx === N - 1;
             }
         };
 
@@ -578,10 +641,12 @@
                 // Ya de día: el globo vuelve a ser el de fondo
                 fill('#ffffff');
                 stage.style.setProperty('--orbit-panel', '0');
+                section.classList.remove('orbit-interactive');
                 edge = 'end';
             } else if (current <= 0 && edge !== 'start') {
                 fill('#111111');
                 stage.style.setProperty('--orbit-panel', '0');
+                section.classList.remove('orbit-interactive');
                 edge = 'start';
             }
             // Mientras está fijada se redibuja siempre: el globo sigue girando solo
