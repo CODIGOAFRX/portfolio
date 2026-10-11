@@ -11,3 +11,6 @@ test-results/
 playwright-report/
 worker/backups/
 transicion-galaxia/frames/
+transicion-intro/frames/
+transicion-intro/*.mp4
+transicion-intro/*.wav

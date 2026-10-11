@@ -2,7 +2,7 @@
 // technology scene in scenes.js. WireGlobe.live mirrors the background globe's current
 // on-screen state so the scene can take it over and hand it back without a jump.
 window.WireGlobe = (() => {
-    const tilt = -0.16;
+    const TILT = -0.16;
     const mix = (start, end, progress) => start + (end - start) * progress;
     const colorMix = (light, dark, progress, alpha = 1) => {
         const channels = light.map((channel, index) => Math.round(mix(channel, dark[index], progress)));
@@ -19,8 +19,14 @@ window.WireGlobe = (() => {
 
     // theme: 0 = dark lines for light backgrounds, 1 = light lines for dark backgrounds.
     // lineScale keeps strokes consistent with a canvas that is scaled with CSS.
-    // fill: false skips the translucent disc fill.
-    const draw = (context, { centerX, centerY, radius, rotation, theme, lineScale = 1, fill = true }) => {
+    // fill: false skips the translucent disc fill, or 0-1 to fade it.
+    // build: optional 0-1 progress per layer ({ parallels, meridians, land, outline }) so the
+    // intro (intro.js) can draw the globe while it forms; omitted means fully drawn.
+    const draw = (context, { centerX, centerY, radius, rotation, theme, lineScale = 1, fill = true, tilt = TILT, build = null }) => {
+        const amount = key => (build && build[key] !== undefined ? build[key] : 1);
+        // Staggered start per line so each layer draws in sequence
+        const stagger = (progress, index, count, spread = 0.5) =>
+            Math.min(1, Math.max(0, (progress - (index / count) * spread) / (1 - spread)));
         const projectPoint = (longitude, latitude) => {
             const lon = longitude * Math.PI / 180 + rotation;
             const lat = latitude * Math.PI / 180;
@@ -37,10 +43,16 @@ window.WireGlobe = (() => {
             };
         };
 
-        const drawCurve = (points, frontColor, backColor, lineWidth) => {
-            for (let index = 1; index < points.length; index += 1) {
+        const drawCurve = (points, frontColor, backColor, lineWidth, progress = 1) => {
+            if (progress <= 0) return;
+            const upto = progress * (points.length - 1);
+            for (let index = 1; index < points.length && index - 1 < upto; index += 1) {
                 const start = projectPoint(points[index - 1][0], points[index - 1][1]);
-                const end = projectPoint(points[index][0], points[index][1]);
+                let end = projectPoint(points[index][0], points[index][1]);
+                const part = Math.min(1, upto - (index - 1));
+                if (part < 1) {
+                    end = { x: mix(start.x, end.x, part), y: mix(start.y, end.y, part), z: mix(start.z, end.z, part) };
+                }
 
                 context.beginPath();
                 context.moveTo(start.x, start.y);
@@ -60,38 +72,43 @@ window.WireGlobe = (() => {
         if (fill) {
             context.beginPath();
             context.arc(centerX, centerY, radius, 0, Math.PI * 2);
-            context.fillStyle = colorMix([249, 249, 249], [17, 17, 17], theme, fillAlpha);
+            context.fillStyle = colorMix([249, 249, 249], [17, 17, 17], theme, fillAlpha * (fill === true ? 1 : fill));
             context.fill();
         }
 
-        for (let latitude = -60; latitude <= 60; latitude += 30) {
+        for (let row = 0; row < 5; row += 1) {
+            const latitude = -60 + row * 30;
             const latitudeLine = [];
             for (let longitude = -180; longitude <= 180; longitude += 4) {
                 latitudeLine.push([longitude, latitude]);
             }
-            drawCurve(latitudeLine, gridFront, gridBack, 0.7);
+            drawCurve(latitudeLine, gridFront, gridBack, 0.7, stagger(amount('parallels'), row, 5));
         }
 
-        for (let longitude = -150; longitude <= 180; longitude += 30) {
+        for (let column = 0; column < 12; column += 1) {
+            const longitude = -150 + column * 30;
             const longitudeLine = [];
             for (let latitude = -90; latitude <= 90; latitude += 3) {
                 longitudeLine.push([longitude, latitude]);
             }
-            drawCurve(longitudeLine, gridFront, gridBack, 0.7);
+            drawCurve(longitudeLine, gridFront, gridBack, 0.7, stagger(amount('meridians'), column, 12));
         }
 
-        continents.forEach(continent => {
-            drawCurve(continent, landFront, landBack, 1.45);
+        continents.forEach((continent, index) => {
+            drawCurve(continent, landFront, landBack, 1.45, stagger(amount('land'), index, continents.length, 0.45));
         });
 
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, Math.PI * 2);
-        context.strokeStyle = landFront;
-        context.lineWidth = 1.5 * lineScale;
-        context.stroke();
+        const outline = amount('outline');
+        if (outline > 0) {
+            context.beginPath();
+            context.arc(centerX, centerY, radius, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * outline);
+            context.strokeStyle = landFront;
+            context.lineWidth = 1.5 * lineScale;
+            context.stroke();
+        }
     };
 
-    return { draw, tilt, live: null };
+    return { draw, tilt: TILT, live: null, colors: { gridFront: [184, 227], landFront: 17 } };
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -139,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .filter(([, section]) => section);
     if (navTargets.length && 'IntersectionObserver' in window) {
         // The current section is the one crossing the middle line of the viewport
+        // In the hero (not in the navigation) nothing is marked
         const spy = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting) return;
@@ -149,6 +167,20 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }, { rootMargin: '-50% 0px -50% 0px' });
         navTargets.forEach(([, section]) => spy.observe(section));
+        const heroForSpy = document.getElementById('hero');
+        if (heroForSpy) spy.observe(heroForSpy);
+    }
+
+    // The logo reads «Desarrollador.» while the big hero name is on screen and switches to
+    // «Pedro Gómez.» once it has left, so the name is never shown twice at once.
+    const logo = document.querySelector('.navbar .logo');
+    const heroName = document.querySelector('.hero .name');
+    if (logo && heroName && 'IntersectionObserver' in window) {
+        new IntersectionObserver(([entry]) => {
+            logo.classList.toggle('show-name', !entry.isIntersecting);
+        }, { rootMargin: '-80px 0px 0px 0px' }).observe(heroName);
+    } else if (logo) {
+        logo.classList.add('show-name');
     }
 
     // Handle Navbar hide/show on scroll
@@ -329,6 +361,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectsSection = document.getElementById('projects');
     const contactSection = document.getElementById('contact');
     const stackSection = document.getElementById('stack');
+    const heroSection = document.getElementById('hero');
+    // Scroll counted from the end of the intro: while the hero is pinned (intro.js), the
+    // background globe stays in its hero position.
+    const pageScroll = () => {
+        const intro = heroSection && heroSection.classList.contains('intro-on')
+            ? Math.max(0, heroSection.offsetHeight - window.innerHeight)
+            : 0;
+        return Math.max(0, window.scrollY - intro);
+    };
 
     if (globeShell && globeCanvas && projectsSection && contactSection) {
         const context = globeCanvas.getContext('2d');
@@ -392,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 : compact
                     ? Math.min(430, viewportWidth * 0.42)
                     : Math.min(520, viewportWidth * 0.32);
-            const growProgress = smoothstep(clamp(window.scrollY / Math.max(viewportHeight * 0.95, 1), 0, 1));
+            const growProgress = smoothstep(clamp(pageScroll() / Math.max(viewportHeight * 0.95, 1), 0, 1));
             const projectsBounds = projectsSection.getBoundingClientRect();
             const contactBounds = contactSection.getBoundingClientRect();
             // The technology scene (scenes.js) opens on the same dark background and only
@@ -430,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
             targetOpacity = mix(targetOpacity, contactOpacity, contactProgress);
             targetTheme = overDarkSection ? 1 : 0;
             targetRotation = baseRotation
-                + (reducedMotion ? 0 : window.scrollY * (mobile ? 0.0018 : 0.0022))
+                + (reducedMotion ? 0 : pageScroll() * (mobile ? 0.0018 : 0.0022))
                 + automaticRotation;
 
             const phase = contactProgress > 0.55
@@ -463,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (automatic) {
                 automaticRotation += deltaTime * automaticRotationSpeed;
                 targetRotation = baseRotation
-                    + window.scrollY * (viewportWidth <= 768 ? 0.0018 : 0.0022)
+                    + pageScroll() * (viewportWidth <= 768 ? 0.0018 : 0.0022)
                     + automaticRotation;
             }
 

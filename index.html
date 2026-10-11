@@ -28,13 +28,18 @@
     <meta name="twitter:description"
         content="Desarrollo de principio a fin. Productos web en producción y automatización con Java, Python y TypeScript.">
     <meta name="twitter:image" content="https://www.pedrogomez.dev/og.png">
-    <link rel="stylesheet" href="styles.css?v=20261011-pulido">
+    <link rel="stylesheet" href="styles.css?v=20261011-intro6">
+    <script src="intro-boot.js?v=20261011-intro6"></script>
 </head>
 
 <body>
     <a class="skip-link" href="#about">Saltar al contenido</a>
     <nav class="navbar hidden-element" aria-label="Navegación principal">
-        <a href="#hero" class="logo">Pedro Gómez.</a>
+        <!-- Mientras el nombre grande de la cabecera está a la vista, el logo dice «Desarrollador.»;
+             al salir de pantalla pasa a «Pedro Gómez.» (script.js) para no repetir el nombre. -->
+        <a href="#hero" class="logo" aria-label="Pedro Gómez, inicio">
+            <span class="logo-roll" aria-hidden="true"><span>Desarrollador.</span><span>Pedro Gómez.</span></span>
+        </a>
         <div class="nav-links">
             <a href="#afr-mind">AFR-MIND</a>
             <a href="#about">Perfil</a>
@@ -53,23 +58,27 @@
     <main>
         <!-- Hero Section -->
         <section id="hero" class="hero">
-            <div class="hero-content">
-                <p class="intro hero-reveal">Desarrollador de software · Granada</p>
-                <h1 class="name hero-reveal">Pedro Gómez</h1>
-                <h2 class="headline hero-reveal">Desarrollo de principio a fin.<br>Productos que funcionan.</h2>
-                <p class="description hero-reveal">
-                    Diseño y desarrollo software mantenible: desde APIs y automatizaciones hasta productos web
-                    completos que ya operan en producción.
-                </p>
-                <p class="availability hero-reveal"><span aria-hidden="true"></span>Abierto a nuevas oportunidades</p>
-                <div class="hero-links hero-reveal">
-                    <a href="#afr-mind" class="text-link text-link-accent">Mi CV como red neuronal</a>
-                    <a href="https://github.com/CODIGOAFRX" target="_blank" rel="noopener noreferrer"
-                        class="text-link">GitHub</a>
-                    <a href="https://www.linkedin.com/in/pedro-jes%C3%BAs-g%C3%B3mez-p%C3%A9rez-2b5534157/"
-                        target="_blank" rel="noopener noreferrer" class="text-link">LinkedIn</a>
-                    <a href="CV_Pedro_Java.pdf" class="text-link" download="CV_Pedro_Java.pdf">CV Java</a>
-                    <a href="CV_Pedro_Python.pdf" class="text-link" download="CV_Pedro_Python.pdf">CV Python / QA</a>
+            <!-- Intro (intro.js): el nombre se mide como un espécimen tipográfico y sus letras
+                 redondas forman el globo; después entra el resto. Todo es HTML real. -->
+            <div class="hero-stage">
+                <div class="hero-content">
+                    <p class="intro hero-reveal">Desarrollador de software · Granada</p>
+                    <h1 class="name hero-reveal">Pedro Gómez</h1>
+                    <h2 class="headline hero-reveal">Desarrollo de principio a fin.<br>Productos que funcionan.</h2>
+                    <p class="description hero-reveal">
+                        Diseño y desarrollo software mantenible: desde APIs y automatizaciones hasta productos web
+                        completos que ya operan en producción.
+                    </p>
+                    <p class="availability hero-reveal"><span aria-hidden="true"></span>Abierto a nuevas oportunidades</p>
+                    <div class="hero-links hero-reveal">
+                        <a href="#afr-mind" class="text-link text-link-accent">Mi CV como red neuronal</a>
+                        <a href="https://github.com/CODIGOAFRX" target="_blank" rel="noopener noreferrer"
+                            class="text-link">GitHub</a>
+                        <a href="https://www.linkedin.com/in/pedro-jes%C3%BAs-g%C3%B3mez-p%C3%A9rez-2b5534157/"
+                            target="_blank" rel="noopener noreferrer" class="text-link">LinkedIn</a>
+                        <a href="CV_Pedro_Java.pdf" class="text-link" download="CV_Pedro_Java.pdf">CV Java</a>
+                        <a href="CV_Pedro_Python.pdf" class="text-link" download="CV_Pedro_Python.pdf">CV Python / QA</a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -449,9 +458,10 @@
         <p>&copy; 2026 Pedro Gómez.</p>
     </footer>
 
-    <script src="script.js?v=20261011-pulido"></script>
-    <script src="galaxy.js?v=20261011-pulido" defer></script>
-    <script src="scenes.js?v=20261011-pulido" defer></script>
+    <script src="script.js?v=20261011-intro6"></script>
+    <script src="galaxy.js?v=20261011-intro6" defer></script>
+    <script src="scenes.js?v=20261011-intro6" defer></script>
+    <script src="intro.js?v=20261011-intro6" defer></script>
 </body>
 
 </html>

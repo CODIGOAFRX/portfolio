@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Intro · El nombre es el plano</title>
+<style>
+  /* Referencia a 1920×1080 con las medidas reales de pedrogomez.dev a ese tamaño */
+  html, body { margin: 0; background: #ffffff; }
+  body { display: grid; place-items: center; min-height: 100vh; }
+  #stage {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden;
+    background: #ffffff; color: #111111;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  #globe { position: absolute; inset: 0; z-index: 1; }
+  /* Capa de construcción sobre el texto: por diferencia, las líneas cruzan las letras en blanco */
+  #construct { position: absolute; inset: 0; z-index: 2; pointer-events: none; mix-blend-mode: difference; }
+  #page { position: absolute; left: 0; top: 0; width: 1920px; z-index: 1; will-change: transform; }
+  #nav {
+    position: absolute; left: 0; top: 0; width: 1920px; height: 79px; z-index: 3;
+    background: #ffffff; border-bottom: 1px solid #eeeeee; box-sizing: border-box;
+  }
+  #nav .logo { position: absolute; left: 115px; top: 24px; font: 700 20px/30px Arial, Helvetica, sans-serif; letter-spacing: -0.4px; }
+  #nav .links a { position: absolute; top: 28px; font: 500 15.2px/22.8px Arial, Helvetica, sans-serif; color: #111111; text-decoration: none; }
+
+  .abs { position: absolute; }
+  .mask { display: block; overflow: hidden; padding-bottom: 0.16em; margin-bottom: -0.16em; }
+  .mask > span { display: block; will-change: transform; }
+
+  .intro { left: 115px; top: 151px; font: 500 16px/24px Arial, Helvetica, sans-serif; letter-spacing: 0.8px; text-transform: uppercase; color: #666666; white-space: nowrap; }
+  .name {
+    left: 115px; top: 191px; margin: 0; white-space: nowrap; transform-origin: 0 0;
+    font: 400 172.8px/145.152px Georgia, "Times New Roman", serif; letter-spacing: -11.232px; color: #111111;
+  }
+  .headline { left: 115px; top: 344px; font: 400 48px/51.84px Arial, Helvetica, sans-serif; letter-spacing: -0.96px; color: #666666; white-space: nowrap; }
+  .description { left: 115px; top: 480px; font: 400 20px/30px Arial, Helvetica, sans-serif; color: #666666; white-space: nowrap; }
+  .availability {
+    left: 115px; top: 561px; display: flex; align-items: center; gap: 10.4px;
+    font: 600 13.6px/20.4px Arial, Helvetica, sans-serif; letter-spacing: 0.544px; text-transform: uppercase; color: #666666;
+  }
+  .availability .dot { width: 8px; height: 8px; border-radius: 50%; background: #111111; box-shadow: 0 0 0 5px rgba(17, 17, 17, 0.08); }
+  .link { top: 623px; font: 500 16px/24px Arial, Helvetica, sans-serif; color: #111111; white-space: nowrap; }
+  .link .rule { position: absolute; left: 0; right: 0; bottom: -5px; height: 1px; background: #111111; transform-origin: 0 50%; }
+  .link.accent .rule { background: #e5322d; }
+
+  .label { left: 260px; top: 1242px; font: 500 13.6px/20.4px Arial, Helvetica, sans-serif; letter-spacing: 0.68px; text-transform: uppercase; color: #a0a0a0; }
+  .large { left: 260px; top: 1294px; width: 1260px; margin: 0; text-wrap: balance; font: 400 118.4px/107.744px Georgia, "Times New Roman", serif; letter-spacing: -6.512px; color: #111111; }
+  .secondary { left: 260px; top: 1773px; width: 859px; margin: 0; font: 400 32px/49.6px Arial, Helvetica, sans-serif; color: #666666; }
+  .note { left: 1247px; top: 1837px; width: 413px; margin: 0; padding-top: 24px; border-top: 1px solid #111111; font: 400 16.8px/28.56px Arial, Helvetica, sans-serif; color: #666666; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="globe" width="1920" height="1080"></canvas>
+
+  <div id="page">
+    <p class="abs intro"><span class="mask"><span>Desarrollador de software · Granada</span></span></p>
+    <h1 class="abs name" id="name">Pedro Gómez</h1>
+    <div class="abs headline">
+      <span class="mask"><span>Desarrollo de principio a fin.</span></span>
+      <span class="mask"><span>Productos que funcionan.</span></span>
+    </div>
+    <div class="abs description">
+      <span class="mask"><span>Diseño y desarrollo software mantenible: desde APIs y automatizaciones</span></span>
+      <span class="mask"><span>hasta productos web completos que ya operan en producción.</span></span>
+    </div>
+    <p class="abs availability" style="margin:0"><i class="dot"></i><span class="mask"><span>Abierto a nuevas oportunidades</span></span></p>
+    <a class="abs link accent" style="left:115px" href="#afr-mind"><span class="mask"><span>Mi CV como red neuronal</span></span><i class="rule"></i></a>
+    <a class="abs link" style="left:329px" href="https://github.com/CODIGOAFRX"><span class="mask"><span>GitHub</span></span><i class="rule"></i></a>
+    <a class="abs link" style="left:410px" href="https://www.linkedin.com/in/pedro-jes%C3%BAs-g%C3%B3mez-p%C3%A9rez-2b5534157/"><span class="mask"><span>LinkedIn</span></span><i class="rule"></i></a>
+    <a class="abs link" style="left:503px" href="CV_Pedro_Java.pdf"><span class="mask"><span>CV Java</span></span><i class="rule"></i></a>
+    <a class="abs link" style="left:595px" href="CV_Pedro_Python.pdf"><span class="mask"><span>CV Python / QA</span></span><i class="rule"></i></a>
+
+    <h3 class="abs label reveal">01 / Perfil</h3>
+    <h2 class="abs large reveal">Convierto necesidades reales en software claro, seguro y preparado para crecer.</h2>
+    <p class="abs secondary reveal">Mi base está en el backend con Java, Spring Boot y Python. Construyo APIs, modelos de datos, automatizaciones e integraciones pensando tanto en la arquitectura como en quien utilizará el producto cada día.</p>
+    <p class="abs note reveal">Cuando el proyecto lo pide, llevo el trabajo de extremo a extremo: interfaz, lógica de negocio, persistencia, despliegue, correos, analítica y paneles privados.</p>
+  </div>
+
+  <canvas id="construct" width="1920" height="1080"></canvas>
+
+  <nav id="nav">
+    <span class="logo">Pedro Gómez.</span>
+    <span class="links">
+      <a style="left:1053px">AFR-MIND</a><a style="left:1171px">Perfil</a><a style="left:1250px">Trayectoria</a>
+      <a style="left:1369px">En producción</a><a style="left:1511px">Otros proyectos</a><a style="left:1662px">Stack</a><a style="left:1744px">Contacto</a>
+    </span>
+  </nav>
+</div>
+
+<script>
+// «El nombre es el plano»: el nombre se mide como un espécimen tipográfico; los círculos de
+// construcción de sus letras redondas se convierten en los meridianos del globo de la web.
+// Todo el estado sale de seek(t), t en segundos (0–10). Sin animaciones CSS, timers ni
+// estado acumulado: buscar un instante produce siempre la misma composición.
+(() => {
+  const W = 1920, H = 1080, DURATION = 10, BPM = 120, BEAT = 60 / BPM;
+
+  // ---------- easing ----------
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const mix = (a, b, k) => a + (b - a) * k;
+  const prog = (t, a, b) => clamp((t - a) / (b - a));
+  const expoOut = x => (x >= 1 ? 1 : 1 - Math.pow(2, -10 * x));
+  const expoInOut = x => (x <= 0 ? 0 : x >= 1 ? 1 : x < 0.5 ? Math.pow(2, 20 * x - 10) / 2 : (2 - Math.pow(2, -20 * x + 10)) / 2);
+  // Muelle con amortiguamiento crítico: llega sin pasarse ni rebotar
+  const spring = (tau, omega = 8) => (tau <= 0 ? 0 : 1 - (1 + omega * tau) * Math.exp(-omega * tau));
+  // La curva de entrada de la web: cubic-bezier(0.16, 1, 0.3, 1)
+  const siteEase = (() => {
+    const bez = (p1, p2) => s => 3 * p1 * s * (1 - s) * (1 - s) + 3 * p2 * s * s * (1 - s) + s * s * s;
+    const bx = bez(0.16, 0.3), by = bez(1, 1);
+    return x => {
+      if (x <= 0) return 0; if (x >= 1) return 1;
+      let lo = 0, hi = 1;
+      for (let i = 0; i < 30; i++) { const m = (lo + hi) / 2; if (bx(m) < x) lo = m; else hi = m; }
+      return by((lo + hi) / 2);
+    };
+  })();
+
+  // ---------- el globo de la web (misma geometría, colores y proyección que WireGlobe) ----------
+  const CONTINENTS = [
+    [[-168, 70], [-145, 61], [-128, 52], [-124, 42], [-112, 31], [-98, 20], [-82, 25], [-80, 38], [-65, 48], [-58, 60], [-90, 72], [-130, 73], [-168, 70]],
+    [[-82, 12], [-68, 8], [-50, -5], [-38, -15], [-50, -25], [-58, -40], [-70, -55], [-75, -35], [-80, -5], [-82, 12]],
+    [[-12, 36], [5, 44], [30, 45], [45, 55], [80, 58], [120, 50], [145, 58], [160, 48], [130, 35], [105, 22], [80, 10], [55, 25], [38, 35], [25, 32], [15, 37], [-12, 36]],
+    [[-17, 35], [10, 37], [32, 30], [45, 10], [38, -12], [25, -35], [12, -34], [0, -20], [-8, 5], [-17, 35]],
+    [[112, -12], [135, -10], [153, -25], [145, -42], [118, -35], [112, -12]],
+    [[-52, 82], [-20, 78], [-28, 65], [-48, 60], [-60, 70], [-52, 82]],
+  ];
+  const PARALLELS = [-60, -30, 0, 30, 60].map(lat => { const l = []; for (let lon = -180; lon <= 180; lon += 4) l.push([lon, lat]); return l; });
+  const MERIDIANS = []; for (let lon = -150; lon <= 180; lon += 30) { const l = []; for (let lat = -90; lat <= 90; lat += 3) l.push([lon, lat]); MERIDIANS.push(l); }
+  const gray = (v, a = 1) => `rgba(${v}, ${v}, ${v}, ${a})`;
+
+  // g: { cx, cy, r, rotation, tilt, lineScale, ring, parallels, meridians, land, fill } (progresos 0–1)
+  function drawGlobe(ctx, g) {
+    const project = (lon, lat) => {
+      const lo = lon * Math.PI / 180 + g.rotation, la = lat * Math.PI / 180;
+      const x = Math.cos(la) * Math.sin(lo), y = Math.sin(la), z = Math.cos(la) * Math.cos(lo);
+      const ty = y * Math.cos(g.tilt) - z * Math.sin(g.tilt), tz = y * Math.sin(g.tilt) + z * Math.cos(g.tilt);
+      return [g.cx + x * g.r, g.cy - ty * g.r, tz];
+    };
+    // Dibuja la fracción p de una polilínea, con su color delante/detrás del globo
+    const curve = (pts, p, front, back, width) => {
+      if (p <= 0) return;
+      const n = pts.length - 1, upto = p * n;
+      ctx.lineWidth = width * g.lineScale;
+      for (let i = 1; i <= n && i - 1 < upto; i++) {
+        const a = project(...pts[i - 1]);
+        let b = project(...pts[i]);
+        const f = Math.min(1, upto - (i - 1));
+        if (f < 1) b = [mix(a[0], b[0], f), mix(a[1], b[1], f), mix(a[2], b[2], f)];
+        ctx.strokeStyle = (a[2] + b[2]) / 2 >= 0 ? front : back;
+        ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+      }
+    };
+    const stagger = (p, i, n, spread = 0.5) => clamp((p - (i / n) * spread) / (1 - spread));
+    ctx.lineCap = 'round';
+    if (g.fill > 0) {
+      ctx.beginPath(); ctx.arc(g.cx, g.cy, g.r, 0, Math.PI * 2);
+      ctx.fillStyle = gray(249, 0.58 * g.fill); ctx.fill();
+    }
+    const par = g.parallels ?? g.grid, mer = g.meridians ?? g.grid;
+    PARALLELS.forEach((l, i) => curve(l, stagger(par, i, PARALLELS.length), gray(184), gray(227), 0.7));
+    MERIDIANS.forEach((l, i) => curve(l, stagger(mer, i, MERIDIANS.length), gray(184), gray(227), 0.7));
+    CONTINENTS.forEach((l, i) => curve(l, stagger(g.land, i, CONTINENTS.length, 0.45), gray(17), gray(209), 1.45));
+    if (g.ring > 0) {
+      ctx.beginPath();
+      ctx.arc(g.cx, g.cy, g.r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * g.ring);
+      ctx.strokeStyle = gray(17); ctx.lineWidth = 1.5 * g.lineScale; ctx.stroke();
+    }
+  }
+
+  // Posición del globo de fondo según el scroll, con las mismas fórmulas de script.js (escritorio)
+  const GLOBE_SIZE = Math.min(H * 0.92, W * 0.56);
+  const smoothstep = v => v * v * (3 - 2 * v);
+  function siteGlobe(scrollY) {
+    const grow = smoothstep(clamp(scrollY / (H * 0.95)));
+    const startSize = clamp(W * 0.29, 320, 520);
+    const scale = mix(startSize / GLOBE_SIZE, 1, grow);
+    return { x: mix(W * 0.82, W * 0.83, grow), y: H * 0.5, scale, r: 0.445 * GLOBE_SIZE * scale, opacity: mix(0.72, 0.11, grow) };
+  }
+
+  // ---------- el nombre como espécimen: medidas de cada letra ----------
+  // Todo en coordenadas del nombre sin transformar (origen = esquina superior izquierda del h1).
+  const nameEl = document.getElementById('name');
+  const page = document.getElementById('page');
+  const NAME = { left: 115, top: 191 };
+  const SPEC = (() => {
+    const node = nameEl.firstChild, text = node.data;
+    const box = nameEl.getBoundingClientRect();
+    const range = document.createRange();
+    const pens = [...text].map((_, i) => { range.setStart(node, i); range.setEnd(node, i + 1); return range.getBoundingClientRect().left - box.left; });
+    const rest = node.splitText(1);
+    const marker = document.createElement('span');
+    marker.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
+    rest.parentNode.insertBefore(marker, rest);
+    const baseline = marker.getBoundingClientRect().top - box.top;
+    marker.remove(); nameEl.normalize();
+    const cs = getComputedStyle(nameEl), fs = parseFloat(cs.fontSize);
+    const c = document.createElement('canvas').getContext('2d');
+    c.font = `${cs.fontStyle} ${cs.fontWeight} ${fs}px ${cs.fontFamily}`;
+    const m = ch => c.measureText(ch);
+    const letters = [...text].map((ch, i) => {
+      const mm = m(ch);
+      return { ch, i, left: pens[i] - mm.actualBoundingBoxLeft, right: pens[i] + mm.actualBoundingBoxRight, top: baseline - mm.actualBoundingBoxAscent };
+    }).filter(l => l.ch.trim());
+    const xh = m('x').actualBoundingBoxAscent, cap = m('H').actualBoundingBoxAscent, asc = m('d').actualBoundingBoxAscent;
+    const oW = m('o').actualBoundingBoxRight + m('o').actualBoundingBoxLeft;
+    // Círculos de construcción de las seis letras redondas: e, d, o, G, ó, e
+    const circles = letters.filter(l => 'edoGóe'.includes(l.ch) && l.ch !== ' ').map(l => {
+      if (l.ch === 'G') return { cx: (l.left + l.right) / 2, cy: baseline - cap / 2, r: cap * 0.53 };
+      if (l.ch === 'd') return { cx: l.left + oW / 2, cy: baseline - xh / 2, r: xh * 0.53 };
+      return { cx: (l.left + l.right) / 2, cy: baseline - xh / 2, r: xh * 0.53 };
+    });
+    return {
+      width: box.width, height: box.height, baseline, letters, circles,
+      // Líneas guía, como en el diseño de una tipografía: ascendente, mayúsculas, altura de x, base
+      guides: [baseline - asc, baseline - cap, baseline - xh, baseline],
+    };
+  })();
+  const S0 = 1.62; // el nombre empieza grande y centrado
+  const START = { dx: (W - SPEC.width * S0) / 2 - NAME.left, dy: (H - SPEC.height * S0) / 2 - NAME.top + 20 };
+
+  // ---------- elementos ----------
+  const q = s => [...document.querySelectorAll(s)];
+  const nav = document.getElementById('nav');
+  const intro = q('.intro .mask > span');
+  const headline = q('.headline .mask > span');
+  const description = q('.description .mask > span');
+  const dot = document.querySelector('.availability .dot');
+  const availability = q('.availability .mask > span');
+  const links = q('.link');
+  const reveals = q('.reveal');
+  const canvas = document.getElementById('globe');
+  const ctx = canvas.getContext('2d');
+  const cctx = document.getElementById('construct').getContext('2d');
+
+  // Scroll simulado: el visitante baja hasta el comienzo de Perfil
+  const SCROLL_END = 960;
+  const scrollAt = t => SCROLL_END * expoInOut(prog(t, 8.0, 9.6));
+  const revealAt = reveals.map(el => {
+    const top = parseFloat(getComputedStyle(el).top), h = el.offsetHeight;
+    for (let t = 8; t <= 10; t += 0.005) if (top - scrollAt(t) <= H - 0.15 * h) return t;
+    return Infinity;
+  });
+
+  const maskIn = (el, t, start, dur = 0.7) => {
+    const k = expoOut(prog(t, start, start + dur));
+    el.style.transform = `translateY(${((1 - k) * 105).toFixed(3)}%)`;
+  };
+  const line = (c, x0, y0, x1, y1) => { c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y1); c.stroke(); };
+  const white = a => `rgba(255, 255, 255, ${a})`;
+
+  // Meridiano a longitud L visto sin inclinación: una elipse de semiejes R·|sin(L+rot)| y R.
+  // Su mitad en sin(L+rot) es la cara visible cuando cos(L+rot) ≥ 0, como en el globo.
+  const LONS = [-150, -120, -90, -60, -30, 0].map(d => d * Math.PI / 180);
+  const GUIDE_NAMES = ['ASCENDENTE', 'MAYÚSCULAS', 'ALTURA X', 'LÍNEA BASE'];
+
+  function seek(t) {
+    t = clamp(t, 0, DURATION);
+    const scroll = scrollAt(t);
+    page.style.transform = `translateY(${(-scroll).toFixed(2)}px)`;
+    nav.style.transform = `translateY(${(-80 * expoOut(prog(t, 8.0, 8.45))).toFixed(2)}px)`;
+
+    // El nombre: enorme y centrado; después a su sitio de cabecera
+    const k = spring(t - 3.0, 6);
+    const s = mix(S0, 1, k), dx = mix(START.dx, 0, k), dy = mix(START.dy, 0, k);
+    nameEl.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) scale(${s.toFixed(5)})`;
+    const X = x => NAME.left + dx + x * s;
+    const Y = y => NAME.top + dy + y * s - scroll;
+
+    // Texto que se monta sobre la retícula
+    maskIn(headline[0], t, 4.5); maskIn(headline[1], t, 4.75);
+    maskIn(intro[0], t, 5.5);
+    maskIn(description[0], t, 6.0); maskIn(description[1], t, 6.1);
+    dot.style.transform = `scale(${expoOut(prog(t, 6.5, 6.9)).toFixed(4)})`;
+    maskIn(availability[0], t, 6.55);
+    links.forEach((a, i) => {
+      const start = 7.0 + i * 0.09;
+      maskIn(a.querySelector('.mask > span'), t, start + 0.06);
+      a.querySelector('.rule').style.transform = `scaleX(${expoInOut(prog(t, start, start + 0.55)).toFixed(4)})`;
+    });
+    reveals.forEach((el, i) => {
+      const r = siteEase(prog(t, revealAt[i], revealAt[i] + 0.8));
+      el.style.opacity = r.toFixed(4);
+      el.style.transform = `translateX(${((1 - r) * 50).toFixed(2)}px)`;
+    });
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    cctx.clearRect(0, 0, W, H);
+    cctx.lineCap = 'butt';
+
+    // ---------- 1. Medición: guías horizontales y verticales sobre el nombre ----------
+    const cxName = X(SPEC.width / 2);
+    const retract = expoInOut(prog(t, 3.0, 3.45)); // al encogerse el nombre, las guías se recogen en él
+    SPEC.guides.forEach((gy, i) => {
+      const draw = expoInOut(prog(t, 0.5 + i * 0.12, 1.5 + i * 0.12));
+      const len = draw * (1 - retract);
+      if (len <= 0) return;
+      const half = mix(W * 0.62, SPEC.width * s / 2, retract) * len;
+      cctx.strokeStyle = white(i === 3 ? 0.75 : 0.42);
+      cctx.lineWidth = 1;
+      line(cctx, cxName - half, Y(gy) + 0.5, cxName + half, Y(gy) + 0.5);
+      // Nombre de cada guía en su extremo, como en un espécimen tipográfico
+      const labelK = expoOut(prog(t, 1.2 + i * 0.12, 1.8 + i * 0.12)) * (1 - expoOut(prog(t, 2.85, 3.15)));
+      if (labelK > 0.01) {
+        cctx.font = '600 11px Arial, Helvetica, sans-serif';
+        cctx.letterSpacing = '1.4px';
+        cctx.textAlign = 'left';
+        // «Mayúsculas» va bajo su línea: la del ascendente queda muy cerca por encima
+        const below = i === 1;
+        cctx.textBaseline = below ? 'top' : 'bottom';
+        cctx.fillStyle = white(0.62 * labelK);
+        cctx.fillText(GUIDE_NAMES[i], Math.max(NAME.left, cxName - half + 4), Y(gy) + (below ? 7 : -6) + (1 - labelK) * 6);
+      }
+    });
+    SPEC.letters.forEach((l, i) => {
+      const draw = expoInOut(prog(t, 1.0 + i * 0.05, 1.9 + i * 0.05));
+      const len = draw * (1 - retract);
+      if (len <= 0.03) return;
+      const top = Y(SPEC.guides[0]) - 60, bottom = Y(SPEC.baseline) + 60;
+      cctx.strokeStyle = white(0.3);
+      cctx.lineWidth = 1;
+      const x = Math.round(X(l.left)) + 0.5;
+      line(cctx, x, top, x, top + (bottom - top) * len);
+    });
+
+    // ---------- 2. Construcción: círculos sobre las letras redondas ----------
+    // ---------- 3. Los círculos salen y se convierten en los meridianos del globo ----------
+    const hero = siteGlobe(0), now = siteGlobe(scroll);
+    const into = t >= 8.0;
+    const G = into ? now : hero;
+    const rotation = -0.45 + 0.16 * t + 0.0022 * scroll;
+    const assembled = t >= 4.8; // a partir de aquí el globo de la web toma el relevo, idéntico
+    const settle = expoInOut(prog(t, 4.1, 4.8)); // de trazo de construcción a los grises de la web
+    const layerAlpha = into ? now.opacity : mix(1, hero.opacity, settle);
+
+    if (!assembled) {
+      SPEC.circles.forEach((c, i) => {
+        const draw = expoInOut(prog(t, 1.6 + i * 0.09, 2.4 + i * 0.09));
+        if (draw <= 0) return;
+        const fly = spring(t - 3.05 - i * 0.05, 5.5);
+        const morph = expoInOut(prog(t, 3.3 + i * 0.05, 4.1 + i * 0.05));
+        const L = LONS[i] + rotation;
+        const sx = Math.sin(L), cz = Math.cos(L);
+        const cx = mix(X(c.cx), G.x, fly);
+        const cy = mix(Y(c.cy), G.y, fly) + Math.sin(Math.PI * fly) * 150;
+        const rx = mix(c.r * s, G.r * Math.abs(sx), morph);
+        const ry = mix(c.r * s, G.r, morph);
+        const lw = mix(1.2, 0.7 * G.scale, settle);
+        // Mitad que mira a la cámara y mitad trasera, con los grises del globo al final
+        const frontGray = mix(17, 184, settle), backGray = mix(17, 227, settle);
+        const side = sx >= 0 ? 1 : -1;
+        const halves = [
+          { from: -Math.PI / 2, to: Math.PI / 2, front: (side > 0) === (cz >= 0) },
+          { from: Math.PI / 2, to: Math.PI * 1.5, front: (side > 0) !== (cz >= 0) },
+        ];
+        // Sobre el nombre van en la capa de construcción; al empezar a girar, en la del globo
+        const onName = morph <= 0;
+        const c2 = onName ? cctx : ctx;
+        c2.globalAlpha = onName ? 1 : layerAlpha;
+        c2.lineWidth = onName ? 1.2 : lw;
+        for (const h of halves) {
+          const a0 = h.from, a1 = mix(h.from, h.to, draw);
+          c2.strokeStyle = onName ? white(0.95) : gray(Math.round(h.front ? frontGray : backGray));
+          c2.beginPath();
+          c2.ellipse(cx, cy, Math.max(rx, 0.01), ry, 0, a0, a1);
+          c2.stroke();
+        }
+        c2.globalAlpha = 1;
+      });
+    }
+
+    // ---------- 4. El globo de la web ----------
+    const ringK = expoInOut(prog(t, 3.9, 4.45));
+    if (t >= 3.9) {
+      ctx.globalAlpha = layerAlpha;
+      drawGlobe(ctx, {
+        cx: G.x, cy: G.y, r: G.r,
+        rotation,
+        tilt: mix(0, -0.16, expoInOut(prog(t, 4.8, 5.6))),
+        lineScale: G.scale,
+        ring: ringK,
+        grid: 0, meridians: assembled ? 1 : 0,
+        parallels: expoInOut(prog(t, 4.3, 5.0)),
+        land: expoInOut(prog(t, 4.6, 5.4)),
+        fill: expoOut(prog(t, 4.0, 4.8)),
+      });
+      ctx.globalAlpha = 1;
+    }
+    return t;
+  }
+
+  // ---------- banda sonora: kick en cada pulso y acentos en las transformaciones ----------
+  const ACCENTS = [
+    { t: 0.5, kind: 'move' },    // empiezan las guías
+    { t: 1.6, kind: 'close' },   // círculos de construcción
+    { t: 3.0, kind: 'move' },    // los círculos salen del nombre
+    { t: 4.0, kind: 'world' },   // se cierran en el globo
+    { t: 4.5, kind: 'text' },    // titular
+    { t: 7.0, kind: 'text' },    // enlaces
+    { t: 8.0, kind: 'page' },    // integración con la página
+  ];
+  async function renderAudio() {
+    const rate = 48000;
+    const ac = new OfflineAudioContext(2, rate * DURATION, rate);
+    const master = ac.createGain(); master.gain.value = 0.8; master.connect(ac.destination);
+    const kick = (at, level) => {
+      const o = ac.createOscillator(), gn = ac.createGain();
+      o.frequency.setValueAtTime(118, at); o.frequency.exponentialRampToValueAtTime(42, at + 0.11);
+      gn.gain.setValueAtTime(0.0001, at); gn.gain.exponentialRampToValueAtTime(level, at + 0.004);
+      gn.gain.exponentialRampToValueAtTime(0.0001, at + 0.26);
+      o.connect(gn).connect(master); o.start(at); o.stop(at + 0.3);
+    };
+    const tone = (at, freqs, level, decay) => {
+      freqs.forEach((f, i) => {
+        const o = ac.createOscillator(), gn = ac.createGain();
+        o.type = 'sine'; o.frequency.value = f;
+        gn.gain.setValueAtTime(0.0001, at); gn.gain.exponentialRampToValueAtTime(level / (i + 1), at + 0.008);
+        gn.gain.exponentialRampToValueAtTime(0.0001, at + decay);
+        o.connect(gn).connect(master); o.start(at); o.stop(at + decay + 0.05);
+      });
+    };
+    const noise = (at, level, freq, dur) => {
+      const buf = ac.createBuffer(1, Math.ceil(rate * dur), rate), ch = buf.getChannelData(0);
+      let seed = 7; for (let i = 0; i < ch.length; i++) { seed = (seed * 16807) % 2147483647; ch[i] = (seed / 2147483647 * 2 - 1) * Math.pow(1 - i / ch.length, 3); }
+      const src = ac.createBufferSource(), f = ac.createBiquadFilter(), gn = ac.createGain();
+      src.buffer = buf; f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = 1.2; gn.gain.value = level;
+      src.connect(f).connect(gn).connect(master); src.start(at);
+    };
+    for (let b = 0; b < DURATION / BEAT; b++) kick(b * BEAT, b % 4 === 0 ? 0.55 : 0.32);
+    for (const a of ACCENTS) {
+      if (a.kind === 'close') tone(a.t, [659.25, 1318.5], 0.12, 0.9);
+      if (a.kind === 'move') noise(a.t, 0.18, 2400, 0.35);
+      if (a.kind === 'world') { tone(a.t, [329.63, 493.88, 659.25], 0.1, 1.6); noise(a.t, 0.12, 900, 0.6); }
+      if (a.kind === 'land') tone(a.t, [987.77], 0.06, 0.7);
+      if (a.kind === 'text') noise(a.t, 0.1, 4200, 0.18);
+      if (a.kind === 'page') { tone(a.t, [110, 164.81, 220], 0.16, 2.2); noise(a.t, 0.1, 600, 1.4); }
+    }
+    const out = await ac.startRendering();
+    // WAV PCM 16 bits
+    const n = out.length, ch = out.numberOfChannels, bytes = 44 + n * ch * 2;
+    const view = new DataView(new ArrayBuffer(bytes));
+    const str = (o, s) => [...s].forEach((c, i) => view.setUint8(o + i, c.charCodeAt(0)));
+    str(0, 'RIFF'); view.setUint32(4, bytes - 8, true); str(8, 'WAVE'); str(12, 'fmt ');
+    view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, ch, true);
+    view.setUint32(24, rate, true); view.setUint32(28, rate * ch * 2, true); view.setUint16(32, ch * 2, true);
+    view.setUint16(34, 16, true); str(36, 'data'); view.setUint32(40, n * ch * 2, true);
+    const chans = [...Array(ch)].map((_, i) => out.getChannelData(i));
+    let o = 44;
+    for (let i = 0; i < n; i++) for (let c = 0; c < ch; c++) { view.setInt16(o, Math.max(-1, Math.min(1, chans[c][i])) * 32767, true); o += 2; }
+    let bin = ''; const u8 = new Uint8Array(view.buffer);
+    for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+    return btoa(bin);
+  }
+
+  window.seek = seek;
+  window.DURATION = DURATION;
+  window.BPM = BPM;
+  window.renderAudio = renderAudio;
+
+  // ?play reproduce en bucle para previsualizar; sin parámetros queda en t = 0
+  if (new URLSearchParams(location.search).has('play')) {
+    const t0 = performance.now();
+    const loop = now => { seek(((now - t0) / 1000) % (DURATION + 1)); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+  } else {
+    seek(0);
+  }
+})();
+</script>
+</body>
+</html>

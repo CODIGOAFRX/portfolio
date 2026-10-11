@@ -91,6 +91,36 @@ a:hover {
     letter-spacing: -0.02em;
 }
 
+/* Dos textos apilados: se ve uno u otro deslizando en vertical */
+.logo-roll {
+    display: inline-grid;
+    overflow: hidden;
+    vertical-align: top;
+}
+
+.logo-roll > span {
+    grid-area: 1 / 1;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.logo-roll > span:last-child {
+    transform: translateY(110%);
+}
+
+.logo.show-name .logo-roll > span:first-child {
+    transform: translateY(-110%);
+}
+
+.logo.show-name .logo-roll > span:last-child {
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .logo-roll > span {
+        transition: none;
+    }
+}
+
 .nav-links {
     display: flex;
     gap: 3vw;
@@ -172,7 +202,9 @@ section {
     opacity: var(--globe-opacity);
 }
 
-/* La escena de tecnologías (scenes.js) dibuja este mismo globo mientras lo anima */
+/* La intro (intro.js) y la escena de tecnologías (scenes.js) dibujan este mismo globo mientras
+   lo animan. Cada una usa su propia clase para no deshacer la de la otra. */
+.page-globe.is-intro,
 .page-globe.is-borrowed {
     visibility: hidden;
 }
@@ -2281,5 +2313,117 @@ blockquote {
     .stack.orbit-on {
         scroll-margin-top: -120vh;
         scroll-margin-top: -120lvh;
+    }
+}
+
+/* ---------- Intro de la portada (intro-boot.js + intro.js) ----------
+   Con la intro, la cabecera se queda fija mientras el scroll mide el nombre y forma el globo;
+   después entra el resto del texto. Sin JS o con movimiento reducido no cambia nada. */
+.hero-stage {
+    position: relative;
+    align-self: flex-start;
+    width: 100%;
+    height: 100%;
+}
+
+html.has-intro .hero {
+    height: calc(100vh + 700vh);
+    height: calc(100lvh + 700lvh);
+    min-height: 0;
+    overflow: visible;
+}
+
+html.has-intro .hero-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100lvh;
+    min-height: 700px;
+    overflow: clip;
+}
+
+html.has-intro .hero-reveal {
+    animation: none;
+}
+
+/* Hasta que intro.js coloca el nombre grande en el centro */
+html.has-intro:not(.intro-ready) .hero .name {
+    visibility: hidden;
+}
+
+/* Sin will-change: así el navegador redibuja el texto a cada escala y se ve nítido */
+html.has-intro .hero .name {
+    transform-origin: 0 0;
+}
+
+.intro-globe,
+.intro-construct {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.intro-globe {
+    z-index: 1;
+}
+
+/* El escenario fijo agrupa su propia composición: necesita fondo blanco para que la fusión por
+   diferencia tenga algo sobre lo que pintar. Se quita al pasar el relevo al globo de la página. */
+.hero.intro-on:not(.intro-finished) .hero-stage {
+    background: var(--bg-color);
+}
+
+/* La medición cruza las letras: por diferencia sale negra sobre blanco y blanca sobre la tinta */
+.intro-construct {
+    z-index: 3;
+    mix-blend-mode: difference;
+}
+
+.hero.intro-finished .intro-construct,
+.hero.intro-finished .intro-globe {
+    visibility: hidden;
+}
+
+/* El resto de la cabecera entra en orden cuando el globo está formado (es texto normal) */
+html.has-intro .hero-content > :not(.name):not(.hero-links),
+html.has-intro .hero-links a {
+    transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.has-intro .hero-content > :not(.name):not(.hero-links) {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(1.1rem);
+}
+
+html.has-intro .hero-links a {
+    clip-path: inset(-20% 100% -60% 0);
+}
+
+html.has-intro .hero.intro-done .hero-content > :not(.name):not(.hero-links),
+html.has-intro .hero-content:focus-within > :not(.name):not(.hero-links) {
+    clip-path: inset(-0.4em -0.6em -0.6em -0.6em);
+    transform: none;
+}
+
+html.has-intro .hero.intro-done .hero-links a,
+html.has-intro .hero-content:focus-within .hero-links a {
+    clip-path: inset(-20% -4% -60% 0);
+}
+
+html.has-intro .hero.intro-done .headline { transition-delay: 0s; }
+html.has-intro .hero.intro-done .intro { transition-delay: 0.12s; }
+html.has-intro .hero.intro-done .description { transition-delay: 0.22s; }
+html.has-intro .hero.intro-done .availability { transition-delay: 0.34s; }
+html.has-intro .hero.intro-done .hero-links a:nth-child(1) { transition-delay: 0.46s; }
+html.has-intro .hero.intro-done .hero-links a:nth-child(2) { transition-delay: 0.53s; }
+html.has-intro .hero.intro-done .hero-links a:nth-child(3) { transition-delay: 0.6s; }
+html.has-intro .hero.intro-done .hero-links a:nth-child(4) { transition-delay: 0.67s; }
+html.has-intro .hero.intro-done .hero-links a:nth-child(5) { transition-delay: 0.74s; }
+
+@media (max-width: 768px) {
+    html.has-intro .hero-stage {
+        min-height: 780px;
     }
 }
