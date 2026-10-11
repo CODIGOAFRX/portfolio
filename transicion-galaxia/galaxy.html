@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>AFR-MIND · Galaxia</title>
+<style>
+  html, body { margin: 0; background: #0a0a0a; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; object-fit: contain; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script src="../galaxy-scene.js"></script>
+<script>
+// Galaxia de neuronas: extensión visual de AFR-MIND.
+// render(t) dibuja el instante t (segundos) de forma determinista, para poder
+// capturarlo frame a frame. Sin parámetros, ?preview reproduce en bucle.
+// Resolución configurable (?w=720&h=1280 para la versión vertical de móvil).
+const QS = new URLSearchParams(location.search);
+const W = Number(QS.get("w")) || 1920, H = Number(QS.get("h")) || 1080;
+const K = Math.sqrt(W * H / (1920 * 1080)); // escala de los tamaños en píxeles
+const S = window.GalaxyScene;
+const { BG, END, PALETTE, COLORS, P, N, LINKS, STARS, EMIT, clamp, smooth, mix } = S;
+
+const canvas = document.getElementById('c');
+canvas.width = W; canvas.height = H;
+const ctx = canvas.getContext('2d');
+const bloom = document.createElement('canvas');
+bloom.width = W / 4; bloom.height = H / 4;
+const bctx = bloom.getContext('2d');
+
+const lighten = (c, k) => c.map(v => Math.round(v + (255 - v) * k));
+
+// Sprites de brillo por color: un núcleo nítido y un halo suave.
+function sprite(rgb, hard) {
+  const s = 64, cv = document.createElement('canvas');
+  cv.width = cv.height = s;
+  const g = cv.getContext('2d');
+  const gr = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+  const [r, gg, b] = rgb, w = lighten(rgb, 0.65);
+  if (hard) {
+    gr.addColorStop(0, `rgba(${w[0]},${w[1]},${w[2]},1)`);
+    gr.addColorStop(0.18, `rgba(${r},${gg},${b},0.95)`);
+    gr.addColorStop(0.42, `rgba(${r},${gg},${b},0.25)`);
+    gr.addColorStop(1, `rgba(${r},${gg},${b},0)`);
+  } else {
+    gr.addColorStop(0, `rgba(${r},${gg},${b},0.55)`);
+    gr.addColorStop(0.5, `rgba(${r},${gg},${b},0.16)`);
+    gr.addColorStop(1, `rgba(${r},${gg},${b},0)`);
+  }
+  g.fillStyle = gr; g.fillRect(0, 0, s, s);
+  return cv;
+}
+const SPR = COLORS.map(c => sprite(c, true));
+const SOFT = COLORS.map(c => sprite(c, false));
+
+// ---------- cámara ----------
+const F = 1150 * K; // focal en píxeles
+const camera = S.camera;
+// Proyecta un punto (coordenadas propias, girado `rot` sobre Y) a pantalla.
+function makeProjector(cam, rot) {
+  const cs = Math.cos(rot), ss = Math.sin(rot);
+  const { C, f, R, U } = cam;
+  return (x, y, z, out) => {
+    const gx = x * cs - z * ss - C[0], gy = y - C[1], gz = x * ss + z * cs - C[2];
+    const depth = gx * f[0] + gy * f[1] + gz * f[2];
+    if (depth < 0.03) return false;
+    out.x = W / 2 + (gx * R[0] + gy * R[1] + gz * R[2]) * F / depth;
+    out.y = H / 2 - (gx * U[0] + gy * U[1] + gz * U[2]) * F / depth;
+    out.z = depth;
+    return true;
+  };
+}
+
+// Caras visibles de la pirámide (geometría y sombreado en galaxy-scene.js)
+function pyramidFaces(cam, t) {
+  return S.pyramidFaces(cam, t, (x, y, z, rot) => { const o = {}; return makeProjector(cam, rot)(x, y, z, o) ? o : null; });
+}
+
+const q = { x: 0, y: 0, z: 0 }, q0 = { x: 0, y: 0, z: 0 };
+function render(t) {
+  const cam = camera(t), proj = makeProjector(cam, cam.spin);
+  const camPrev = camera(Math.max(0, t - 1 / 110)), projPrev = makeProjector(camPrev, cam.spin);
+  const pproj = makeProjector(cam, cam.yaw);
+  const { appear, synapse, settle, edges } = S.timing(t);
+
+  // Profundidad de la pirámide para saber qué partículas pasan por delante
+  const pc = { x: 0, y: 0, z: 0 };
+  const pyrVisible = pproj(...S.PYR_CENTER, pc);
+  const pyrDepth = pyrVisible ? pc.z : -1;
+
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, W, H);
+  ctx.globalCompositeOperation = 'lighter';
+
+  // Fondo estrellado con paralaje mínimo
+  for (const s of STARS) {
+    if (!proj(s.x, s.y, s.z, q)) continue;
+    if (q.x < -4 || q.x > W + 4 || q.y < -4 || q.y > H + 4) continue;
+    ctx.globalAlpha = s.a * appear * 0.55;
+    ctx.drawImage(SPR[s.c], q.x - 2 * K, q.y - 2 * K, 4 * K, 4 * K);
+  }
+
+  // Sinapsis entre neuronas
+  if (synapse > 0.001) {
+    ctx.lineWidth = Math.max(1, 1.3 * K);
+    for (const [i, j] of LINKS) {
+      const a = N[i], b = N[j];
+      if (!proj(a.x, a.y, a.z, q) || !proj(b.x, b.y, b.z, q0)) continue;
+      const near = Math.min(q.z, q0.z);
+      const fade = smooth(1.5, 12, near);
+      if (fade <= 0) continue;
+      const len = Math.hypot(q.x - q0.x, q.y - q0.y);
+      if (len > 900 * K) continue;
+      const c = PALETTE[a.c];
+      ctx.globalAlpha = 0.42 * synapse * fade;
+      ctx.strokeStyle = `rgb(${c[0]},${c[1]},${c[2]})`;
+      ctx.beginPath(); ctx.moveTo(q.x, q.y); ctx.lineTo(q0.x, q0.y); ctx.stroke();
+    }
+  }
+
+  // Partículas (con estela de movimiento al acercarnos). onlyFront: sólo las que tapan la pirámide.
+  const drawParticle = (p, baseSize, alpha, spr, onlyFront) => {
+    if (!proj(p.x, p.y, p.z, q)) return;
+    if (onlyFront && q.z >= pyrDepth) return;
+    let size = baseSize * F / q.z;
+    if (q.x < -size - 60 || q.x > W + size + 60 || q.y < -size - 60 || q.y > H + size + 60) return;
+    let a = alpha * appear * smooth(0.4, 4, q.z);
+    if (size < 1.6 * K) { a *= size / (1.6 * K); size = 1.6 * K; }
+    if (size > 26 * K) { a *= Math.pow(26 * K / size, 1.6); size = Math.min(size, 140 * K); }
+    if (a < 0.003) return;
+    if (projPrev(p.x, p.y, p.z, q0)) {
+      const dx = q.x - q0.x, dy = q.y - q0.y, len = Math.hypot(dx, dy);
+      if (len > size * 1.2 && len < 700 * K) {
+        const c = COLORS[p.c];
+        ctx.globalAlpha = Math.min(1, a * size / (len + size) * 1.2);
+        ctx.strokeStyle = `rgb(${c[0]},${c[1]},${c[2]})`;
+        ctx.lineWidth = Math.max(1, size * 0.22);
+        ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(q0.x, q0.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+        return;
+      }
+    }
+    ctx.globalAlpha = Math.min(1, a);
+    ctx.drawImage(spr[p.c], q.x - size / 2, q.y - size / 2, size, size);
+  };
+  // Las partículas emitidas salen de la pirámide: blancas al nacer, con su color al alejarse
+  const emitted = EMIT.map(e => S.emitted(e, t));
+  const drawAll = onlyFront => {
+    for (const p of P) drawParticle(p, p.s, p.a, p.soft ? SOFT : SPR, onlyFront);
+    for (const p of emitted) drawParticle(p, p.s, p.a, SPR, onlyFront);
+    for (const n of N) {
+      const pulse = 0.75 + 0.25 * Math.sin(t * 3.2 + n.ph);
+      drawParticle(n, n.s * 2.2, (0.35 + 0.65 * synapse) * pulse, SOFT, onlyFront);
+      drawParticle(n, n.s, 0.6 + 0.4 * synapse, SPR, onlyFront);
+    }
+  };
+  drawAll(false);
+
+  // Halo de la pirámide: es la fuente de luz de toda la galaxia
+  if (pyrVisible) {
+    const R = Math.min(1800 * K, 18 * F / pc.z);
+    const g = ctx.createRadialGradient(pc.x, pc.y, 0, pc.x, pc.y, R);
+    g.addColorStop(0, 'rgba(255,250,242,0.9)');
+    g.addColorStop(0.12, 'rgba(255,240,222,0.38)');
+    g.addColorStop(0.45, 'rgba(157,127,244,0.04)');
+    g.addColorStop(1, 'rgba(120,80,200,0)');
+    ctx.globalAlpha = appear;
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // Silueta de la pirámide sumada antes del bloom: así irradia luz alrededor
+  const pyrFaces = pyrVisible ? pyramidFaces(cam, t) : [];
+  ctx.globalAlpha = appear;
+  ctx.fillStyle = 'rgb(255,246,236)';
+  for (const fc of pyrFaces) { ctx.beginPath(); fc.pts.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath(); ctx.fill(); }
+
+  // Bloom: copia reducida y desenfocada sumada encima
+  bctx.globalCompositeOperation = 'source-over';
+  bctx.filter = 'none';
+  bctx.clearRect(0, 0, bloom.width, bloom.height);
+  bctx.filter = `blur(${7 * K}px)`;
+  bctx.drawImage(canvas, 0, 0, bloom.width, bloom.height);
+  bctx.filter = 'none';
+  ctx.globalAlpha = 0.5;
+  ctx.drawImage(bloom, 0, 0, W, H);
+
+  // Fondo de la sección (#0a0a0a) sumado, para que el negro sea el mismo de la web
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = `rgb(${BG[0]},${BG[1]},${BG[2]})`;
+  ctx.fillRect(0, 0, W, H);
+
+  // La pirámide: sólida, completamente blanca, con un sombreado mínimo por cara
+  if (pyrVisible) {
+    const faces = pyrFaces;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = appear;
+    for (const fc of faces) {
+      // Degradado de cada cara: más luz en el vértice
+      const a = fc.pts[0];
+      const b = fc.pts.length === 3 ? { x: (fc.pts[1].x + fc.pts[2].x) / 2, y: (fc.pts[1].y + fc.pts[2].y) / 2 } : fc.pts[2];
+      const g = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
+      g.addColorStop(0, `rgb(${fc.top.join(',')})`);
+      g.addColorStop(1, `rgb(${fc.col.join(',')})`);
+      ctx.fillStyle = g;
+      ctx.strokeStyle = g;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      fc.pts.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+    }
+    // Aristas de luz
+    ctx.globalAlpha = appear * edges;
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = Math.max(1, Math.min(4 * K, 0.035 * F / pc.z));
+    for (const fc of faces) {
+      ctx.beginPath();
+      fc.pts.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
+      ctx.closePath(); ctx.stroke();
+    }
+    ctx.globalAlpha = appear;
+    // Las partículas que pasan por delante siguen viéndose sobre la pirámide
+    if (faces.length) {
+      ctx.save();
+      ctx.beginPath();
+      for (const fc of faces) { fc.pts.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)); ctx.closePath(); }
+      ctx.clip();
+      ctx.globalCompositeOperation = 'lighter';
+      drawAll(true);
+      ctx.restore();
+    }
+  }
+
+  if (settle > 0) {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = settle;
+    ctx.fillStyle = `rgb(${END[0]},${END[1]},${END[2]})`;
+    ctx.fillRect(0, 0, W, H);
+  }
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = 'source-over';
+}
+
+window.render = render;
+window.DURATION = S.DURATION;
+
+if (new URLSearchParams(location.search).has('preview')) {
+  const t0 = performance.now();
+  const loop = now => { render(((now - t0) / 1000) % (S.DURATION + 0.6)); requestAnimationFrame(loop); };
+  requestAnimationFrame(loop);
+} else {
+  render(0);
+}
+</script>
+</body>
+</html>

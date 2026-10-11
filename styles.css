@@ -1658,45 +1658,12 @@ button:focus-visible {
     font-size: 0.85rem;
 }
 
-.afr-proof {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin-top: clamp(3.5rem, 8vh, 6rem);
-    border-top: 1px solid #f1f1ef;
-}
-
-.afr-proof div {
-    display: grid;
-    gap: 0.8rem;
-    align-content: start;
-    padding: 1.8rem 2rem 1.8rem 0;
-}
-
-.afr-proof div + div {
-    padding-left: 2rem;
-    border-left: 1px solid #2a2a2a;
-}
-
-.afr-proof strong {
-    font-family: var(--font-heading);
-    font-size: clamp(3.4rem, 5vw, 5rem);
-    font-weight: 400;
-    line-height: 0.9;
-    letter-spacing: -0.05em;
-}
-
-.afr-proof span {
-    color: #a0a0a0;
-    font-size: 0.95rem;
-    line-height: 1.5;
-}
-
 .afr-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.3fr) minmax(240px, 0.7fr);
     gap: clamp(3rem, 7vw, 7rem);
     align-items: start;
-    margin-top: clamp(2.5rem, 6vh, 4rem);
+    margin-top: clamp(3.5rem, 8vh, 6rem);
 }
 
 .afr .afr-facts {
@@ -1742,17 +1709,6 @@ button:focus-visible {
         grid-template-columns: 1fr;
         gap: 2.5rem;
     }
-
-    .afr-proof {
-        grid-template-columns: 1fr;
-    }
-
-    .afr-proof div,
-    .afr-proof div + div {
-        padding: 1.4rem 0;
-        border-left: 0;
-        border-bottom: 1px solid #2a2a2a;
-    }
 }
 
 @media (max-width: 768px) {
@@ -1776,4 +1732,215 @@ button:focus-visible {
     .afr-bar strong {
         display: none;
     }
+}
+
+/* ---------- Galaxia: transición con scroll entre AFR-MIND y la trayectoria ----------
+   Sin JS (o con movimiento reducido) es una imagen fija que funde con el fondo de la
+   sección siguiente. galaxy.js añade .is-scrub: la sección se alarga, el escenario se
+   queda fijo y el scroll avanza la galaxia (en vivo con WebGL o, si no, en vídeo) hasta
+   que la pirámide lo llena todo de blanco, el mismo #fafafa de la trayectoria. */
+.galaxy {
+    position: relative;
+    z-index: 3;
+    display: block;
+    min-height: 0;
+    padding: 0;
+    background: #0a0a0a;
+    height: 100vh;
+    height: 100svh;
+}
+
+.galaxy-stage {
+    position: relative;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    background: #0a0a0a;
+}
+
+.galaxy-poster,
+.galaxy-video,
+.galaxy-canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.galaxy-video {
+    opacity: 0;
+}
+
+.galaxy-white {
+    position: absolute;
+    inset: 0;
+    background: #fafafa;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.galaxy:not(.is-scrub) .galaxy-white {
+    opacity: 1;
+    background: linear-gradient(180deg, #0a0a0a 0%, transparent 18%, transparent 62%, #fafafa 100%);
+}
+
+.galaxy.is-scrub {
+    height: 340vh;
+    height: 340svh;
+}
+
+.galaxy.is-scrub .galaxy-stage {
+    position: sticky;
+    top: 0;
+}
+
+.galaxy.is-scrub .galaxy-poster {
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+.galaxy.has-gl .galaxy-poster,
+.galaxy.has-gl .galaxy-white,
+.galaxy.has-gl .galaxy-video,
+.galaxy.has-video .galaxy-poster,
+.galaxy.has-video .galaxy-white {
+    display: none;
+}
+
+.galaxy.has-video .galaxy-video {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .galaxy.is-scrub {
+        height: 300vh;
+        height: 300svh;
+    }
+}
+
+/* ---------- Trayectoria: Formación entra por la izquierda y Experiencia por la derecha ----------
+   scenes.js añade .tl-scene. En escritorio (.tl-pin) la sección se queda fija mientras las
+   columnas se juntan y un buen tramo después, para que no se pase de largo con la inercia del
+   scroll; el avance (--tl-c) lo marca el propio scroll. En móvil las columnas están apiladas y
+   cada una entra con una transición cuando llega a la pantalla. */
+.timeline.tl-scene .content-wrapper {
+    opacity: 1;
+    transform: none;
+}
+
+.timeline.tl-scene .timeline-header {
+    opacity: var(--tl-h, 1);
+}
+
+.timeline.tl-scene .col-left {
+    opacity: var(--tl-o, 1);
+    transform: translateX(calc((1 - var(--tl-c, 1)) * (-100% - 6vw)));
+}
+
+.timeline.tl-scene .col-right {
+    opacity: var(--tl-o, 1);
+    transform: translateX(calc((1 - var(--tl-c, 1)) * (100% + 6vw)));
+}
+
+.timeline.tl-scene:not(.tl-pin) .timeline-header,
+.timeline.tl-scene:not(.tl-pin) .timeline-col {
+    transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.8s ease;
+}
+
+.timeline.tl-pin {
+    display: block;
+    height: 260vh;
+    height: 260svh;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.timeline.tl-pin .content-wrapper {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+    height: 100svh;
+}
+
+/* ---------- Proyectos: portal en la última «o» de «portfolio» ----------
+   scenes.js añade .portal-on. El título se queda fijo y crece hacia la «o»; su interior se
+   abre (máscara con la forma real de la letra) y deja ver los proyectos, que esperan fijos
+   debajo. El fondo y el texto se dibujan en un canvas (.portal-canvas), letra a letra sobre
+   la posición del HTML, que queda invisible ocupando su sitio: así se ven nítidos a cualquier
+   escala. Al terminar el zoom se suelta todo y se sigue bajando por los proyectos. */
+.portal-scene {
+    position: relative;
+    width: 100%;
+}
+
+.portal-spacer {
+    display: none;
+}
+
+.production.portal-on {
+    padding-top: 0;
+}
+
+.portal-on .portal-overlay {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    width: 100vw;
+    height: 100vh;
+    height: 100svh;
+    margin-left: calc(50% - 50vw);
+    margin-bottom: -100vh;
+    margin-bottom: -100svh;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.portal-on .portal-zoom {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 var(--padding-x);
+}
+
+.portal-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.portal-on .production-heading {
+    width: 100%;
+    margin-bottom: 0;
+    opacity: 1;
+    transform: none;
+    transition: none;
+}
+
+.portal-on .production-heading {
+    visibility: hidden;
+}
+
+.portal-on.portal-done .portal-overlay {
+    visibility: hidden;
+}
+
+.portal-on .portal-cases {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding-top: 12vh;
+    transform-origin: 50% 50vh;
+}
+
+.portal-on .portal-spacer {
+    display: block;
+    height: 170vh;
+    height: 170svh;
 }

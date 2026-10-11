@@ -28,7 +28,7 @@
     <meta name="twitter:description"
         content="Desarrollo de principio a fin. Productos web en producción y automatización con Java, Python y TypeScript.">
     <meta name="twitter:image" content="https://www.pedrogomez.dev/og.png">
-    <link rel="stylesheet" href="styles.css?v=20261005-afr">
+    <link rel="stylesheet" href="styles.css?v=20261011-escenas4">
 </head>
 
 <body>
@@ -130,12 +130,6 @@
                         sin que aparezcan juntas en el CV.</figcaption>
                 </figure>
 
-                <div class="afr-proof hidden-element" aria-label="AFR-MIND en cifras">
-                    <div><strong>0</strong><span>librerías de IA: backpropagation, softmax y Adam escritos a mano</span></div>
-                    <div><strong>12</strong><span>neuronas internas que puedes inspeccionar una a una</span></div>
-                    <div><strong>3</strong><span>plugins para entender una red por dentro: neurona, entrenamiento y ablación</span></div>
-                </div>
-
                 <div class="afr-grid hidden-element">
                     <dl class="case-facts afr-facts">
                         <div><dt>Qué es</dt><dd>Mi CV convertido en red: la red ha aprendido qué tecnologías, proyectos y experiencias van juntos, los coloca en 3D y deduce relaciones que no aparecen escritas juntas.</dd></div>
@@ -148,6 +142,19 @@
                         <a href="https://github.com/CODIGOAFRX/AFR-Mind" target="_blank" rel="noopener noreferrer">Ver código</a>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Transición: la red de AFR-MIND se abre en una galaxia y el scroll viaja hasta su núcleo.
+             La animación está renderizada desde código (transicion-galaxia/) y galaxy.js la avanza con el scroll. -->
+        <section id="galaxia" class="galaxy" aria-label="Transición animada hacia el centro de una galaxia de neuronas">
+            <div class="galaxy-stage">
+                <picture>
+                    <source media="(max-aspect-ratio: 1/1)" srcset="/media/galaxia/galaxia-movil.jpg">
+                    <img class="galaxy-poster" src="/media/galaxia/galaxia-1080.jpg" alt="" decoding="async" loading="lazy">
+                </picture>
+                <video class="galaxy-video" muted playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
+                <div class="galaxy-white" aria-hidden="true"></div>
             </div>
         </section>
 
@@ -200,130 +207,142 @@
 
         <!-- Production Case Studies -->
         <section id="production" class="production">
-            <div class="content-wrapper">
-                <div class="production-heading hidden-element">
-                    <div>
-                        <h3 class="section-label">04 / Productos en producción</h3>
-                        <h2>Software que ya trabaja fuera del portfolio.</h2>
+            <!-- Portal: con scroll se hace zoom a la última «o» de «portfolio» y su interior se abre
+                 para entrar en los proyectos (scenes.js). Sin JS se ve como una sección normal. -->
+            <div class="portal-scene">
+                <div class="portal-overlay">
+                    <div class="portal-zoom">
+                        <div class="content-wrapper">
+                            <div class="production-heading hidden-element">
+                                <div>
+                                    <h3 class="section-label">04 / Productos en producción</h3>
+                                    <h2>Software que ya trabaja fuera del portfolio.</h2>
+                                </div>
+                                <p>Proyectos completos en los que diseño la experiencia, desarrollo la lógica y mantengo la
+                                    infraestructura que los hace funcionar.</p>
+                            </div>
+                        </div>
                     </div>
-                    <p>Proyectos completos en los que diseño la experiencia, desarrollo la lógica y mantengo la
-                        infraestructura que los hace funcionar.</p>
                 </div>
+                <div class="portal-cases">
+                    <div class="content-wrapper">
+                        <article id="finanx" class="case-study hidden-element">
+                            <a class="case-browser" href="https://pedrogomez.dev/proyecto/FinanX/" target="_blank"
+                                rel="noopener noreferrer" aria-label="Probar FinanX">
+                                <span class="case-browser-bar"><span>FinanX · Tu dinero, con perspectiva</span><strong>Demo interactiva</strong></span>
+                                <img src="/case-finanx.png" alt="Panel de FinanX con patrimonio, evolución de gastos, categorías y cuentas" loading="lazy" width="1216" height="825">
+                            </a>
+                            <div class="case-copy">
+                                <p class="case-index">Nuevo / Finanzas personales</p>
+                                <h3>FinanX</h3>
+                                <p class="case-lead">Una alternativa personal al Excel: cuentas, gastos, inversiones y objetivos de ahorro con una perspectiva clara del dinero.</p>
+                                <dl class="case-facts">
+                                    <div><dt>Mi aportación</dt><dd>Diseño de producto, identidad visual, modelo financiero, API y despliegue.</dd></div>
+                                    <div><dt>Sistema</dt><dd>Demo abierta con datos de sesión, cuentas privadas, transferencias sin duplicar gastos, cargos recurrentes e importación CSV con detección de duplicados.</dd></div>
+                                    <div><dt>Stack</dt><dd>React · TypeScript · Cloudflare Workers · D1 · Recharts · Vitest · Playwright.</dd></div>
+                                </dl>
+                                <div class="case-links">
+                                    <a href="https://pedrogomez.dev/proyecto/FinanX/" target="_blank" rel="noopener noreferrer">Probar FinanX</a>
+                                    <a href="https://github.com/CODIGOAFRX/FinanX" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
 
-                <article id="finanx" class="case-study hidden-element">
-                    <a class="case-browser" href="https://pedrogomez.dev/proyecto/FinanX/" target="_blank"
-                        rel="noopener noreferrer" aria-label="Probar FinanX">
-                        <span class="case-browser-bar"><span>FinanX · Tu dinero, con perspectiva</span><strong>Demo interactiva</strong></span>
-                        <img src="/case-finanx.png" alt="Panel de FinanX con patrimonio, evolución de gastos, categorías y cuentas" loading="lazy" width="1216" height="825">
-                    </a>
-                    <div class="case-copy">
-                        <p class="case-index">Nuevo / Finanzas personales</p>
-                        <h3>FinanX</h3>
-                        <p class="case-lead">Una alternativa personal al Excel: cuentas, gastos, inversiones y objetivos de ahorro con una perspectiva clara del dinero.</p>
-                        <dl class="case-facts">
-                            <div><dt>Mi aportación</dt><dd>Diseño de producto, identidad visual, modelo financiero, API y despliegue.</dd></div>
-                            <div><dt>Sistema</dt><dd>Demo abierta con datos de sesión, cuentas privadas, transferencias sin duplicar gastos, cargos recurrentes e importación CSV con detección de duplicados.</dd></div>
-                            <div><dt>Stack</dt><dd>React · TypeScript · Cloudflare Workers · D1 · Recharts · Vitest · Playwright.</dd></div>
-                        </dl>
-                        <div class="case-links">
-                            <a href="https://pedrogomez.dev/proyecto/FinanX/" target="_blank" rel="noopener noreferrer">Probar FinanX</a>
-                            <a href="https://github.com/CODIGOAFRX/FinanX" target="_blank" rel="noopener noreferrer">Ver código</a>
-                        </div>
-                    </div>
-                </article>
+                        <article id="aforo" class="case-study case-study-reverse hidden-element">
+                            <a class="case-browser" href="/proyecto/aforo" aria-label="Probar AFORO">
+                                <span class="case-browser-bar"><span>pedrogomez.dev/proyecto/aforo</span><strong>Demo en producción</strong></span>
+                                <img src="/case-aforo.svg" alt="AFORO: plano de concierto con asientos libres y reservados" loading="lazy" width="960" height="540">
+                            </a>
+                            <div class="case-copy">
+                                <p class="case-index">Destacado / Reservas y concurrencia</p>
+                                <h3>AFORO</h3>
+                                <p class="case-lead">Un plano de concierto para probar un problema concreto: qué ocurre cuando dos solicitudes quieren reservar el mismo asiento.</p>
+                                <dl class="case-facts">
+                                    <div><dt>Mi aportación</dt><dd>Modelo de reservas, API, pruebas de concurrencia, interfaz y despliegue.</dd></div>
+                                    <div><dt>Sistema</dt><dd>60 asientos, reservas temporales y hasta 30 compradores automáticos. Puedes intervenir durante la prueba o abrir dos pestañas.</dd></div>
+                                    <div><dt>Stack</dt><dd>React · TypeScript · Cloudflare Workers · D1. Backend de referencia en Java 21, Spring Boot y PostgreSQL disponible en el repositorio.</dd></div>
+                                </dl>
+                                <div class="case-links">
+                                    <a href="/proyecto/aforo">Probar AFORO</a>
+                                    <a href="https://github.com/CODIGOAFRX/AFORO" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
 
-                <article id="aforo" class="case-study case-study-reverse hidden-element">
-                    <a class="case-browser" href="/proyecto/aforo" aria-label="Probar AFORO">
-                        <span class="case-browser-bar"><span>pedrogomez.dev/proyecto/aforo</span><strong>Demo en producción</strong></span>
-                        <img src="/case-aforo.svg" alt="AFORO: plano de concierto con asientos libres y reservados" loading="lazy" width="960" height="540">
-                    </a>
-                    <div class="case-copy">
-                        <p class="case-index">Destacado / Reservas y concurrencia</p>
-                        <h3>AFORO</h3>
-                        <p class="case-lead">Un plano de concierto para probar un problema concreto: qué ocurre cuando dos solicitudes quieren reservar el mismo asiento.</p>
-                        <dl class="case-facts">
-                            <div><dt>Mi aportación</dt><dd>Modelo de reservas, API, pruebas de concurrencia, interfaz y despliegue.</dd></div>
-                            <div><dt>Sistema</dt><dd>60 asientos, reservas temporales y hasta 30 compradores automáticos. Puedes intervenir durante la prueba o abrir dos pestañas.</dd></div>
-                            <div><dt>Stack</dt><dd>React · TypeScript · Cloudflare Workers · D1. Backend de referencia en Java 21, Spring Boot y PostgreSQL disponible en el repositorio.</dd></div>
-                        </dl>
-                        <div class="case-links">
-                            <a href="/proyecto/aforo">Probar AFORO</a>
-                            <a href="https://github.com/CODIGOAFRX/AFORO" target="_blank" rel="noopener noreferrer">Ver código</a>
-                        </div>
-                    </div>
-                </article>
+                        <article class="case-study hidden-element">
+                            <a class="case-browser" href="https://biblioteca.estaciondiseno.es/" target="_blank"
+                                rel="noopener noreferrer" aria-label="Visitar la Biblioteca de Estación Diseño">
+                                <span class="case-browser-bar"><span>biblioteca.estaciondiseno.es</span><strong>En producción</strong></span>
+                                <img src="case-biblioteca.png"
+                                    alt="Catálogo de libros de la Biblioteca de Estación Diseño" loading="lazy">
+                            </a>
+                            <div class="case-copy">
+                                <p class="case-index">01 / Catálogo académico y reservas</p>
+                                <h3>Biblioteca · Estación Diseño</h3>
+                                <p class="case-lead">El fondo de la Escuela Superior de Diseño convertido en una aplicación que
+                                    alumnado y personal consultan cada día, con más de 1.100 registros catalogados.</p>
+                                <dl class="case-facts">
+                                    <div><dt>Mi aportación</dt><dd>API, modelo de datos, frontend, despliegue y migración del catálogo.</dd></div>
+                                    <div><dt>Sistema</dt><dd>Libros, revistas y proyectos de fin de estudios, reservas con límite por usuario, acceso de invitado en solo lectura y gestión privada.</dd></div>
+                                    <div><dt>Stack</dt><dd>PHP 8.1 · MariaDB · JWT · Docker · React 19 · Vite · Tailwind</dd></div>
+                                </dl>
+                                <div class="case-links">
+                                    <a href="https://biblioteca.estaciondiseno.es/" target="_blank" rel="noopener noreferrer">Visitar producto</a>
+                                    <span class="case-link-muted">Código privado</span>
+                                </div>
+                            </div>
+                        </article>
 
-                <article class="case-study hidden-element">
-                    <a class="case-browser" href="https://biblioteca.estaciondiseno.es/" target="_blank"
-                        rel="noopener noreferrer" aria-label="Visitar la Biblioteca de Estación Diseño">
-                        <span class="case-browser-bar"><span>biblioteca.estaciondiseno.es</span><strong>En producción</strong></span>
-                        <img src="case-biblioteca.png"
-                            alt="Catálogo de libros de la Biblioteca de Estación Diseño" loading="lazy">
-                    </a>
-                    <div class="case-copy">
-                        <p class="case-index">01 / Catálogo académico y reservas</p>
-                        <h3>Biblioteca · Estación Diseño</h3>
-                        <p class="case-lead">El fondo de la Escuela Superior de Diseño convertido en una aplicación que
-                            alumnado y personal consultan cada día, con más de 1.100 registros catalogados.</p>
-                        <dl class="case-facts">
-                            <div><dt>Mi aportación</dt><dd>API, modelo de datos, frontend, despliegue y migración del catálogo.</dd></div>
-                            <div><dt>Sistema</dt><dd>Libros, revistas y proyectos de fin de estudios, reservas con límite por usuario, acceso de invitado en solo lectura y gestión privada.</dd></div>
-                            <div><dt>Stack</dt><dd>PHP 8.1 · MariaDB · JWT · Docker · React 19 · Vite · Tailwind</dd></div>
-                        </dl>
-                        <div class="case-links">
-                            <a href="https://biblioteca.estaciondiseno.es/" target="_blank" rel="noopener noreferrer">Visitar producto</a>
-                            <span class="case-link-muted">Código privado</span>
-                        </div>
-                    </div>
-                </article>
+                        <article class="case-study case-study-reverse hidden-element">
+                            <a class="case-browser" href="https://afropxmusic.com/" target="_blank"
+                                rel="noopener noreferrer" aria-label="Visitar AfroPX Music">
+                                <span class="case-browser-bar"><span>afropxmusic.com</span><strong>En producción</strong></span>
+                                <img src="https://afropxmusic.com/assets/images/og-afropx.jpg"
+                                    alt="Portada en blanco, negro y rojo de AfroPX Music" loading="lazy" referrerpolicy="no-referrer">
+                            </a>
+                            <div class="case-copy">
+                                <p class="case-index">02 / Producto musical y reservas</p>
+                                <h3>AfroPX Music</h3>
+                                <p class="case-lead">Una identidad artística convertida en producto digital: música, servicios
+                                    profesionales de audio y una agenda real en una sola experiencia.</p>
+                                <dl class="case-facts">
+                                    <div><dt>Mi aportación</dt><dd>Producto, diseño, frontend, backend e infraestructura.</dd></div>
+                                    <div><dt>Sistema</dt><dd>Smart links, reservas sin duplicados, panel privado, correo y analítica.</dd></div>
+                                    <div><dt>Stack</dt><dd>TypeScript · Cloudflare Pages / Functions · D1 · Resend · Turnstile</dd></div>
+                                </dl>
+                                <div class="case-links">
+                                    <a href="https://afropxmusic.com/" target="_blank" rel="noopener noreferrer">Visitar producto</a>
+                                    <a href="https://github.com/CODIGOAFRX/afropx-web" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
 
-                <article class="case-study case-study-reverse hidden-element">
-                    <a class="case-browser" href="https://afropxmusic.com/" target="_blank"
-                        rel="noopener noreferrer" aria-label="Visitar AfroPX Music">
-                        <span class="case-browser-bar"><span>afropxmusic.com</span><strong>En producción</strong></span>
-                        <img src="https://afropxmusic.com/assets/images/og-afropx.jpg"
-                            alt="Portada en blanco, negro y rojo de AfroPX Music" loading="lazy" referrerpolicy="no-referrer">
-                    </a>
-                    <div class="case-copy">
-                        <p class="case-index">02 / Producto musical y reservas</p>
-                        <h3>AfroPX Music</h3>
-                        <p class="case-lead">Una identidad artística convertida en producto digital: música, servicios
-                            profesionales de audio y una agenda real en una sola experiencia.</p>
-                        <dl class="case-facts">
-                            <div><dt>Mi aportación</dt><dd>Producto, diseño, frontend, backend e infraestructura.</dd></div>
-                            <div><dt>Sistema</dt><dd>Smart links, reservas sin duplicados, panel privado, correo y analítica.</dd></div>
-                            <div><dt>Stack</dt><dd>TypeScript · Cloudflare Pages / Functions · D1 · Resend · Turnstile</dd></div>
-                        </dl>
-                        <div class="case-links">
-                            <a href="https://afropxmusic.com/" target="_blank" rel="noopener noreferrer">Visitar producto</a>
-                            <a href="https://github.com/CODIGOAFRX/afropx-web" target="_blank" rel="noopener noreferrer">Ver código</a>
-                        </div>
+                        <article class="case-study hidden-element">
+                            <a class="case-browser" href="https://historiadelamoda.net/" target="_blank"
+                                rel="noopener noreferrer" aria-label="Visitar Historia de la Moda">
+                                <span class="case-browser-bar"><span>historiadelamoda.net</span><strong>En producción</strong></span>
+                                <img src="https://historiadelamoda.net/og.png"
+                                    alt="Portada editorial de Historia de la Moda" loading="lazy" referrerpolicy="no-referrer">
+                            </a>
+                            <div class="case-copy">
+                                <p class="case-index">03 / Plataforma editorial y formativa</p>
+                                <h3>Historia de la Moda</h3>
+                                <p class="case-lead">Una plataforma cultural para una comunidad de más de 400.000 personas,
+                                    con archivo, contenidos, biblioteca y una futura escuela online.</p>
+                                <dl class="case-facts">
+                                    <div><dt>Mi aportación</dt><dd>Arquitectura, diseño editorial, desarrollo full-stack y despliegue.</dd></div>
+                                    <div><dt>Sistema</dt><dd>Podcasts, conferencias, biblioteca, cursos SCORM y gestión privada.</dd></div>
+                                    <div><dt>Stack</dt><dd>React 19 · TypeScript · Vinext · Cloudflare Workers · D1 · Drizzle</dd></div>
+                                </dl>
+                                <div class="case-links">
+                                    <a href="https://historiadelamoda.net/" target="_blank" rel="noopener noreferrer">Visitar producto</a>
+                                    <a href="https://github.com/CODIGOAFRX/WebHistoriaDeLaModa" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
                     </div>
-                </article>
-
-                <article class="case-study hidden-element">
-                    <a class="case-browser" href="https://historiadelamoda.net/" target="_blank"
-                        rel="noopener noreferrer" aria-label="Visitar Historia de la Moda">
-                        <span class="case-browser-bar"><span>historiadelamoda.net</span><strong>En producción</strong></span>
-                        <img src="https://historiadelamoda.net/og.png"
-                            alt="Portada editorial de Historia de la Moda" loading="lazy" referrerpolicy="no-referrer">
-                    </a>
-                    <div class="case-copy">
-                        <p class="case-index">03 / Plataforma editorial y formativa</p>
-                        <h3>Historia de la Moda</h3>
-                        <p class="case-lead">Una plataforma cultural para una comunidad de más de 400.000 personas,
-                            con archivo, contenidos, biblioteca y una futura escuela online.</p>
-                        <dl class="case-facts">
-                            <div><dt>Mi aportación</dt><dd>Arquitectura, diseño editorial, desarrollo full-stack y despliegue.</dd></div>
-                            <div><dt>Sistema</dt><dd>Podcasts, conferencias, biblioteca, cursos SCORM y gestión privada.</dd></div>
-                            <div><dt>Stack</dt><dd>React 19 · TypeScript · Vinext · Cloudflare Workers · D1 · Drizzle</dd></div>
-                        </dl>
-                        <div class="case-links">
-                            <a href="https://historiadelamoda.net/" target="_blank" rel="noopener noreferrer">Visitar producto</a>
-                            <a href="https://github.com/CODIGOAFRX/WebHistoriaDeLaModa" target="_blank" rel="noopener noreferrer">Ver código</a>
-                        </div>
-                    </div>
-                </article>
+                </div>
+                <div class="portal-spacer" aria-hidden="true"></div>
             </div>
         </section>
 
@@ -427,6 +446,8 @@
     </footer>
 
     <script src="script.js?v=20260918-lcp"></script>
+    <script src="galaxy.js?v=20261011-escenas4" defer></script>
+    <script src="scenes.js?v=20261011-escenas4" defer></script>
 </body>
 
 </html>
