@@ -254,20 +254,28 @@
         const r = hero.getBoundingClientRect();
         return clamp(-r.top / Math.max(1, r.height - vh));
     };
+    // Punto de disparo: deja HOLD px fijos al final, iguales en cualquier pantalla (unos 6 clics
+    // de rueda), para no saltarse la formación por bajar un poco de más
+    const HOLD = 600;
+    const triggerAt = () => {
+        const range = Math.max(1, hero.offsetHeight - vh);
+        return clamp((range - HOLD) / range, 0.3, 0.98);
+    };
 
     // El scroll mide el nombre y dibuja los círculos de construcción (hasta TRIGGER). Al llegar
     // ahí, la formación del globo se reproduce sola a ritmo fijo (RATE segundos de la
-    // previsualización por segundo real); al volver arriba se deshace igual. El disparo está al
-    // final del tramo fijo: si se sigue bajando, la página avanza en el acto y la formación
-    // termina sola (más deprisa) mientras tanto.
-    const TRIGGER = 0.985, T_SPLIT = 3.0, RATE = 0.75, REWIND = 1.3, HURRY = 3;
+    // previsualización por segundo real); al volver arriba se deshace igual. Tras el disparo
+    // quedan HOLD px fijos; si se sigue bajando, la formación termina más deprisa.
+    const T_SPLIT = 3.0, RATE = 0.75, REWIND = 1.3, HURRY = 3;
     const TEXT_AT = 3.75; // el nombre ya está casi en su sitio de cabecera
+    let TRIGGER = 0.8;
     const scrollTime = p => mix(T0, T_SPLIT, clamp(p / TRIGGER));
     let t = -1, last = 0;
     function update(now = performance.now()) {
         frame = 0;
         const dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
         last = now;
+        TRIGGER = triggerAt();
         const p = progress();
         const gone = hero.getBoundingClientRect().bottom <= 0;
         // El indicador de scroll se recoge en cuanto se empieza a bajar

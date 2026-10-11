@@ -2327,8 +2327,8 @@ blockquote {
 }
 
 html.has-intro .hero {
-    height: calc(100vh + 120vh);
-    height: calc(100lvh + 120lvh);
+    height: calc(100vh + 118vh + 600px);
+    height: calc(100lvh + 118lvh + 600px);
     min-height: 0;
     overflow: visible;
 }
