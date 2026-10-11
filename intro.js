@@ -53,7 +53,10 @@
         const sb = stage.getBoundingClientRect();
         vw = sb.width; vh = sb.height;
         dpr = Math.min(window.devicePixelRatio || 1, 2);
-        [globeCanvas, constructCanvas, layer].forEach(c => { c.width = Math.round(vw * dpr); c.height = Math.round(vh * dpr); });
+        constructCanvas.width = Math.round(vw * dpr); constructCanvas.height = Math.round(vh * dpr);
+        // El lienzo del globo es fijo a la pantalla, como el globo de la página
+        const gb = globeCanvas.getBoundingClientRect();
+        [globeCanvas, layer].forEach(c => { c.width = Math.round(gb.width * dpr); c.height = Math.round(gb.height * dpr); });
 
         const node = nameEl.firstChild;
         const text = node.data;
@@ -170,43 +173,67 @@
         });
 
         if (!live || !live.size) return;
-        // Destino: el globo de la página tal y como está ahora (posición, tamaño, giro, opacidad)
+        // Destino: el globo de la página tal y como está ahora (posición, tamaño, giro, opacidad).
+        // Su lienzo es fijo a la pantalla, así que coincide aunque la cabecera ya se esté yendo.
         const R = 0.445 * live.size * live.scale;
+        const gx = live.x, gy = live.y;
+        const nameShift = stage.getBoundingClientRect().top; // el nombre sí se mueve con la página
         const settle = expoInOut(prog(t, 4.1, 4.8));
         const layerAlpha = mix(1, live.opacity, settle);
-        const rotation = live.rotation + 1.1 * Math.pow(1 - prog(t, 3.0, T1), 2);
+        // Mismo giro e inclinación que el globo de la página en todo momento: al montarse ya está
+        // en su posición definitiva y no hay nada que recolocar
+        const rotation = live.rotation, tilt = G.tilt;
+        const ct = Math.cos(tilt), st = Math.sin(tilt);
         const assembled = t >= 4.8;
 
-        // 2–3. Círculos de construcción que salen del nombre y se vuelven meridianos
+        // 2–3. Círculos de construcción que salen del nombre y se vuelven meridianos: cada punto
+        // del círculo viaja a su punto del meridiano proyectado (par de longitudes L y L + 180)
         if (!assembled) {
+            const SEG = 96;
             spec.circles.forEach((c, i) => {
                 const draw = expoInOut(prog(t, 1.6 + i * 0.09, 2.4 + i * 0.09));
                 if (draw <= 0) return;
                 const fly = spring(t - 3.05 - i * 0.05, 5.5);
                 const morph = expoInOut(prog(t, 3.3 + i * 0.05, 4.1 + i * 0.05));
                 const L = LONS[i] + rotation;
-                const sx = Math.sin(L), cz = Math.cos(L);
-                const cx = mix(X(c.cx), live.x, fly);
-                const cy = mix(Y(c.cy), live.y, fly) + Math.sin(Math.PI * fly) * vh * 0.14;
-                const rx = mix(c.r * s, R * Math.abs(sx), morph), ry = mix(c.r * s, R, morph);
+                const sl = Math.sin(L), cl = Math.cos(L);
+                const ox = mix(X(c.cx), gx, fly);
+                const oy = mix(Y(c.cy) + nameShift, gy, fly) + Math.sin(Math.PI * fly) * vh * 0.14;
+                const r = mix(c.r * s, R, morph);
                 const onName = morph <= 0;
                 const ctx = onName ? cctx : lctx;
                 ctx.lineWidth = onName ? 1.2 : mix(1.2, 0.7 * live.scale, settle);
-                const side = sx >= 0;
-                [[-Math.PI / 2, Math.PI / 2, side === cz >= 0], [Math.PI / 2, Math.PI * 1.5, side !== cz >= 0]].forEach(([a0, a1, front]) => {
+                const point = phi => {
+                    const cp = Math.cos(phi), sp = Math.sin(phi);
+                    // Meridiano con la inclinación del globo, relativo a su centro y en radios
+                    const mx = cp * sl, my = sp, mz = cp * cl;
+                    const ty = my * ct - mz * st, tz = my * st + mz * ct;
+                    // Círculo de construcción, en la misma parametrización
+                    return {
+                        x: ox + mix(cp, mx, morph) * r,
+                        y: oy - mix(sp, ty, morph) * r,
+                        z: tz,
+                    };
+                };
+                const n = Math.max(1, Math.round(SEG * draw));
+                let prev = point(Math.PI / 2);
+                for (let k = 1; k <= n; k++) {
+                    const next = point(Math.PI / 2 + (k / SEG) * Math.PI * 2);
+                    const front = prev.z + next.z >= 0;
                     ctx.strokeStyle = onName ? white(0.95) : gray(Math.round(mix(17, front ? 184 : 227, settle)));
                     ctx.beginPath();
-                    ctx.ellipse(cx, cy, Math.max(rx, 0.01), ry, 0, a0, mix(a0, a1, draw));
+                    ctx.moveTo(prev.x, prev.y);
+                    ctx.lineTo(next.x, next.y);
                     ctx.stroke();
-                });
+                    prev = next;
+                }
             });
         }
 
         // 4. El globo de la página, dibujado por partes hasta quedar completo
         if (t >= 3.9) {
             G.draw(lctx, {
-                centerX: live.x, centerY: live.y, radius: R, rotation, theme: 0, lineScale: live.scale,
-                tilt: mix(0, G.tilt, expoInOut(prog(t, 4.8, 5.6))),
+                centerX: gx, centerY: gy, radius: R, rotation, theme: 0, lineScale: live.scale, tilt,
                 fill: expoOut(prog(t, 4.0, 4.8)),
                 build: {
                     outline: expoInOut(prog(t, 3.9, 4.45)),
@@ -230,9 +257,9 @@
 
     // El scroll mide el nombre y dibuja los círculos de construcción (hasta TRIGGER). Al llegar
     // ahí, la formación del globo se reproduce sola a ritmo fijo (RATE segundos de la
-    // previsualización por segundo real); al volver arriba se deshace igual. En el resto del
-    // recorrido la cabecera sigue fija con todo el texto a la vista.
-    const TRIGGER = 0.45, T_SPLIT = 3.0, RATE = 0.75, REWIND = 1.3;
+    // previsualización por segundo real); al volver arriba se deshace igual. Tras el disparo
+    // queda un tramo fijo corto.
+    const TRIGGER = 0.82, T_SPLIT = 3.0, RATE = 0.75, REWIND = 1.3, HURRY = 3;
     const TEXT_AT = 3.75; // el nombre ya está casi en su sitio de cabecera
     const scrollTime = p => mix(T0, T_SPLIT, clamp(p / TRIGGER));
     let t = -1, last = 0;
@@ -251,7 +278,8 @@
         } else if (gone) {
             t = T1; // si la cabecera ya no se ve, el globo queda formado sin esperar
         } else if (p >= TRIGGER && t >= T_SPLIT - 0.01) {
-            t = Math.min(T1, Math.max(t, T_SPLIT) + dt * RATE);
+            // Si se sigue bajando y la cabecera empieza a irse, la formación acelera
+            t = Math.min(T1, Math.max(t, T_SPLIT) + dt * RATE * (p >= 1 ? HURRY : 1));
             animating = t < T1;
         } else if (p < TRIGGER && t > T_SPLIT + 0.001) {
             t = Math.max(T_SPLIT, t - dt * RATE * REWIND);

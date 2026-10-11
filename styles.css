@@ -2327,8 +2327,8 @@ blockquote {
 }
 
 html.has-intro .hero {
-    height: calc(100vh + 300vh);
-    height: calc(100lvh + 300lvh);
+    height: calc(100vh + 165vh);
+    height: calc(100lvh + 165lvh);
     min-height: 0;
     overflow: visible;
 }
@@ -2366,6 +2366,8 @@ html.has-intro .hero .name {
 }
 
 .intro-globe {
+    /* Fijo a la pantalla como el globo de la página: no se recorta si la cabecera ya se va */
+    position: fixed;
     z-index: 1;
 }
 
