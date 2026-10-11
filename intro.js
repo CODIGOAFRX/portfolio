@@ -228,21 +228,38 @@
         return clamp(-r.top / Math.max(1, r.height - vh));
     };
 
-    // Reparto del recorrido: medición del nombre (hasta MEASURE), formación del globo (hasta FORM)
-    // y, en el resto, la cabecera fija con todo el texto a la vista. La formación ocupa el tramo
-    // más largo para que se entienda cómo los círculos se convierten en el globo.
-    const MEASURE = 0.2, FORM = 0.72, T_SPLIT = 3.0;
-    const timeAt = p => (p < MEASURE
-        ? mix(T0, T_SPLIT, p / MEASURE)
-        : mix(T_SPLIT, T1, clamp((p - MEASURE) / (FORM - MEASURE))));
-    let t = -1;
-    function update() {
+    // El scroll mide el nombre y dibuja los círculos de construcción (hasta TRIGGER). Al llegar
+    // ahí, la formación del globo se reproduce sola a ritmo fijo (RATE segundos de la
+    // previsualización por segundo real); al volver arriba se deshace igual. En el resto del
+    // recorrido la cabecera sigue fija con todo el texto a la vista.
+    const TRIGGER = 0.45, T_SPLIT = 3.0, RATE = 0.75, REWIND = 1.3;
+    const scrollTime = p => mix(T0, T_SPLIT, clamp(p / TRIGGER));
+    let t = -1, last = 0;
+    function update(now = performance.now()) {
         frame = 0;
+        const dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
+        last = now;
         const p = progress();
-        const target = timeAt(p);
-        // Suavizado: la rueda empuja la escena en vez de hacerla saltar
-        t = t < 0 ? target : t + (target - t) * 0.14;
-        if (Math.abs(target - t) < 0.002) t = target;
+        const gone = hero.getBoundingClientRect().bottom <= 0;
+        let animating = false;
+        if (t < 0) {
+            // Al cargar a media página se coloca directamente en su sitio
+            t = p >= TRIGGER ? T1 : scrollTime(p);
+        } else if (gone) {
+            t = T1; // si la cabecera ya no se ve, el globo queda formado sin esperar
+        } else if (p >= TRIGGER && t >= T_SPLIT - 0.01) {
+            t = Math.min(T1, Math.max(t, T_SPLIT) + dt * RATE);
+            animating = t < T1;
+        } else if (p < TRIGGER && t > T_SPLIT + 0.001) {
+            t = Math.max(T_SPLIT, t - dt * RATE * REWIND);
+            animating = true;
+        } else {
+            // Tramo controlado por el scroll, con suavizado: la rueda empuja la escena
+            const target = scrollTime(p);
+            t += (target - t) * 0.14;
+            if (Math.abs(target - t) < 0.002) t = target;
+            animating = t !== target || p >= TRIGGER;
+        }
         const finished = t >= T1 - 0.0005;
         shell.classList.toggle('is-intro', !finished);
         hero.classList.toggle('intro-finished', finished);
@@ -261,7 +278,8 @@
         if (!done && finished) { done = true; hero.classList.add('intro-done'); }
         else if (done && t < T1 - 0.4) { done = false; hero.classList.remove('intro-done'); }
         // Mientras la escena está en curso se redibuja siempre: el globo gira solo
-        if ((!finished || t !== target) && hero.getBoundingClientRect().bottom > 0) frame = requestAnimationFrame(update);
+        if ((!finished || animating) && !gone) frame = requestAnimationFrame(update);
+        else last = 0;
     }
     const wake = () => { if (!frame) frame = requestAnimationFrame(update); };
 
