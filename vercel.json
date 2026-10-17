@@ -12,11 +12,11 @@
     },
     {
       "source": "/proyecto/pera-erp/app",
-      "destination": "/proyecto/pera-erp/app/index.html"
+      "destination": "/proyecto/pera-erp/app/"
     },
     {
       "source": "/proyecto/pera-erp/app/:path*",
-      "destination": "/proyecto/pera-erp/app/index.html"
+      "destination": "/proyecto/pera-erp/app/"
     },
     {
       "source": "/admin",
