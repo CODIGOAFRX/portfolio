@@ -2503,3 +2503,344 @@ html.has-intro .hero.cue-hidden .scroll-cue {
     0% { transform: translateY(-100%); }
     60%, 100% { transform: translateY(225%); }
 }
+
+/* ------------------------------------------------------------------
+   PERA ERP: proyecto destacado. Bloque con el verde de la marca de PERA
+   (el de la propia aplicación) para que se lea como proyecto principal,
+   igual que AFR-MIND tiene su bloque oscuro. Pantallas reales de la demo.
+   ------------------------------------------------------------------ */
+.pera {
+    min-height: auto;
+    padding-top: 14vh;
+    padding-bottom: 14vh;
+    background: #13261b;
+    color: #eef4ee;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.pera .section-label {
+    color: #9db5a3;
+    margin-bottom: 1.5rem;
+}
+
+.pera .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 0.7rem;
+    border-radius: 50%;
+    background: #5fd68a;
+    transform: translateY(-1px);
+}
+
+.pera-heading {
+    margin-bottom: clamp(3.5rem, 8vh, 6rem);
+}
+
+.pera-title-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2.5vw, 2.4rem);
+}
+
+.pera-mark {
+    width: clamp(56px, 8vw, 120px);
+    height: auto;
+    border-radius: 22%;
+    flex: 0 0 auto;
+}
+
+.pera-title {
+    font-size: clamp(4.4rem, 12vw, 13rem);
+    font-weight: 400;
+    line-height: 0.85;
+    letter-spacing: -0.06em;
+    white-space: nowrap;
+}
+
+.pera-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.85fr);
+    gap: clamp(2.5rem, 7vw, 7rem);
+    align-items: start;
+    margin-top: clamp(2rem, 4vh, 3rem);
+}
+
+.pera-sub {
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 2.6vw, 2.5rem);
+    font-style: italic;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.pera-intro p {
+    color: #b3c6b8;
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.pera-intro p + p {
+    margin-top: 1rem;
+}
+
+.pera-intro strong {
+    color: #eef4ee;
+    font-weight: 600;
+}
+
+/* Escaparate: ventana grande con tres pantallas que se relevan y el móvil delante. */
+.pera-showcase {
+    position: relative;
+    padding-right: 9%;
+    padding-bottom: 4%;
+}
+
+.pera-browser {
+    display: block;
+    overflow: hidden;
+    border: 1px solid #2c4335;
+    background: #0d1a12;
+    box-shadow: 0 50px 120px rgba(0, 0, 0, 0.45);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pera-browser:hover {
+    transform: translateY(-6px);
+}
+
+.pera-bar {
+    min-height: 48px;
+    padding: 0 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid #2c4335;
+    color: #9db5a3;
+    font-family: 'Courier New', monospace;
+    font-size: 0.72rem;
+}
+
+.pera-bar span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pera-bar strong {
+    color: #eef4ee;
+    font: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+}
+
+.pera-screen {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 10;
+    background: #f5f7f3;
+}
+
+.pera-screen img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top left;
+}
+
+/* Las tres pantallas se relevan cada pocos segundos para enseñar más de una parte del producto. */
+@media (prefers-reduced-motion: no-preference) {
+    .pera-screen img {
+        opacity: 0;
+        animation: pera-screens 15s infinite;
+    }
+
+    .pera-screen img:nth-child(2) { animation-delay: 5s; }
+    .pera-screen img:nth-child(3) { animation-delay: 10s; }
+}
+
+@keyframes pera-screens {
+    0%, 30% { opacity: 1; }
+    36%, 94% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.pera-phone {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 21%;
+    overflow: hidden;
+    border: 7px solid #0d1a12;
+    border-radius: 30px;
+    background: #0d1a12;
+    box-shadow: 0 40px 90px rgba(0, 0, 0, 0.5);
+}
+
+.pera-phone img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 23px;
+}
+
+/* Cuatro áreas del producto, cada una con su pantalla. */
+.pera-modules {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1.2rem, 2.4vw, 2.4rem);
+    margin-top: clamp(4rem, 9vh, 7rem);
+}
+
+.pera-modules img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: top left;
+    border: 1px solid #2c4335;
+    margin-bottom: 1.2rem;
+}
+
+.pera-modules h4 {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+.pera-modules p {
+    margin-top: 0.5rem;
+    color: #b3c6b8;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.pera-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(240px, 0.7fr);
+    gap: clamp(3rem, 7vw, 7rem);
+    align-items: end;
+    margin-top: clamp(4rem, 9vh, 7rem);
+}
+
+.pera-figures {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.pera-figures strong {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 5vw, 4.6rem);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: #8ee6ab;
+}
+
+.pera-figures span {
+    display: block;
+    margin-top: 0.6rem;
+    color: #b3c6b8;
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
+.pera .pera-facts {
+    margin: 0;
+    border-top-color: #2c4335;
+}
+
+.pera .pera-facts div {
+    grid-template-columns: 160px 1fr;
+    border-bottom-color: #2c4335;
+}
+
+.pera .pera-facts dt {
+    color: #9db5a3;
+}
+
+.pera .pera-facts dd {
+    color: #d5e2d8;
+}
+
+.pera-links {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.2rem;
+    font-size: 1.05rem;
+}
+
+.pera-links a {
+    color: #eef4ee;
+}
+
+.pera-links a:first-child {
+    border-bottom-color: #5fd68a;
+}
+
+.text-link-pera {
+    border-bottom-color: #1d8a44;
+}
+
+@media (max-width: 900px) {
+    .pera-row,
+    .pera-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .pera-modules {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .pera-title {
+        white-space: normal;
+    }
+
+    .pera-showcase {
+        padding-right: 0;
+        padding-bottom: 34%;
+    }
+
+    .pera-phone {
+        width: 34%;
+        right: 4%;
+        border-width: 5px;
+        border-radius: 22px;
+    }
+
+    .pera-phone img {
+        border-radius: 17px;
+    }
+
+    .pera-modules {
+        grid-template-columns: 1fr;
+    }
+
+    .pera-figures {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+
+    .pera .pera-facts div {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+    }
+}

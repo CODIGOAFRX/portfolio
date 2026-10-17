@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es" class="no-js">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PERA ERP · Pedro Gómez</title>
+    <meta name="description"
+        content="PERA ERP: presupuestos, facturas con Veri*Factu, cobros, compras, TPV y almacén en un ERP web para pymes. Caso de estudio y demo con datos inventados.">
+    <meta name="theme-color" content="#f3f6f1" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0e1611" media="(prefers-color-scheme: dark)">
+    <meta name="color-scheme" content="light dark">
+    <link rel="icon" type="image/svg+xml" href="/proyecto/pera-erp/favicon.svg">
+    <link rel="canonical" href="https://www.pedrogomez.dev/proyecto/pera-erp">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:site_name" content="Pedro Gómez">
+    <meta property="og:title" content="PERA ERP · Todo el negocio, mucho más claro">
+    <meta property="og:description" content="Un ERP web para pymes: ventas y facturas con Veri*Factu, cobros, compras, TPV y almacén. Pruébalo con datos inventados.">
+    <meta property="og:url" content="https://www.pedrogomez.dev/proyecto/pera-erp">
+    <meta property="og:image" content="https://www.pedrogomez.dev/proyecto/pera-erp/media/og.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preload" href="/proyecto/pera-erp/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/proyecto/pera-erp/media/resumen.webp" as="image">
+    <link rel="stylesheet" href="/proyecto/pera-erp/pera.css?v=20261017">
+    <script src="/proyecto/pera-erp/pera.js?v=20261017" defer></script>
+</head>
+
+<body>
+    <a class="skip-link" href="#flujo">Saltar al contenido</a>
+
+    <header class="topbar">
+        <a class="topbar-back" href="/#production" aria-label="Volver al portfolio de Pedro Gómez">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+            <span>Pedro Gómez</span>
+        </a>
+        <nav class="topbar-links" aria-label="Secciones">
+            <a href="#flujo">Cómo funciona</a>
+            <a href="#verifactu">Veri*Factu</a>
+            <a href="#por-dentro">Por dentro</a>
+            <a href="#video">Vídeo</a>
+        </nav>
+        <a class="button button-small" href="/proyecto/pera-erp/app/">Probar la demo</a>
+    </header>
+
+    <main>
+        <!-- Portada y entrada en la interfaz: al hacer scroll, la ventana del navegador crece hasta
+             llenar la pantalla y por dentro van pasando pantallas reales (pera.js). Sin JS o con
+             movimiento reducido se queda como una portada normal. -->
+        <section class="dive" data-scene="dive" aria-label="PERA ERP">
+            <div class="dive-stage">
+                <div class="hero">
+                    <div class="hero-copy">
+                        <p class="hero-brand"><img src="/proyecto/pera-erp/favicon.svg" alt="" width="34" height="34"><span>PERA ERP · caso de estudio</span></p>
+                        <h1>Todo el negocio, mucho más claro.</h1>
+                        <p class="hero-lead">Presupuestos, facturas con Veri*Factu, cobros, compras, TPV y almacén. Un ERP completo para pymes que funciona en el navegador.</p>
+                        <div class="hero-actions">
+                            <a class="button" href="/proyecto/pera-erp/app/">Probar la demo</a>
+                            <a class="button button-ghost" href="#video">Ver el vídeo</a>
+                        </div>
+                    </div>
+                    <div class="hero-slot" aria-hidden="true"></div>
+                </div>
+
+                <figure class="dive-frame browser" aria-label="Pantallas de PERA ERP">
+                    <div class="browser-bar" aria-hidden="true">
+                        <i></i><i></i><i></i>
+                        <span>pedrogomez.dev/proyecto/pera-erp/app</span>
+                    </div>
+                    <div class="browser-screen">
+                        <img class="dive-shot is-active" src="/proyecto/pera-erp/media/resumen.webp" width="2160" height="1350" alt="Resumen del negocio en PERA: facturado este mes, ritmo frente al mes anterior y perspectiva de seis meses">
+                        <img class="dive-shot" src="/proyecto/pera-erp/media/ventas.webp" width="2160" height="1350" loading="lazy" alt="Lista de ventas con presupuestos, albaranes y facturas con su marca Veri*Factu">
+                        <img class="dive-shot" src="/proyecto/pera-erp/media/almacen.webp" width="2160" height="1350" loading="lazy" alt="Existencias del almacén con la ubicación de cada artículo">
+                    </div>
+                    <figcaption class="dive-captions">
+                        <div class="dive-tabs" aria-hidden="true"><span class="is-active">Resumen</span><span>Ventas</span><span>Almacén</span></div>
+                        <div class="dive-caption is-active">
+                            <strong>Todo el negocio, de un vistazo.</strong>
+                            <span>Lo facturado, el ritmo frente al mes anterior y los últimos seis meses, nada más entrar.</span>
+                        </div>
+                        <div class="dive-caption">
+                            <strong>Cada documento, con su rastro.</strong>
+                            <span>Presupuestos, albaranes y facturas en una lista. Lo ya convertido queda tachado y enlazado.</span>
+                        </div>
+                        <div class="dive-caption">
+                            <strong>Las existencias, donde están.</strong>
+                            <span>Cada artículo con su ubicación en cada almacén y el código listo para copiar.</span>
+                        </div>
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <!-- Paso a paso: la pantalla de la izquierda cambia según el paso que está en el centro. -->
+        <section id="flujo" class="flow">
+            <div class="wrap">
+                <header class="section-head reveal">
+                    <h2>Del presupuesto al asiento.</h2>
+                    <p>Así recorre un pedido PERA, sin volver a teclear nada.</p>
+                </header>
+                <div class="flow-grid">
+                    <div class="flow-visual" aria-hidden="true">
+                        <div class="browser flow-frame">
+                            <div class="browser-bar"><i></i><i></i><i></i><span>PERA ERP</span></div>
+                            <div class="browser-screen">
+                                <img class="flow-shot is-active" src="/proyecto/pera-erp/media/presupuestos.webp" width="2160" height="1350" loading="lazy" alt="">
+                                <img class="flow-shot" src="/proyecto/pera-erp/media/albaran.webp" width="2160" height="1350" loading="lazy" alt="">
+                                <img class="flow-shot" src="/proyecto/pera-erp/media/factura.webp" width="2160" height="1350" loading="lazy" alt="">
+                                <img class="flow-shot" src="/proyecto/pera-erp/media/cartera.webp" width="2160" height="1350" loading="lazy" alt="">
+                                <img class="flow-shot" src="/proyecto/pera-erp/media/contabilidad.webp" width="2160" height="1350" loading="lazy" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <ol class="flow-steps">
+                        <li class="flow-step is-active" data-step="0">
+                            <h3>Presupuesta</h3>
+                            <p>Preparas el presupuesto con los precios del cliente, lo envías y lo marcas aceptado o rechazado.</p>
+                            <img class="flow-inline" src="/proyecto/pera-erp/media/presupuestos.webp" width="2160" height="1350" loading="lazy" alt="Lista de presupuestos con sus estados: borrador, enviado, aceptado y rechazado">
+                        </li>
+                        <li class="flow-step" data-step="1">
+                            <h3>Entrega</h3>
+                            <p>El presupuesto aceptado pasa a albarán, y el albarán descuenta las existencias del almacén al confirmarse.</p>
+                            <img class="flow-inline" src="/proyecto/pera-erp/media/albaran.webp" width="2160" height="1350" loading="lazy" alt="Albarán de entrega con sus líneas">
+                        </li>
+                        <li class="flow-step" data-step="2">
+                            <h3>Factura</h3>
+                            <p>Un clic convierte el albarán en factura numerada, con su comercial y su forma de pago.</p>
+                            <img class="flow-inline" src="/proyecto/pera-erp/media/factura.webp" width="2160" height="1350" loading="lazy" alt="Factura expedida con cliente, líneas e importes">
+                        </li>
+                        <li class="flow-step" data-step="3">
+                            <h3>Cobra</h3>
+                            <p>Los vencimientos se convierten en recibos. Cobros, devoluciones, remesas y caja, en la misma cartera.</p>
+                            <img class="flow-inline" src="/proyecto/pera-erp/media/cartera.webp" width="2160" height="1350" loading="lazy" alt="Cartera de recibos cobrados, pendientes y devueltos">
+                        </li>
+                        <li class="flow-step" data-step="4">
+                            <h3>Contabiliza</h3>
+                            <p>Lo que pasa en el negocio llega a contabilidad listo para asentar, sin duplicar el trabajo.</p>
+                            <img class="flow-inline" src="/proyecto/pera-erp/media/contabilidad.webp" width="2160" height="1350" loading="lazy" alt="Bandeja de contabilidad con la actividad pendiente de asentar">
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- El único bloque oscuro de la página: Veri*Factu es lo que más pesa del producto. -->
+        <section id="verifactu" class="vf" data-scene="vf">
+            <div class="wrap">
+                <div class="vf-panel">
+                    <div class="vf-copy reveal">
+                        <p class="eyebrow">Veri*Factu</p>
+                        <h2>Cada factura, lista para Hacienda.</h2>
+                        <p>Al expedir una factura, PERA genera su registro de facturación con huella, QR tributario y XML, y lo remite solo a la AEAT.</p>
+                        <ul class="vf-facts">
+                            <li><strong>Huella encadenada por emisor.</strong> Cada registro firma el anterior del mismo NIF, como exige el reglamento.</li>
+                            <li><strong>Remisión automática.</strong> Lotes de hasta 1.000 registros, respetando la espera que marca la AEAT y con reintentos.</li>
+                            <li><strong>Probado contra la AEAT.</strong> En su entorno de pruebas y con un certificado real: factura aceptada con su CSV.</li>
+                        </ul>
+                        <p class="vf-note">En la demo está en modo pruebas y sin certificado: no se remite nada.</p>
+                    </div>
+                    <div class="vf-visual">
+                        <img class="vf-block" src="/proyecto/pera-erp/media/verifactu-bloque.webp" width="1497" height="626" loading="lazy" alt="Bloque Veri*Factu de una factura: número de registro, emisor, huella, encadenamiento y QR tributario">
+                        <img class="vf-page" src="/proyecto/pera-erp/media/verifactu.webp" width="2160" height="1350" loading="lazy" alt="Seguimiento de Veri*Factu con el estado de cada registro ante la AEAT">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tienda y almacén: pantalla grande y móvil, que se desplazan a ritmos distintos. -->
+        <section class="shop" data-scene="shop">
+            <div class="wrap">
+                <header class="section-head section-head-center reveal">
+                    <h2>Y en la tienda, también.</h2>
+                    <p>El TPV cobra en efectivo, con tarjeta o mixto y saca el ticket de 80 mm. El almacén va en el móvil: escaneas con la cámara y das la entrada o la salida.</p>
+                </header>
+                <div class="shop-stage">
+                    <div class="browser shop-pos">
+                        <div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><span>PERA TPV</span></div>
+                        <div class="browser-screen">
+                            <img src="/proyecto/pera-erp/media/tpv.webp" width="2160" height="1350" loading="lazy" alt="TPV de PERA con el catálogo, el ticket en curso y el botón de cobrar">
+                        </div>
+                    </div>
+                    <div class="phone shop-phone">
+                        <img src="/proyecto/pera-erp/media/almacen-movil.webp" width="1170" height="2532" loading="lazy" alt="Almacén desde el móvil: añadir o retirar producto, consultar existencias e imprimir etiquetas">
+                    </div>
+                </div>
+                <ul class="pills reveal" aria-label="Más del TPV y el almacén">
+                    <li>Escáner por cámara o lector Bluetooth</li>
+                    <li>Arqueo e informes X y Z</li>
+                    <li>Etiquetas con código de barras o QR</li>
+                    <li>Devoluciones y tickets aparcados</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Lo demás, de pasada: una sola cinta en movimiento en toda la página. -->
+        <section class="more" aria-labelledby="more-title">
+            <div class="wrap">
+                <h2 id="more-title" class="reveal">Y el resto del día a día.</h2>
+            </div>
+            <div class="marquee">
+                <ul class="marquee-track">
+                    <li><img src="/proyecto/pera-erp/media/clientes.webp" loading="lazy" alt="Clientes con grupo, comercial y riesgo"><span>Clientes y su ficha</span></li>
+                    <li><img src="/proyecto/pera-erp/media/compras.webp" loading="lazy" alt="Pedidos, albaranes y facturas de proveedor"><span>Compras a proveedores</span></li>
+                    <li><img src="/proyecto/pera-erp/media/comisiones.webp" loading="lazy" alt="Comisiones por comercial y periodo"><span>Comisiones</span></li>
+                    <li><img src="/proyecto/pera-erp/media/agenda.webp" loading="lazy" alt="Agenda semanal de citas"><span>Agenda del equipo</span></li>
+                    <li><img src="/proyecto/pera-erp/media/ventas-tpv.webp" loading="lazy" alt="Seguimiento de las ventas del TPV"><span>Ventas del TPV</span></li>
+                    <li><img src="/proyecto/pera-erp/media/verifactu.webp" loading="lazy" alt="Seguimiento de los envíos a la AEAT"><span>Seguimiento Veri*Factu</span></li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="por-dentro" class="inside">
+            <div class="wrap">
+                <header class="section-head reveal">
+                    <p class="eyebrow">Por dentro</p>
+                    <h2>Cómo está construido.</h2>
+                </header>
+                <div class="bento">
+                    <article class="cell cell-services reveal">
+                        <h3>Ocho servicios, siete bases de datos.</h3>
+                        <p>Una pasarela delante y un servicio por área, cada uno con su PostgreSQL. Sin claves foráneas entre bases: se hablan por la API.</p>
+                        <div class="services" aria-hidden="true">
+                            <span class="service service-gateway">Pasarela</span>
+                            <span class="service">Identidad</span>
+                            <span class="service">Maestros</span>
+                            <span class="service">Ventas</span>
+                            <span class="service">Finanzas</span>
+                            <span class="service">Operaciones</span>
+                            <span class="service">Actividad</span>
+                            <span class="service">Licencias</span>
+                        </div>
+                    </article>
+                    <article class="cell cell-tests reveal">
+                        <strong class="figure">623</strong>
+                        <p>pruebas automáticas en el servidor, y 141 más en la interfaz.</p>
+                    </article>
+                    <article class="cell cell-migrations reveal">
+                        <strong class="figure">102</strong>
+                        <p>migraciones Flyway. Una migración aplicada no se vuelve a tocar.</p>
+                    </article>
+                    <article class="cell cell-origin reveal">
+                        <h3>Nace para renovar un ERP en Visual FoxPro.</h3>
+                        <p>Las 150 opciones de menú de DimproCristalWin se inventariaron leyendo su código fuente, y se traen a PERA comprobando cada regla con datos reales.</p>
+                    </article>
+                    <article class="cell cell-stack reveal">
+                        <h3>Multiempresa desde la base.</h3>
+                        <p>Todo se filtra por la empresa del token: varias empresas conviven en la misma instalación sin verse entre sí.</p>
+                        <ul class="stack">
+                            <li>Java 21</li><li>Spring Boot 4.1</li><li>Spring Cloud Gateway</li><li>PostgreSQL</li><li>Flyway</li>
+                            <li>React 19</li><li>TypeScript</li><li>Vite</li><li>Vitest</li><li>JWT</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="video" class="video">
+            <div class="wrap">
+                <h2 class="reveal">PERA en cuarenta segundos.</h2>
+                <div class="video-frame reveal">
+                    <video controls preload="none" playsinline poster="/proyecto/pera-erp/media/video-poster.webp" width="1920" height="1080">
+                        <source src="/proyecto/pera-erp/media/pera-erp.mp4" type="video/mp4">
+                        Tu navegador no puede reproducir el vídeo. <a href="/proyecto/pera-erp/media/pera-erp.mp4">Descárgalo aquí</a>.
+                    </video>
+                </div>
+            </div>
+        </section>
+
+        <section class="final">
+            <div class="wrap final-inner reveal">
+                <img src="/proyecto/pera-erp/favicon.svg" alt="" width="64" height="64">
+                <h2>Pruébalo tú.</h2>
+                <p>Entras directamente, sin registro, en una distribuidora inventada con cinco meses de actividad. Factura, cobra o vende en el TPV: nada sale de la demo.</p>
+                <div class="hero-actions">
+                    <a class="button button-large" href="/proyecto/pera-erp/app/">Probar la demo</a>
+                    <a class="button button-ghost" href="/#production">Volver al portfolio</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="wrap footer-inner">
+            <a href="/">Pedro Gómez</a>
+            <span>Datos de la demo inventados: empresas, clientes y facturas no existen.</span>
+        </div>
+    </footer>
+</body>
+
+</html>

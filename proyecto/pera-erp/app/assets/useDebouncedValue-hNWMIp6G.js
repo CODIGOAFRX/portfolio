@@ -1,0 +1,1 @@
+import{v as e}from"./DataState-DJxqciuM.js";var t=e();function n(e,n=280){let[r,i]=(0,t.useState)(e);return(0,t.useEffect)(()=>{let t=window.setTimeout(()=>i(e),n);return()=>window.clearTimeout(t)},[e,n]),r}export{n as t};

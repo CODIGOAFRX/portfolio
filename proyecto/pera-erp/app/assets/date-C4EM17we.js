@@ -1,0 +1,1 @@
+var e=e=>String(e).padStart(2,`0`);function t(t=new Date,n=0){let r=new Date(t.getFullYear(),t.getMonth(),t.getDate()+n);return`${r.getFullYear()}-${e(r.getMonth()+1)}-${e(r.getDate())}`}function n(n=new Date){return`${t(n)}T${e(n.getHours())}:${e(n.getMinutes())}`}export{n,t};

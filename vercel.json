@@ -11,6 +11,14 @@
       "destination": "https://aforo.pedrojgomezperez.workers.dev/proyecto/aforo/:path*"
     },
     {
+      "source": "/proyecto/pera-erp/app",
+      "destination": "/proyecto/pera-erp/app/index.html"
+    },
+    {
+      "source": "/proyecto/pera-erp/app/:path*",
+      "destination": "/proyecto/pera-erp/app/index.html"
+    },
+    {
       "source": "/admin",
       "destination": "/api/admin"
     },
@@ -51,6 +59,12 @@
         "key": "Content-Security-Policy",
         "value": "default-src 'self'; script-src 'self'; worker-src 'self'; media-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
       }]
+    },
+    {
+      "source": "/proyecto/pera-erp/app/(.*)",
+      "headers": [
+        { "key": "Permissions-Policy", "value": "camera=(self), microphone=(), geolocation=()" }
+      ]
     },
     {
       "source": "/proyecto/tune-interrogacion/analyzer.worker.js",

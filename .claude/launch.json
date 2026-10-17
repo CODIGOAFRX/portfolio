@@ -4,8 +4,20 @@
     {
       "name": "portfolio",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8000"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8000"
+      ],
       "port": 8000
+    },
+    {
+      "name": "portfolio-local",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "scripts/serve-local.mjs"
+      ],
+      "port": 8010
     }
   ]
 }
