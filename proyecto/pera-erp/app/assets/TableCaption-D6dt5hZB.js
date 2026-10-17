@@ -1,0 +1,1 @@
+import{i as e,s as t}from"./DataState-AOF57yve.js";var n=t();function r({es:t,en:r}){let{language:i}=e();return(0,n.jsx)(`caption`,{className:`sr-only`,children:i===`es`?t:r})}export{r as t};

@@ -1,1 +1,0 @@
-import{s as e}from"./DataState-DJxqciuM.js";var t=e();function n({children:e,tone:n=`neutral`}){return(0,t.jsx)(`span`,{className:`status-badge badge-${n}`,children:e})}export{n as t};

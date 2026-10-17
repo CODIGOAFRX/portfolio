@@ -11,6 +11,10 @@
       "destination": "https://aforo.pedrojgomezperez.workers.dev/proyecto/aforo/:path*"
     },
     {
+      "source": "/proyecto/pera-erp/api/:path*",
+      "destination": "https://pera-demo.pedrojgomezperez.workers.dev/api/:path*"
+    },
+    {
       "source": "/proyecto/pera-erp/app",
       "destination": "/proyecto/pera-erp/app/"
     },

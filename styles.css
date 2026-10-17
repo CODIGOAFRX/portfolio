@@ -2510,22 +2510,20 @@ html.has-intro .hero.cue-hidden .scroll-cue {
    igual que AFR-MIND tiene su bloque oscuro. Pantallas reales de la demo.
    ------------------------------------------------------------------ */
 .pera {
-    min-height: auto;
-    padding-top: 14vh;
-    padding-bottom: 14vh;
+    margin-bottom: clamp(5rem, 12vh, 9rem);
+    padding: clamp(2.2rem, 6vw, 6rem);
     background: #13261b;
     color: #eef4ee;
     position: relative;
-    z-index: 1;
     overflow: hidden;
 }
 
-.pera .section-label {
+.pera .pera-index {
     color: #9db5a3;
     margin-bottom: 1.5rem;
 }
 
-.pera .section-label::before {
+.pera .pera-index::before {
     content: '';
     display: inline-block;
     width: 7px;
@@ -2554,7 +2552,9 @@ html.has-intro .hero.cue-hidden .scroll-cue {
 }
 
 .pera-title {
-    font-size: clamp(4.4rem, 12vw, 13rem);
+    font-family: var(--font-heading);
+    color: #eef4ee;
+    font-size: clamp(4rem, 10vw, 11rem);
     font-weight: 400;
     line-height: 0.85;
     letter-spacing: -0.06em;
@@ -2812,6 +2812,10 @@ html.has-intro .hero.cue-hidden .scroll-cue {
 @media (max-width: 768px) {
     .pera-title {
         white-space: normal;
+    }
+
+    .pera {
+        padding: 1.6rem 1.2rem 2.2rem;
     }
 
     .pera-showcase {

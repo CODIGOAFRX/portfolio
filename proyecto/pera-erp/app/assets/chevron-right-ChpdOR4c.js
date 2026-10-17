@@ -1,0 +1,1 @@
+import{o as e}from"./DataState-AOF57yve.js";var t=e(`chevron-right`,[[`path`,{d:`m9 18 6-6-6-6`,key:`mthhwq`}]]);export{t};

@@ -204,18 +204,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectsContainer = document.getElementById('github-projects');
     const projects = [
         {
-            name: 'PERA ERP',
-            status: 'Proyecto principal · En desarrollo',
-            description: 'Backend multiempresa para modernizar un ERP industrial y comercial sin perder la lógica crítica del negocio.',
-            goal: 'Conectar identidad, datos maestros, ventas y finanzas manteniendo aislada la información de cada empresa.',
-            tech: 'Java 21, Spring Boot 4.1, Spring Cloud Gateway, Spring Security, PostgreSQL 17, Flyway, Maven, Docker Compose, OpenAPI y JUnit.',
-            features: 'Siete módulos Maven, API Gateway, JWT con roles y empresa activa, límites de dominio, outbox transaccional y cálculos monetarios con BigDecimal.',
-            result: 'Primer hito ejecutado sobre PostgreSQL con migraciones Flyway, pruebas de importes y vencimientos y más de 4.000 líneas de backend y configuración.',
-            href: 'https://github.com/CODIGOAFRX/PERA',
-            linkLabel: 'GitHub',
-            featured: true
-        },
-        {
             name: 'Tune?',
             status: 'Herramienta de audio · Primera versión',
             description: 'Analizador de tonalidad y tempo para beats y canciones que funciona en el navegador.',
