@@ -33,6 +33,10 @@
     {
       "source": "/horario",
       "destination": "/api/horario-page"
+    },
+    {
+      "source": "/horario/login",
+      "destination": "/api/horario-page?view=login"
     }
   ],
   "headers": [

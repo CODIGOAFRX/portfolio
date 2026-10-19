@@ -31,7 +31,7 @@ fetch('/api/horario-session', { credentials: 'same-origin', cache: 'no-store' })
 const params = new URLSearchParams(location.search);
 if (params.has('error')) {
     showError(MESSAGES[params.get('error')] || MESSAGES[1]);
-    history.replaceState({}, '', '/horario/login');
+    history.replaceState({}, '', location.pathname);
 }
 
 username.addEventListener('input', syncReady);
