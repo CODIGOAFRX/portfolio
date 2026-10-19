@@ -17,13 +17,24 @@ function wantsJson(request) {
     return String(request.headers['content-type'] || '').includes('application/json');
 }
 
-// POST inicia sesión (JSON desde login.js o formulario clásico sin JS); DELETE la cierra.
+// GET dice si ya hay sesión (login.js salta al horario sin pedir nada); POST inicia sesión (JSON
+// desde login.js o formulario clásico sin JS); DELETE la cierra.
 export default async function handler(request, response) {
     response.setHeader('Cache-Control', 'no-store');
 
-    if (!['POST', 'DELETE'].includes(request.method)) {
-        response.setHeader('Allow', 'POST, DELETE');
+    if (!['GET', 'POST', 'DELETE'].includes(request.method)) {
+        response.setHeader('Allow', 'GET, POST, DELETE');
         return response.status(405).end();
+    }
+    if (request.method === 'GET') {
+        try {
+            const session = horarioAuth.readSession(request);
+            if (!session) return response.status(401).json({ ok: false });
+            horarioAuth.renewSession(session, request, response);
+            return response.status(200).json({ ok: true });
+        } catch {
+            return response.status(503).json({ ok: false });
+        }
     }
     if (!isSameOrigin(request)) {
         return response.status(403).json({ error: 'Solicitud no permitida' });

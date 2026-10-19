@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createSession, horarioAuth, readSession } from '../lib/auth.js';
+import { createSession, horarioAuth, readSession, sessionCookie } from '../lib/auth.js';
 import { normalizeSchedule } from '../lib/horario-schedule.js';
 import { renderHorarioPage } from '../lib/horario-page.js';
 
@@ -53,4 +53,14 @@ test('the private page loads the app without inline scripts', () => {
     assert.match(html, /<script src="\/horario\/app\.js\?v=[^"]+" type="module"><\/script>/);
     assert.doesNotMatch(html, /<script>(?!<\/script>)/);
     assert.match(html, /name="robots" content="noindex, nofollow"/);
+});
+
+test('the schedule cookie survives opening the app from the home screen', () => {
+    const request = { headers: { 'x-forwarded-proto': 'https' } };
+    const horarioCookie = horarioAuth.sessionCookie('token', request);
+    const adminCookie = sessionCookie('token', request);
+
+    assert.match(horarioCookie, /SameSite=Lax/);
+    assert.match(horarioCookie, new RegExp(`Max-Age=${60 * 60 * 24 * 365}`));
+    assert.match(adminCookie, /SameSite=Strict/);
 });

@@ -22,6 +22,12 @@ function syncReady() {
     submit.classList.toggle('is-ready', Boolean(username.value.trim() && password.value));
 }
 
+// Si ya hay sesión (p. ej. una cookie que el navegador no mandó al abrir desde la pantalla de
+// inicio), se entra directamente sin volver a pedir la contraseña.
+fetch('/api/horario-session', { credentials: 'same-origin', cache: 'no-store' })
+    .then(response => { if (response.ok) location.replace('/horario'); })
+    .catch(() => {});
+
 const params = new URLSearchParams(location.search);
 if (params.has('error')) {
     showError(MESSAGES[params.get('error')] || MESSAGES[1]);

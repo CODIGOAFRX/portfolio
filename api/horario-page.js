@@ -8,9 +8,11 @@ export default function handler(request, response) {
     }
 
     try {
-        if (!horarioAuth.readSession(request)) {
+        const session = horarioAuth.readSession(request);
+        if (!session) {
             return response.redirect(302, '/horario/login');
         }
+        horarioAuth.renewSession(session, request, response);
     } catch {
         return response.status(503).send('El acceso al horario todavía no está configurado.');
     }
