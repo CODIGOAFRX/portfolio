@@ -29,6 +29,10 @@
     {
       "source": "/login",
       "destination": "/login.html"
+    },
+    {
+      "source": "/horario",
+      "destination": "/api/horario-page"
     }
   ],
   "headers": [
@@ -101,6 +105,19 @@
         {
           "key": "Cache-Control",
           "value": "private, no-store"
+        }
+      ]
+    },
+    {
+      "source": "/horario(/login)?",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
         }
       ]
     }

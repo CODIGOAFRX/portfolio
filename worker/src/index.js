@@ -166,6 +166,33 @@ async function listJobs(env) {
     return json({ jobs, updatedAt });
 }
 
+// Horario semanal privado (pedrogomez.dev/horario). Vercel ya valida el documento; aquí solo se
+// guarda tal cual, con un límite de tamaño.
+const MAX_SCHEDULE_BYTES = 200_000;
+
+async function readSchedule(env) {
+    const row = await env.DB.prepare('SELECT data, updated_at FROM schedules WHERE id = ?').bind('main').first();
+    return json({ data: row?.data ?? null, updatedAt: row?.updated_at ?? null });
+}
+
+async function saveSchedule(request, env) {
+    const body = await request.json().catch(() => ({}));
+    const data = typeof body.data === 'string' ? body.data : '';
+    if (!data || data.length > MAX_SCHEDULE_BYTES) return json({ error: 'Horario no válido' }, 400);
+    try {
+        JSON.parse(data);
+    } catch {
+        return json({ error: 'Horario no válido' }, 400);
+    }
+
+    const updatedAt = new Date().toISOString();
+    await env.DB.prepare(`INSERT INTO schedules (id, data, updated_at) VALUES (?, ?, ?)
+        ON CONFLICT(id) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at`)
+        .bind('main', data, updatedAt)
+        .run();
+    return json({ ok: true, updatedAt });
+}
+
 async function updateJob(request, env, id) {
     const body = await request.json().catch(() => ({}));
     const status = body.status;
@@ -251,6 +278,12 @@ export default {
             }
             if (url.pathname === '/jobs' && request.method === 'GET') {
                 return listJobs(env);
+            }
+            if (url.pathname === '/schedule' && request.method === 'GET') {
+                return readSchedule(env);
+            }
+            if (url.pathname === '/schedule' && request.method === 'PUT') {
+                return saveSchedule(request, env);
             }
             const jobMatch = url.pathname.match(/^\/jobs\/(\d+)$/);
             if (jobMatch && request.method === 'PATCH') {

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <title>Horario · Iniciar sesión</title>
+    <link rel="icon" href="/horario/icon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/horario/horario.css?v=20261019-1">
+    <script src="/horario/login.js?v=20261019-1" defer></script>
+</head>
+<body class="login">
+    <main class="login-main" id="login">
+        <img class="login-icon" src="/horario/icon.svg" alt="" width="76" height="76" style="--i:0">
+        <h1 style="--i:1">Horario</h1>
+        <p class="login-lead" style="--i:2">Inicia sesión para ver tu semana.</p>
+
+        <form class="login-form" id="login-form" action="/api/horario-session" method="post" style="--i:3">
+            <div class="fields">
+                <label class="field">
+                    <input id="username" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder=" " required autofocus>
+                    <span class="field-label">Usuario</span>
+                </label>
+                <label class="field">
+                    <input id="password" name="password" type="password" autocomplete="current-password" placeholder=" " required>
+                    <span class="field-label">Contraseña</span>
+                </label>
+                <button type="submit" class="submit" id="submit" aria-label="Iniciar sesión">
+                    <svg class="arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10M11 6l4 4-4 4"/></svg>
+                    <svg class="spinner" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3a7 7 0 1 1-7 7"/></svg>
+                    <svg class="check" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10.5 8.5 14 15 6.5"/></svg>
+                </button>
+            </div>
+            <p class="login-error" id="login-error" role="alert"></p>
+        </form>
+    </main>
+
+    <footer class="login-foot">
+        <a href="/">pedrogomez.dev</a>
+    </footer>
+</body>
+</html>
