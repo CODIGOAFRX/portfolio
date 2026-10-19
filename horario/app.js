@@ -1,6 +1,7 @@
 // Horario semanal (lunes a domingo, por horas). Se pinta al instante desde la copia local y se
 // sincroniza con /api/horario. Arrastrar sobre un día crea, arrastrar una actividad la mueve y su
-// borde inferior la alarga. Teclado: N nueva, flechas mueven, Supr borra, Ctrl+Z deshace.
+// borde inferior la alarga; con Ctrl (o Alt/Cmd) pulsado, arrastrar la duplica. Teclado: N nueva,
+// flechas mueven, Supr borra, Ctrl+C/X/V copia, corta y pega, Ctrl+Z deshace.
 
 const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const SHORT = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
@@ -55,6 +56,8 @@ let cols = [];
 let heads = [];
 let gesture = null;
 let editing = null;
+let clipboard = null;
+let hover = null;
 
 // ---------------------------------------------------------------- utilidades
 
@@ -641,7 +644,8 @@ function onPointerDown(event) {
             id: target.id,
             before: snapshot(),
             original: { ...target },
-            grab: minuteAt(col, event.clientY) - target.start
+            grab: minuteAt(col, event.clientY) - target.start,
+            copy: wantsCopy(event)
         };
     } else {
         gesture = { ...base, kind: 'create', anchor: snap(minuteAt(col, event.clientY)) };
@@ -671,9 +675,36 @@ function activate(g) {
     } else {
         g.node.classList.add(g.kind === 'move' ? 'is-dragging' : 'is-resizing');
         if (g.touch) navigator.vibrate?.(8);
+        if (g.kind === 'move') setCopying(g, g.copy);
     }
-    document.body.style.cursor = g.kind === 'resize' ? 'ns-resize' : g.kind === 'move' ? 'grabbing' : '';
+    if (g.kind !== 'move') document.body.style.cursor = g.kind === 'resize' ? 'ns-resize' : '';
     autoScroll();
+}
+
+function wantsCopy(event) {
+    return event.ctrlKey || event.metaKey || event.altKey;
+}
+
+// Duplicar arrastrando: en el sitio de origen queda una copia (id nuevo) y se sigue arrastrando la
+// actividad original. Soltar Ctrl a mitad de gesto lo convierte otra vez en un movimiento normal.
+function setCopying(g, copy) {
+    if (!g || g.kind !== 'move' || !g.active) return;
+    g.copy = copy;
+    const hasClone = Boolean(g.cloneId);
+    if (copy && !hasClone) {
+        if (state.schedule.events.length >= MAX_EVENTS) {
+            g.copy = false;
+        } else {
+            g.cloneId = uid();
+            state.schedule.events.push({ ...g.original, id: g.cloneId });
+        }
+    } else if (!copy && hasClone) {
+        state.schedule.events = state.schedule.events.filter(item => item.id !== g.cloneId);
+        g.cloneId = null;
+    }
+    g.node.classList.toggle('is-copying', Boolean(g.cloneId));
+    document.body.style.cursor = g.cloneId ? 'copy' : 'grabbing';
+    if (hasClone !== Boolean(g.cloneId)) render();
 }
 
 function onPointerMove(event) {
@@ -790,11 +821,21 @@ function onPointerUp(event) {
         openEditor({ id: g.id, anchor: g.node });
         return;
     }
+    g.node.classList.remove('is-copying');
     const event2 = findEvent(g.id);
     const moved = event2 && (event2.start !== g.original.start || event2.end !== g.original.end || event2.day !== g.original.day);
+    if (g.cloneId && !moved) {
+        state.schedule.events = state.schedule.events.filter(item => item.id !== g.cloneId);
+        render();
+        return;
+    }
     if (moved) {
         pushHistory(g.before);
         changed();
+        if (g.cloneId) {
+            g.node.classList.add('is-flash');
+            toast(`«${event2.title}» duplicada en ${DAYS[event2.day].toLowerCase()} a las ${fmt(event2.start)}`, 'Deshacer', undo);
+        }
     }
 }
 
@@ -810,7 +851,7 @@ function cancelGesture() {
     gesture = null;
     g.ghost?.remove();
     if (g.node) {
-        g.node.classList.remove('is-dragging', 'is-resizing');
+        g.node.classList.remove('is-dragging', 'is-resizing', 'is-copying');
         if (g.active) {
             state.schedule = g.before;
             render();
@@ -1218,6 +1259,64 @@ function moveWithKeys(event, node) {
     return true;
 }
 
+// ---------------------------------------------------------------- copiar y pegar
+
+function targetEventId() {
+    const focused = document.activeElement?.closest?.('.ev:not(.is-ghost)');
+    return focused?.dataset.id || hover?.id || null;
+}
+
+function copyEvent(cut = false) {
+    const event = findEvent(targetEventId());
+    if (!event) return false;
+    const { id, ...data } = event;
+    clipboard = data;
+    if (cut) {
+        commit(() => {
+            state.schedule.events = state.schedule.events.filter(item => item.id !== id);
+        });
+        toast(`«${event.title}» cortada · Ctrl+V para pegarla`, 'Deshacer', undo);
+    } else {
+        nodes.get(id)?.classList.add('is-flash');
+        toast(`«${event.title}» copiada · Ctrl+V para pegarla`);
+    }
+    return true;
+}
+
+// Pega donde está el puntero; si no está sobre el horario, el día siguiente a la misma hora.
+function pasteEvent() {
+    if (!clipboard) return false;
+    if (state.schedule.events.length >= MAX_EVENTS) {
+        toast('No caben más actividades.');
+        return true;
+    }
+    const { start: rangeStart, end: rangeEnd } = range();
+    const length = clipboard.end - clipboard.start;
+    let day;
+    let start;
+    if (hover) {
+        day = hover.day;
+        start = snap(hover.minute - Math.min(length, 60) / 2);
+    } else {
+        const focused = findEvent(document.activeElement?.closest?.('.ev')?.dataset.id);
+        day = ((focused ? focused.day : clipboard.day) + 1) % 7;
+        start = focused ? focused.start : clipboard.start;
+    }
+    start = clamp(start, rangeStart, Math.max(rangeStart, rangeEnd - length));
+    const pasted = { ...clipboard, id: uid(), day, start, end: Math.min(1440, start + length) };
+
+    commit(() => state.schedule.events.push(pasted));
+    if (state.view === 'day' && day !== state.day) setDay(day);
+    const node = nodes.get(pasted.id);
+    if (node) {
+        node.classList.add('is-flash');
+        node.focus({ preventScroll: true });
+        scrollIntoViewIfNeeded(node);
+    }
+    toast(`«${pasted.title}» pegada en ${DAYS[day].toLowerCase()} a las ${fmt(pasted.start)}`, 'Deshacer', undo);
+    return true;
+}
+
 // ---------------------------------------------------------------- eventos
 
 function bind() {
@@ -1346,8 +1445,29 @@ function bind() {
         if (!menu.hidden && !menu.contains(event.target) && !menuButton.contains(event.target)) closeMenu();
     });
 
+    // Pulsar o soltar Ctrl a mitad de un arrastre cambia entre mover y duplicar.
+    const syncCopyKey = event => {
+        if (gesture?.active && gesture.kind === 'move' && ['Control', 'Meta', 'Alt'].includes(event.key)) {
+            setCopying(gesture, wantsCopy(event));
+        }
+    };
+    document.addEventListener('keyup', syncCopyKey);
+
+    // Dónde está el puntero: Ctrl+V pega ahí y Ctrl+C copia la actividad que hay debajo.
+    grid.addEventListener('pointermove', event => {
+        if (gesture || event.pointerType !== 'mouse') return;
+        const col = event.target.closest('.col');
+        hover = col ? {
+            day: Number(col.dataset.day),
+            minute: minuteAt(col, event.clientY),
+            id: event.target.closest('.ev:not(.is-ghost)')?.dataset.id || null
+        } : null;
+    });
+    grid.addEventListener('pointerleave', () => { hover = null; });
+
     // Atajos globales
     document.addEventListener('keydown', event => {
+        syncCopyKey(event);
         if (event.key === 'Escape' && !menu.hidden) {
             closeMenu({ focus: true });
             return;
@@ -1355,7 +1475,12 @@ function bind() {
         if (editor.open) return;
         const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName);
         const mod = event.metaKey || event.ctrlKey;
-        if (mod && event.key.toLowerCase() === 'z' && !typing) {
+        const key = event.key.toLowerCase();
+        if (mod && !event.shiftKey && !event.altKey && !typing && (key === 'c' || key === 'x')) {
+            if (copyEvent(key === 'x')) event.preventDefault();
+        } else if (mod && !event.shiftKey && !event.altKey && !typing && key === 'v') {
+            if (pasteEvent()) event.preventDefault();
+        } else if (mod && event.key.toLowerCase() === 'z' && !typing) {
             event.preventDefault();
             if (event.shiftKey) redo();
             else undo();
