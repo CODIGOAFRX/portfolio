@@ -117,7 +117,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "private, no-store"
+          "value": "private, no-cache"
         },
         {
           "key": "X-Robots-Tag",

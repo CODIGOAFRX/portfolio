@@ -27,7 +27,9 @@ export default function handler(request, response) {
 
     const html = session ? renderHorarioPage() : renderHorarioLoginPage();
     response.setHeader('Content-Type', 'text/html; charset=utf-8');
-    response.setHeader('Cache-Control', 'private, no-store');
+    // no-cache y no no-store: el HTML no lleva datos (llegan por /api/horario) y iOS necesita
+    // poder guardarlo en caché para crear el icono de la pantalla de inicio.
+    response.setHeader('Cache-Control', 'private, no-cache');
     response.status(200);
     return request.method === 'HEAD' ? response.end() : response.send(html);
 }
