@@ -44,7 +44,7 @@ test('the schedule is sanitised before it is stored', () => {
     });
     assert.equal(schedule.events[1].id, 'script');
     assert.equal(schedule.events[1].title.length, 80);
-    assert.equal(schedule.events[1].color, 'blue');
+    assert.equal(schedule.events[1].color, 'ink');
 });
 
 test('the private page loads the app without inline scripts', () => {

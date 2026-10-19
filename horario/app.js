@@ -5,15 +5,21 @@
 const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const SHORT = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 const LETTERS = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+// Mismo orden que lib/horario-schedule.js. Los tonos se pintan en horario.css; aquí solo el
+// nombre y el color de la muestra. teal y orange siguen siendo válidos pero ya no se ofrecen.
 const COLORS = {
-    blue: ['Azul', '#007aff'],
-    teal: ['Turquesa', '#30b0c7'],
-    green: ['Verde', '#34c759'],
-    yellow: ['Amarillo', '#ffcc00'],
-    orange: ['Naranja', '#ff9500'],
-    red: ['Rojo', '#ff3b30'],
-    purple: ['Morado', '#af52de'],
-    graphite: ['Grafito', '#8e8e93']
+    ink: ['Negro', '#111111'],
+    graphite: ['Grafito', '#4a4a4a'],
+    stone: ['Gris', '#9a9a9a'],
+    mist: ['Niebla', '#e4e4e4'],
+    paper: ['Blanco', '#ffffff'],
+    red: ['Rojo', '#9e3b32'],
+    blue: ['Azul', '#34558b'],
+    green: ['Verde', '#3f6e52'],
+    yellow: ['Ocre', '#8a6a1f'],
+    purple: ['Morado', '#5d4b82'],
+    teal: ['Petróleo', '#2f6b6e', true],
+    orange: ['Teja', '#a5552a', true]
 };
 const STORAGE_KEY = 'horario:v1';
 const PREFS_KEY = 'horario:prefs';
@@ -37,7 +43,7 @@ const state = {
     schedule: normalizeSchedule(local?.schedule),
     dirty: Boolean(local?.dirty),
     rev: 0,
-    view: mobile.matches ? 'day' : (prefs.view === 'day' ? 'day' : 'week'),
+    view: prefs.view === 'day' ? 'day' : 'week',
     day: todayIndex(),
     history: [],
     future: [],
@@ -145,7 +151,7 @@ function normalizeSchedule(raw) {
             day,
             start,
             end,
-            color: COLORS[item.color] ? item.color : 'blue',
+            color: COLORS[item.color] ? item.color : 'ink',
             place: String(item.place || '').trim().slice(0, 80),
             notes: String(item.notes || '').trim().slice(0, 500)
         });
@@ -405,12 +411,15 @@ function render() {
             node.style.setProperty('--h', `calc(var(--hour) * ${(bottom - top) / 60})`);
             node.style.setProperty('--l', (lane / lanes) * 100);
             node.style.setProperty('--w', 100 / lanes);
+            node.style.setProperty('--lane', lane);
 
             const length = event.end - event.start;
             node.classList.toggle('is-compact', length < 45);
             node.classList.toggle('is-tiny', length <= 20);
-            // Líneas de título que caben dejando sitio a la hora (una hora ≈ 52-60 px).
-            node.style.setProperty('--lines', clamp(Math.floor((length / 60 * 52 - 26) / 16), 1, 4));
+            // Líneas de título que caben: con la hora debajo (escritorio, 48 px/h) o solas en las
+            // columnas estrechas del móvil (46 px/h, título de 10 px).
+            node.style.setProperty('--lines', clamp(Math.floor((length / 60 * 48 - 24) / 16), 1, 4));
+            node.style.setProperty('--lines-m', clamp(Math.floor((length / 60 * 46 - 5) / 11.5), 1, 8));
 
             const meta = `${fmt(event.start)} – ${fmt(event.end)}${event.place ? ` · ${event.place}` : ''}`;
             node.querySelector('.ev-title').textContent = event.title;
@@ -523,7 +532,6 @@ function transition(update, kind) {
 }
 
 function setView(view, day = state.day) {
-    if (mobile.matches) view = 'day';
     if (view === state.view && day === state.day) return;
     if (view === state.view && view === 'day') return setDay(day);
     transition(() => {
@@ -531,10 +539,8 @@ function setView(view, day = state.day) {
         state.day = day;
         applyView();
     }, 'view');
-    if (!mobile.matches) {
-        prefs.view = view;
-        writeJson(PREFS_KEY, prefs);
-    }
+    prefs.view = view;
+    writeJson(PREFS_KEY, prefs);
 }
 
 function setDay(day) {
@@ -822,8 +828,10 @@ wrap.addEventListener('touchmove', event => {
 function buildEditorControls() {
     $('ev-days').innerHTML = DAYS.map((name, day) => `
         <button type="button" class="day-chip" data-day="${day}" aria-pressed="false" aria-label="${name}">${LETTERS[day]}</button>`).join('');
-    $('ev-colors').insertAdjacentHTML('beforeend', Object.entries(COLORS).map(([key, [label, hex]]) => `
-        <input type="radio" name="color" value="${key}" class="swatch" style="--c:${hex}" aria-label="${label}">`).join(''));
+    $('ev-colors').insertAdjacentHTML('beforeend', Object.entries(COLORS)
+        .filter(([, [, , legacy]]) => !legacy)
+        .map(([key, [label, hex]]) => `
+        <input type="radio" name="color" value="${key}" class="swatch" style="--c:${hex}" aria-label="${label}" title="${label}">`).join(''));
 }
 
 function openEditor({ id = null, draft = null, ghost = null, anchor = null }) {
@@ -834,7 +842,7 @@ function openEditor({ id = null, draft = null, ghost = null, anchor = null }) {
         day: draft.day,
         start: draft.start,
         end: draft.end,
-        color: prefs.color && COLORS[prefs.color] ? prefs.color : 'blue',
+        color: prefs.color && COLORS[prefs.color] ? prefs.color : 'ink',
         place: '',
         notes: ''
     };
@@ -846,7 +854,7 @@ function openEditor({ id = null, draft = null, ghost = null, anchor = null }) {
     if (data.end === 1440) $('ev-end').value = '23:59';
     $('ev-place').value = data.place;
     $('ev-notes').value = data.notes;
-    form.elements.color.value = data.color;
+    form.querySelectorAll('.swatch').forEach(swatch => { swatch.checked = swatch.value === data.color; });
     $('ev-delete').hidden = !event;
     $('ev-error').hidden = true;
     $('ev-save').textContent = event ? 'Guardar' : 'Añadir';
@@ -929,7 +937,7 @@ function syncDuration() {
 function tintGhost() {
     const g = editing?.ghost;
     if (!g) return;
-    g.style.setProperty('--c', COLORS[form.elements.color.value]?.[1] || COLORS.blue[1]);
+    g.dataset.color = form.elements.color.value || 'ink';
     g.querySelector('.ev-title').textContent = $('ev-title').value.trim() || 'Nueva actividad';
 }
 
@@ -954,7 +962,7 @@ function saveEditor() {
         title: title.slice(0, 80),
         start: snap(start, 5),
         end: snap(end, 5),
-        color: form.elements.color.value || 'blue',
+        color: form.elements.color.value || (editing.id ? findEvent(editing.id)?.color : '') || 'ink',
         place: $('ev-place').value.trim().slice(0, 80),
         notes: $('ev-notes').value.trim().slice(0, 500)
     };
@@ -1381,8 +1389,6 @@ function bind() {
     }, { passive: true });
 
     mobile.addEventListener('change', () => {
-        state.view = mobile.matches ? 'day' : (prefs.view === 'day' ? 'day' : 'week');
-        applyView();
         if (editor.open) positionEditor();
     });
     addEventListener('resize', () => {
