@@ -204,6 +204,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectsContainer = document.getElementById('github-projects');
     const projects = [
         {
+            name: 'Horario',
+            status: 'Herramienta personal · En uso',
+            description: 'Horario semanal privado, de lunes a domingo por horas, que se edita arrastrando y se lleva en el móvil como una app.',
+            goal: 'Organizar la semana con algo tan rápido como el papel: crear, mover y alargar actividades sin formularios y tenerlas igual en el ordenador y en el iPhone.',
+            tech: 'JavaScript sin frameworks, CSS, Vercel Functions, Cloudflare Workers, D1 y node:test.',
+            features: 'Arrastrar para crear, mover, alargar o duplicar (con Ctrl); copiar, cortar y pegar; deshacer; vista de semana y de día con gesto entre días en móvil; impresión en A4; copias en JSON e icono para la pantalla de inicio.',
+            result: 'En uso a diario en pedrogomez.dev/horario, con acceso propio por sesión. Se pinta al instante desde la copia local y se sincroniza con D1; el servidor sanea cada horario antes de guardarlo.',
+            href: 'https://github.com/CODIGOAFRX/portfolio/tree/main/horario',
+            linkLabel: 'GitHub'
+        },
+        {
             name: 'Tune?',
             status: 'Herramienta de audio · Primera versión',
             description: 'Analizador de tonalidad y tempo para beats y canciones que funciona en el navegador.',
