@@ -204,15 +204,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectsContainer = document.getElementById('github-projects');
     const projects = [
         {
+            name: 'Palimpsesto',
+            status: 'Mapa interactivo · Nuevo',
+            description: 'Granada en dos épocas, una encima de otra: planimetrías de 1870, el vuelo americano de 1956 y la ciudad de hoy, con una cortina que se arrastra.',
+            goal: 'Ver qué había debajo de la ciudad de hoy comparando capas históricas abiertas del Instituto Geográfico Nacional.',
+            tech: 'JavaScript, MapLibre GL JS, Cloudflare Workers con caché, servicios WMS y WMTS del IGN y node:test.',
+            features: 'Cortina, lupa y fundido; siete capas de 1870 a hoy; lugares de Granada con notas; vista compartible por URL; funciona en toda España.',
+            result: 'Publicado en pedrogomez.dev/proyecto/palimpsesto. Un Worker convierte cada tesela en su petición al IGN, la valida y la guarda en la caché de Cloudflare: la segunda carga es instantánea.',
+            href: '/proyecto/palimpsesto/',
+            linkLabel: 'Abrir Palimpsesto',
+            codeHref: 'https://github.com/CODIGOAFRX/palimpsesto'
+        },
+        {
             name: 'Horario',
-            status: 'Herramienta personal · En uso',
-            description: 'Horario semanal privado, de lunes a domingo por horas, que se edita arrastrando y se lleva en el móvil como una app.',
-            goal: 'Organizar la semana con algo tan rápido como el papel: crear, mover y alargar actividades sin formularios y tenerlas igual en el ordenador y en el iPhone.',
-            tech: 'JavaScript sin frameworks, CSS, Vercel Functions, Cloudflare Workers, D1 y node:test.',
-            features: 'Arrastrar para crear, mover, alargar o duplicar (con Ctrl); copiar, cortar y pegar; deshacer; vista de semana y de día con gesto entre días en móvil; impresión en A4; copias en JSON e icono para la pantalla de inicio.',
-            result: 'En uso a diario en pedrogomez.dev/horario, con acceso propio por sesión. Se pinta al instante desde la copia local y se sincroniza con D1; el servidor sanea cada horario antes de guardarlo.',
-            href: 'https://github.com/CODIGOAFRX/portfolio/tree/main/horario',
-            linkLabel: 'GitHub'
+            status: 'Herramienta abierta · En uso',
+            description: 'Horario semanal de lunes a domingo por horas, que se edita arrastrando y se lleva en el móvil como una app. Cualquiera puede crear su cuenta y usarlo.',
+            goal: 'Organizar la semana con algo tan rápido como el papel: crear, mover y alargar actividades sin formularios y tenerlas igual en el ordenador y en el móvil.',
+            tech: 'JavaScript sin frameworks, CSS, Vercel Functions, Cloudflare Workers, D1, scrypt y node:test.',
+            features: 'Cuentas propias con contraseña cifrada; arrastrar para crear, mover, alargar o duplicar (con Ctrl); copiar, cortar y pegar; deshacer; vista de semana y de día; impresión en A4; copias en JSON; icono para la pantalla de inicio y panel de administración con borrado de cuentas y bloqueo de IPs.',
+            result: 'Abierto en pedrogomez.dev/horario: cada cuenta tiene su horario en D1, límite de altas por IP y un administrador que puede borrar cuentas y bloquear IPs. Se pinta al instante desde la copia local y el servidor sanea cada horario antes de guardarlo.',
+            href: '/horario',
+            linkLabel: 'Crear mi horario',
+            codeHref: 'https://github.com/CODIGOAFRX/portfolio/tree/main/horario'
         },
         {
             name: 'Tune?',
@@ -288,9 +301,12 @@ document.addEventListener('DOMContentLoaded', () => {
             article.className = `project-item${project.featured ? ' project-featured' : ''} hidden-element`;
             const detailsId = `project-details-${index}`;
 
-            const projectAction = project.private
+            const projectAction = (project.private
                 ? '<span class="project-link project-link-disabled" aria-label="Repositorio privado">Privado</span>'
-                : `<a href="${project.href}" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Abrir ${project.name} en ${project.linkLabel}">${project.linkLabel}</a>`;
+                : `<a href="${project.href}" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Abrir ${project.name}: ${project.linkLabel}">${project.linkLabel}</a>`)
+                + (project.codeHref
+                    ? `<a href="${project.codeHref}" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Código de ${project.name} en GitHub">GitHub</a>`
+                    : '');
 
             article.innerHTML = `
                 <div class="project-header">
