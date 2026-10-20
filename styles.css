@@ -199,12 +199,15 @@ section {
 }
 
 .page-globe.is-ready {
-    opacity: var(--globe-opacity);
+    /* --intro-globe: la intro lo hace aparecer con el scroll al final de la cabecera */
+    opacity: calc(var(--globe-opacity) * var(--intro-globe, 1));
 }
 
-/* La intro (intro.js) y la escena de tecnologías (scenes.js) dibujan este mismo globo mientras
-   lo animan. Cada una usa su propia clase para no deshacer la de la otra. */
-.page-globe.is-intro,
+html.has-intro .page-globe {
+    --intro-globe: 0;
+}
+
+/* La escena de tecnologías (scenes.js) dibuja este mismo globo mientras lo anima */
 .page-globe.is-borrowed {
     visibility: hidden;
 }
@@ -1773,92 +1776,94 @@ button:focus-visible {
     }
 }
 
-/* ---------- Galaxia: transición con scroll entre AFR-MIND y la trayectoria ----------
-   Sin JS (o con movimiento reducido) es una imagen fija que funde con el fondo de la
-   sección siguiente. galaxy.js añade .is-scrub: la sección se alarga, el escenario se
-   queda fijo y el scroll avanza la galaxia (en vivo con WebGL o, si no, en vídeo) hasta
-   que la pirámide lo llena todo de blanco, el mismo #fafafa de la trayectoria. */
-.galaxy {
+/* ---------- Red → línea del tiempo: transición con scroll entre AFR-MIND y la trayectoria ----------
+   net.js la dibuja en un lienzo: la red de AFR-MIND sobre su negro se ordena en el tiempo y
+   acaba en el #fafafa de la trayectoria. Sin JS la sección no se muestra; con movimiento
+   reducido se queda quieta en la línea del tiempo, sin fijarse. */
+.net {
     position: relative;
     z-index: 3;
-    display: block;
+    display: none;
     min-height: 0;
     padding: 0;
-    background: #0a0a0a;
-    height: 100vh;
-    height: 100svh;
+    height: 330vh;
+    height: 330lvh;
+    background: #fafafa;
+}
+
+.net.is-on {
+    display: block;
+}
+
+.net.is-still {
+    height: auto;
 }
 
 /* Los escenarios a pantalla completa miden 100lvh: en iOS las barras del navegador se
    esconden al hacer scroll y con 100svh quedaba una franja sin cubrir abajo */
-.galaxy-stage {
-    position: relative;
+.net-stage {
+    position: sticky;
+    top: 0;
     height: 100vh;
     height: 100lvh;
     overflow: hidden;
     background: #0a0a0a;
 }
 
-.galaxy-poster,
-.galaxy-video,
-.galaxy-canvas {
+.net.is-light .net-stage {
+    background: #fafafa;
+}
+
+.net.is-still .net-stage {
+    position: relative;
+}
+
+.net-canvas {
     position: absolute;
     inset: 0;
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
 }
 
-.galaxy-video {
-    opacity: 0;
-}
-
-.galaxy-white {
+.net-caption {
     position: absolute;
-    inset: 0;
-    background: #fafafa;
+    top: clamp(6.5rem, 15vh, 9rem);
+    left: var(--padding-x);
+    max-width: min(34rem, 88vw);
+    color: #f1f1ef;
     opacity: 0;
     pointer-events: none;
 }
 
-.galaxy:not(.is-scrub) .galaxy-white {
-    opacity: 1;
-    background: linear-gradient(180deg, #0a0a0a 0%, transparent 18%, transparent 62%, #fafafa 100%);
+.net-caption-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 3.6vw, 3.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
 }
 
-.galaxy.is-scrub {
-    height: 340vh;
-    height: 340svh;
+.net-caption-text {
+    max-width: 30rem;
+    margin-top: 1rem;
+    font-size: clamp(0.95rem, 1.05vw, 1.1rem);
+    line-height: 1.5;
+    opacity: 0.68;
+    text-wrap: pretty;
 }
 
-.galaxy.is-scrub .galaxy-stage {
-    position: sticky;
-    top: 0;
+.net-caption:last-of-type {
+    color: var(--text-primary);
 }
 
-.galaxy.is-scrub .galaxy-poster {
-    opacity: 0;
-    will-change: transform, opacity;
+.net.is-still .net-caption:last-of-type {
+    opacity: 1 !important;
+    transform: none !important;
 }
 
-.galaxy.has-gl .galaxy-poster,
-.galaxy.has-gl .galaxy-white,
-.galaxy.has-gl .galaxy-video,
-.galaxy.has-video .galaxy-poster,
-.galaxy.has-video .galaxy-white {
+.net.is-still .net-caption:first-of-type {
     display: none;
-}
-
-.galaxy.has-video .galaxy-video {
-    opacity: 1;
-}
-
-@media (max-width: 768px) {
-    .galaxy.is-scrub {
-        height: 300vh;
-        height: 300svh;
-    }
 }
 
 /* ---------- Trayectoria: Formación entra por la izquierda y Experiencia por la derecha ----------
@@ -2316,9 +2321,10 @@ blockquote {
     }
 }
 
-/* ---------- Intro de la portada (intro-boot.js + intro.js) ----------
-   Con la intro, la cabecera se queda fija mientras el scroll mide el nombre y forma el globo;
-   después entra el resto del texto. Sin JS o con movimiento reducido no cambia nada. */
+/* ---------- Intro de la portada (intro-boot.js + intro.js): «Corte transversal» ----------
+   La cabecera se queda fija mientras el scroll corta el nombre en franjas, abre entre ellas las
+   capas de una petición real (interfaz, API, datos, producción) y lo vuelve a cerrar. Todo va
+   atado a la posición del scroll. Sin JS o con movimiento reducido no cambia nada. */
 .hero-stage {
     position: relative;
     align-self: flex-start;
@@ -2327,8 +2333,8 @@ blockquote {
 }
 
 html.has-intro .hero {
-    height: calc(100vh + 118vh + 600px);
-    height: calc(100lvh + 118lvh + 600px);
+    height: calc(100vh + 250vh);
+    height: calc(100lvh + 250lvh);
     min-height: 0;
     overflow: visible;
 }
@@ -2346,94 +2352,219 @@ html.has-intro .hero-reveal {
     animation: none;
 }
 
-/* Hasta que intro.js coloca el nombre grande en el centro */
+/* El h1 real queda debajo, transparente, hasta que las franjas encajan en su sitio */
+html.has-intro .hero.intro-on:not(.intro-finished) .name {
+    opacity: 0;
+}
+
 html.has-intro:not(.intro-ready) .hero .name {
     visibility: hidden;
 }
 
-/* Sin will-change: así el navegador redibuja el texto a cada escala y se ve nítido */
-html.has-intro .hero .name {
-    transform-origin: 0 0;
-}
-
-.intro-globe,
-.intro-construct {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-}
-
-.intro-globe {
-    /* Fijo a la pantalla como el globo de la página: no se recorta si la cabecera ya se va */
-    position: fixed;
-    z-index: 1;
-}
-
-/* El escenario fijo agrupa su propia composición: necesita fondo blanco para que la fusión por
-   diferencia tenga algo sobre lo que pintar. Se quita al pasar el relevo al globo de la página. */
+/* El escenario fijo necesita fondo para que las líneas de corte se fundan por diferencia */
 .hero.intro-on:not(.intro-finished) .hero-stage {
     background: var(--bg-color);
 }
 
-/* La medición cruza las letras: por diferencia sale negra sobre blanco y blanca sobre la tinta */
-.intro-construct {
+.cut {
+    position: absolute;
+    inset: 0;
     z-index: 3;
-    mix-blend-mode: difference;
+    pointer-events: none;
+    user-select: none;
 }
 
-.hero.intro-finished .intro-construct,
-.hero.intro-finished .intro-globe {
+.hero.intro-finished .cut {
     visibility: hidden;
 }
 
-/* El resto de la cabecera entra en orden cuando el globo está formado (es texto normal) */
-html.has-intro .hero-content > :not(.name):not(.hero-links),
-html.has-intro .hero-links a {
-    transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+/* Copia del nombre: mismas medidas que el h1, cinco veces, cada una recortada a su franja */
+.cut-word {
+    position: absolute;
+    transform-origin: 0 0;
+    color: var(--text-primary);
+    text-wrap: balance;
 }
 
-html.has-intro .hero-content > :not(.name):not(.hero-links) {
-    clip-path: inset(0 0 100% 0);
-    transform: translateY(1.1rem);
+.cut-half {
+    position: absolute;
+    inset: 0;
 }
 
-/* Al volver arriba se recoge rápido, antes de que el nombre vuelva a crecer */
-html.has-intro .hero:not(.intro-done) .hero-content > :not(.name):not(.hero-links),
-html.has-intro .hero:not(.intro-done) .hero-links a {
-    transition-duration: 0.3s;
+/* Bordes del corte: cruzan la pantalla de lado a lado; por diferencia, blancos sobre la tinta */
+.cut-rule {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #ffffff;
+    mix-blend-mode: difference;
+    transform-origin: 50% 0;
+    transform: scaleX(0);
 }
 
-html.has-intro .hero-links a {
-    clip-path: inset(-20% 100% -60% 0);
+.cut-caption {
+    position: absolute;
+    top: 0;
+    left: var(--padding-x);
+    right: var(--padding-x);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0;
 }
 
-html.has-intro .hero.intro-done .hero-content > :not(.name):not(.hero-links),
-html.has-intro .hero-content:focus-within > :not(.name):not(.hero-links) {
-    clip-path: inset(-0.4em -0.6em -0.6em -0.6em);
-    transform: none;
+/* El hueco entre las dos mitades: recorta la pila de capas, que queda centrada en él */
+.cut-gap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    overflow: hidden;
 }
 
-html.has-intro .hero.intro-done .hero-links a,
-html.has-intro .hero-content:focus-within .hero-links a {
-    clip-path: inset(-20% -4% -60% 0);
+.cut-stack {
+    position: relative;
+    display: grid;
+    grid-auto-rows: 1fr;
+    margin: 0 var(--padding-x);
 }
 
-html.has-intro .hero.intro-done .headline { transition-delay: 0s; }
-html.has-intro .hero.intro-done .intro { transition-delay: 0.12s; }
-html.has-intro .hero.intro-done .description { transition-delay: 0.22s; }
-html.has-intro .hero.intro-done .availability { transition-delay: 0.34s; }
-html.has-intro .hero.intro-done .hero-links a:nth-child(1) { transition-delay: 0.46s; }
-html.has-intro .hero.intro-done .hero-links a:nth-child(2) { transition-delay: 0.53s; }
-html.has-intro .hero.intro-done .hero-links a:nth-child(3) { transition-delay: 0.6s; }
-html.has-intro .hero.intro-done .hero-links a:nth-child(4) { transition-delay: 0.67s; }
-html.has-intro .hero.intro-done .hero-links a:nth-child(5) { transition-delay: 0.74s; }
+.cut-layer {
+    display: grid;
+    grid-template-columns: 2.4rem 9.5rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1.25rem;
+    padding-left: 1.75rem;
+    color: var(--text-tertiary);
+    transition: color 0.35s ease;
+}
+
+.cut-layer + .cut-layer {
+    border-top: 1px solid var(--border-color);
+}
+
+.cut-index {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.35s ease;
+}
+
+.cut-name {
+    font-family: var(--font-heading);
+    font-size: clamp(1.25rem, 1.7vw, 1.65rem);
+    letter-spacing: -0.01em;
+}
+
+.cut-code {
+    overflow: hidden;
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+    font-size: clamp(0.78rem, 0.95vw, 0.92rem);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cut-tech {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: right;
+}
+
+.cut-layer.is-lit {
+    color: var(--text-primary);
+}
+
+.cut-layer.is-lit .cut-index {
+    color: #e5322d;
+}
+
+.cut-live {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 0.6rem;
+    border-radius: 50%;
+    background: currentColor;
+    vertical-align: 0.05em;
+}
+
+.cut-layer.is-lit .cut-live {
+    background: #e5322d;
+    box-shadow: 0 0 0 4px rgba(229, 50, 45, 0.16);
+}
+
+/* El recorrido de la petición: un trazo rojo que baja de la interfaz a producción */
+.cut-trace {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 0;
+    background: #e5322d;
+    opacity: 0;
+}
+
+.cut-trace::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -4px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #e5322d;
+    transform: translateX(-50%);
+}
 
 @media (max-width: 768px) {
     html.has-intro .hero-stage {
         min-height: 780px;
     }
+
+    .cut-layer {
+        grid-template-columns: 2rem minmax(0, 1fr);
+        align-content: center;
+        gap: 0.15rem 0.75rem;
+        padding-left: 1.1rem;
+    }
+
+    .cut-index {
+        grid-row: span 2;
+    }
+
+    .cut-tech {
+        display: none;
+    }
+
+    .cut-code {
+        grid-column: 2;
+        font-size: 0.75rem;
+    }
+}
+
+/* El resto de la cabecera entra con el scroll (--k lo pone intro.js) y es texto normal */
+html.has-intro .hero-content > :not(.name):not(.hero-links) {
+    clip-path: inset(-0.4em -0.6em calc(-0.6em + (1 - var(--k, 0)) * (100% + 1em)) -0.6em);
+    transform: translateY(calc((1 - var(--k, 0)) * 1.1rem));
+}
+
+html.has-intro .hero-links a {
+    clip-path: inset(-20% calc(-4% + (1 - var(--k, 0)) * 104%) -60% 0);
+}
+
+/* Si se llega con el teclado, todo a la vista */
+html.has-intro .hero-content:focus-within > :not(.name):not(.hero-links),
+html.has-intro .hero-content:focus-within .hero-links a {
+    clip-path: none;
+    transform: none;
 }
 
 /* Indicador de scroll de la intro: una palabra espaciada y una guía vertical por la que baja
@@ -3033,5 +3164,150 @@ html.has-intro .hero.cue-hidden .scroll-cue {
 
     .catabasis-pie {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ---------- Láminas de dominio público (Public Domain Image Archive) ----------
+   Grabados antiguos en blanco y negro, con su pie, como en Catábasis. Sobre papel blanco se
+   imprimen con multiply; la de la transición va invertida, en trazo blanco sobre negro. */
+.lamina {
+    margin: 0;
+}
+
+.lamina img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.lamina figcaption {
+    margin-top: 0.9rem;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+}
+
+.lamina-num {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: var(--text-tertiary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.lamina cite {
+    font-style: italic;
+}
+
+/* Perfil: la lámina ocupa una columna a la derecha del titular */
+.about .large-text-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(220px, 21vw, 330px);
+    column-gap: clamp(2.5rem, 6vw, 6rem);
+}
+
+.about .large-text-container > * {
+    grid-column: 1;
+}
+
+.about .proof-strip {
+    grid-column: 1 / -1;
+}
+
+.lamina-leibniz {
+    grid-column: 2 !important;
+    grid-row: 1 / span 3;
+    align-self: start;
+    margin-top: 2.6rem;
+}
+
+.lamina-leibniz img {
+    mix-blend-mode: multiply;
+}
+
+@media (max-width: 900px) {
+    .about .large-text-container {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .lamina-leibniz {
+        grid-column: 1 !important;
+        grid-row: auto;
+        width: min(100%, 320px);
+        margin-top: 3.5rem;
+    }
+}
+
+/* Transición red → línea del tiempo: Cajal acompaña a la red mientras el fondo es negro */
+.net-plate {
+    position: absolute;
+    left: var(--padding-x);
+    bottom: clamp(2.5rem, 8vh, 5rem);
+    width: clamp(240px, 24vw, 370px);
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.net-plate img {
+    display: block;
+    width: 100%;
+    height: auto;
+    -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 62%, transparent 100%);
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 62%, transparent 100%);
+}
+
+.net-plate figcaption {
+    margin-top: 0.6rem;
+    color: rgba(241, 241, 239, 0.62);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+}
+
+.net-plate .lamina-num {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: rgba(241, 241, 239, 0.42);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.net.is-still .net-plate,
+.net:not(.is-on) .net-plate {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .net-plate {
+        display: none;
+    }
+}
+
+.footer {
+    gap: 1rem 2rem;
+    flex-wrap: wrap;
+}
+
+.footer-credits {
+    max-width: 46rem;
+    font-size: 0.8rem;
+    text-align: right;
+}
+
+.footer-credits a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+@media (max-width: 768px) {
+    .footer-credits {
+        text-align: left;
     }
 }

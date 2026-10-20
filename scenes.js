@@ -1,4 +1,4 @@
-// Escenas con scroll de la portada (la galaxia vive en galaxy.js):
+// Escenas con scroll de la portada (la intro vive en intro.js y la red → línea del tiempo en net.js):
 //  - Trayectoria: Formación entra por la izquierda y Experiencia por la derecha hasta
 //    juntarse. En escritorio la sección se queda fija mientras ocurre y un buen tramo
 //    después, así la inercia del scroll no se la salta.

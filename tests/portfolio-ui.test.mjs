@@ -30,3 +30,14 @@ test('the globe supports scroll growth, dark contrast and continuous autonomous 
     assert.doesNotMatch(script, /automaticRotation \+= deltaTime[^;]*contactProgress/);
     assert.match(script, /globeShell\.dataset\.phase = phase/);
 });
+
+test('the intro and the network transition follow the scroll position and never play on their own', () => {
+    for (const file of ['intro.js', 'net.js']) {
+        const source = read(file);
+        assert.doesNotMatch(source, /setTimeout|setInterval|\.animate\(/, `${file} must not start timed animations`);
+        assert.match(source, /getBoundingClientRect\(\)/, `${file} must read the scroll position`);
+    }
+    assert.match(index, /<section id="red" class="net"/);
+    assert.doesNotMatch(index, /galaxy/);
+    assert.match(index, /<script src="net\.js\?v=[^"]+" defer><\/script>/);
+});

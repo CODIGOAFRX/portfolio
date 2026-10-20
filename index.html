@@ -28,8 +28,8 @@
     <meta name="twitter:description"
         content="Desarrollo de principio a fin. Productos web en producción y automatización con Java, Python y TypeScript.">
     <meta name="twitter:image" content="https://www.pedrogomez.dev/og.png">
-    <link rel="stylesheet" href="styles.css?v=20261018-catabasis">
-    <script src="intro-boot.js?v=20261011-intro12"></script>
+    <link rel="stylesheet" href="styles.css?v=20261020-laminas">
+    <script src="intro-boot.js?v=20261020-corte"></script>
 </head>
 
 <body>
@@ -59,8 +59,8 @@
     <main>
         <!-- Hero Section -->
         <section id="hero" class="hero">
-            <!-- Intro (intro.js): el nombre se mide como un espécimen tipográfico y sus letras
-                 redondas forman el globo; después entra el resto. Todo es HTML real. -->
+            <!-- Intro (intro.js): «corte transversal». Con el scroll el nombre se abre en franjas y
+                 enseña las capas de una petición real de AFORO; después entra el resto. Todo es HTML real. -->
             <div class="hero-stage">
                 <!-- Indicador de scroll de la intro: se recoge en cuanto se hace scroll -->
                 <div class="scroll-cue" aria-hidden="true"><span>Desliza</span><i></i></div>
@@ -106,6 +106,14 @@
                             negocio, persistencia, despliegue, correos, analítica y paneles privados.
                         </p>
                     </div>
+                    <!-- Lámina de dominio público (Public Domain Image Archive): el oficio viene de lejos -->
+                    <figure class="lamina lamina-leibniz hidden-element">
+                        <img src="/media/laminas/leibniz-1727.webp" width="616" height="973" loading="lazy" decoding="async"
+                            alt="Grabado de la máquina de calcular de Leibniz: la caja con sus diales, el cilindro escalonado y el mecanismo de engranajes">
+                        <figcaption><span class="lamina-num">Lámina I</span>La máquina de calcular de Leibniz, en el
+                            <cite>Theatrum arithmetico-geometricum</cite> de Jacob Leupold, 1727. Antes del software ya
+                            había alguien convirtiendo un problema en un mecanismo.</figcaption>
+                    </figure>
                     <div class="proof-strip hidden-element" aria-label="Resumen profesional">
                         <div class="proof-products"><strong>06</strong><span>productos públicos en producción</span></div>
                         <div class="proof-skills"><strong>Java · Python · IA</strong><span>Desarrollo de software y uso de herramientas de inteligencia artificial.</span></div>
@@ -159,16 +167,19 @@
             </div>
         </section>
 
-        <!-- Transición: la red de AFR-MIND se abre en una galaxia y el scroll viaja hasta su núcleo.
-             La animación está renderizada desde código (transicion-galaxia/) y galaxy.js la avanza con el scroll. -->
-        <section id="galaxia" class="galaxy" aria-label="Transición animada hacia el centro de una galaxia de neuronas">
-            <div class="galaxy-stage">
-                <picture>
-                    <source media="(max-aspect-ratio: 1/1)" srcset="/media/galaxia/galaxia-movil.jpg">
-                    <img class="galaxy-poster" src="/media/galaxia/galaxia-1080.jpg" alt="" decoding="async" loading="lazy">
-                </picture>
-                <video class="galaxy-video" muted playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
-                <div class="galaxy-white" aria-hidden="true"></div>
+        <!-- Transición: la red de AFR-MIND se ordena en el tiempo y acaba en la línea de la trayectoria
+             (net.js, con el scroll). Sin JS no se muestra. -->
+        <section id="red" class="net"
+            aria-label="Transición: las tecnologías de mi CV pasan de la red de AFR-MIND a una línea del tiempo, de la formación a lo que hoy está en producción">
+            <div class="net-stage">
+                <canvas class="net-canvas" aria-hidden="true"></canvas>
+                <!-- Lámina de dominio público: las neuronas que dibujó Cajal, junto a la red que aprende -->
+                <figure class="net-plate lamina-dark">
+                    <img src="/media/laminas/cajal-1894.webp" width="1400" height="1222" loading="lazy" decoding="async"
+                        alt="Dibujo de neuronas de Santiago Ramón y Cajal: células con sus ramificaciones conectadas en capas">
+                    <figcaption><span class="lamina-num">Lámina II</span>Santiago Ramón y Cajal, neuronas del asta de
+                        Ammon, 1894. Las redes neuronales nacieron de mirar estas conexiones.</figcaption>
+                </figure>
             </div>
         </section>
 
@@ -589,12 +600,16 @@
 
     <footer class="footer hidden-element">
         <p>&copy; 2026 Pedro Gómez.</p>
+        <p class="footer-credits">Láminas de dominio público vía
+            <a href="https://pdimagearchive.org/" target="_blank" rel="noopener noreferrer">Public Domain Image Archive</a>:
+            <a href="https://pdimagearchive.org/images/26152c15-8b32-4edb-980e-ffae030cceae/" target="_blank" rel="noopener noreferrer">Leupold, 1727</a> y
+            <a href="https://pdimagearchive.org/images/894978be-b5e9-4bff-8b27-b593071929f4/" target="_blank" rel="noopener noreferrer">Ramón y Cajal, 1894</a>.</p>
     </footer>
 
     <script src="script.js?v=20261018-catabasis"></script>
-    <script src="galaxy.js?v=20261011-intro12" defer></script>
-    <script src="scenes.js?v=20261011-intro12" defer></script>
-    <script src="intro.js?v=20261011-intro12" defer></script>
+    <script src="net.js?v=20261020-laminas" defer></script>
+    <script src="scenes.js?v=20261020-corte" defer></script>
+    <script src="intro.js?v=20261020-corte" defer></script>
 </body>
 
 </html>

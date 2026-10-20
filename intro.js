@@ -1,18 +1,19 @@
-// Intro de la portada: «El nombre es el plano».
-// Al hacer scroll, el nombre se mide como un espécimen tipográfico (líneas guía, verticales y
-// círculos de construcción); los círculos de sus seis letras redondas salen del nombre y se
-// convierten en los meridianos del globo de la página. Con el globo formado entra el resto de la
-// cabecera, que es HTML normal: se puede seleccionar, copiar y pulsar.
-// Toda la escena sale de seek(t) (t en segundos de la previsualización transicion-intro/), y el
-// scroll decide t: avanza y retrocede con el visitante.
+// Intro de la portada: «Corte transversal».
+// Una línea cruza el nombre y lo corta por la mitad. Al bajar, las dos mitades se separan como
+// la tapa de una caja y dentro aparecen las capas de lo que hago, siguiendo una única petición
+// real de AFORO (reservar un asiento) desde la interfaz hasta producción. Un trazo rojo recorre
+// las capas de arriba abajo; después el nombre se vuelve a cerrar y sube a su sitio en la
+// cabecera, donde entra el resto del texto y aparece el globo de la página.
+// Todo depende sólo de la posición del scroll: avanza y retrocede con la rueda, sin tramos que
+// se reproduzcan solos. El nombre real (h1) sigue en el HTML; las mitades son una copia visual.
 (() => {
     const root = document.documentElement;
     const hero = document.getElementById('hero');
     const stage = hero && hero.querySelector('.hero-stage');
+    const content = hero && hero.querySelector('.hero-content');
     const nameEl = hero && hero.querySelector('.name');
     const shell = document.querySelector('.page-globe');
-    const G = window.WireGlobe;
-    if (!root.classList.contains('has-intro') || !hero || !stage || !nameEl || !shell || !G) {
+    if (!root.classList.contains('has-intro') || !hero || !stage || !content || !nameEl) {
         root.classList.remove('has-intro');
         return;
     }
@@ -20,233 +21,166 @@
     const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
     const mix = (a, b, k) => a + (b - a) * k;
     const prog = (t, a, b) => clamp((t - a) / (b - a));
-    const expoOut = x => (x >= 1 ? 1 : 1 - Math.pow(2, -10 * x));
-    const expoInOut = x => (x <= 0 ? 0 : x >= 1 ? 1 : x < 0.5 ? Math.pow(2, 20 * x - 10) / 2 : (2 - Math.pow(2, -20 * x + 10)) / 2);
-    const spring = (tau, omega) => (tau <= 0 ? 0 : 1 - (1 + omega * tau) * Math.exp(-omega * tau));
+    const ease = x => (x <= 0 ? 0 : x >= 1 ? 1 : x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+    const out = x => 1 - Math.pow(1 - clamp(x), 3);
 
-    // Tramo de la previsualización que controla el scroll: del nombre al globo formado
-    const T0 = 0.5, T1 = 5.6;
-    const GUIDE_NAMES = ['ASCENDENTE', 'MAYÚSCULAS', 'ALTURA X', 'LÍNEA BASE'];
-    const LONS = [-150, -120, -90, -60, -30, 0].map(d => d * Math.PI / 180);
+    // Una petición real de AFORO, capa a capa (código de github.com/CODIGOAFRX/AFORO)
+    const LAYERS = [
+        { name: 'Interfaz', tech: 'React · TypeScript', code: 'api<Hold>("/reservations", { seatIds: selected })' },
+        { name: 'API', tech: 'Java 21 · Spring Boot', code: '@PostMapping(value = "/reservations")' },
+        { name: 'Datos', tech: 'PostgreSQL', code: 'SELECT seat_id … ORDER BY seat_id FOR UPDATE' },
+        { name: 'Producción', tech: 'Cloudflare Workers · D1', code: 'pedrogomez.dev/proyecto/aforo', live: true },
+    ];
 
-    hero.classList.add('intro-on');
-    const makeCanvas = cls => {
-        const c = document.createElement('canvas');
-        c.className = cls;
-        c.setAttribute('aria-hidden', 'true');
-        stage.appendChild(c);
-        return c;
+    // Tramos del recorrido (0 = arriba del todo, 1 = cabecera colocada)
+    const SCORE = [0.02, 0.12];   // la línea de corte cruza el nombre
+    const OPEN = [0.1, 0.3];      // las mitades se separan
+    const TRACE = [0.3, 0.52];    // el trazo rojo baja por las capas
+    const CLOSE = [0.55, 0.71];   // las mitades vuelven a juntarse
+    const SETTLE = [0.7, 0.86];   // el nombre sube a la cabecera
+    const REVEAL = [0.78, 0.95];  // entra el resto de la cabecera
+    const END = 0.965;
+
+    // ---------- piezas ----------
+    const el = (tag, cls, parent, text) => {
+        const node = document.createElement(tag);
+        if (cls) node.className = cls;
+        if (text != null) node.textContent = text;
+        parent.appendChild(node);
+        return node;
     };
-    const globeCanvas = makeCanvas('intro-globe');
-    const constructCanvas = makeCanvas('intro-construct');
-    const gctx = globeCanvas.getContext('2d');
-    const cctx = constructCanvas.getContext('2d');
-    const layer = document.createElement('canvas');
-    const lctx = layer.getContext('2d');
+    hero.classList.add('intro-on');
+    const cut = el('div', 'cut', stage);
+    cut.setAttribute('aria-hidden', 'true');
+    const caption = el('p', 'cut-caption', cut, 'AFORO · reservar un asiento, de la interfaz a producción');
+    const word = el('div', 'cut-word', cut);
+    const halves = [0, 1].map(() => el('span', 'cut-half', word, nameEl.textContent.trim()));
+    const gap = el('div', 'cut-gap', cut);
+    const stack = el('div', 'cut-stack', gap);
+    const rows = LAYERS.map((layer, i) => {
+        const row = el('div', 'cut-layer', stack);
+        el('span', 'cut-index', row, String(i + 1).padStart(2, '0'));
+        el('span', 'cut-name', row, layer.name);
+        const code = el('code', 'cut-code', row);
+        if (layer.live) el('i', 'cut-live', code);
+        code.append(layer.code);
+        el('span', 'cut-tech', row, layer.tech);
+        return row;
+    });
+    const trace = el('i', 'cut-trace', stack);
+    const edges = [el('i', 'cut-rule', cut), el('i', 'cut-rule', cut)];
+    const reveal = [...content.children].filter(n => n !== nameEl && !n.classList.contains('hero-links'))
+        .concat([...content.querySelectorAll('.hero-links a')]);
 
-    let vw = 0, vh = 0, dpr = 1, spec = null, current = -1, done = false, frame = 0;
+    let spec = null, vw = 0, vh = 0, t = -1, frame = 0;
 
-
-    // ---------- medidas del nombre (sin transformar, relativas al escenario) ----------
+    // ---------- medidas (el h1 sin transformar, relativo al escenario) ----------
     function measure() {
-        nameEl.style.transform = 'none';
         const sb = stage.getBoundingClientRect();
         vw = sb.width; vh = sb.height;
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
-        constructCanvas.width = Math.round(vw * dpr); constructCanvas.height = Math.round(vh * dpr);
-        // El lienzo del globo es fijo a la pantalla, como el globo de la página
-        const gb = globeCanvas.getBoundingClientRect();
-        [globeCanvas, layer].forEach(c => { c.width = Math.round(gb.width * dpr); c.height = Math.round(gb.height * dpr); });
+        const nb = nameEl.getBoundingClientRect();
+        const cs = getComputedStyle(nameEl);
+        const fs = parseFloat(cs.fontSize);
+        Object.assign(word.style, {
+            left: `${nb.left - sb.left}px`, top: `${nb.top - sb.top}px`, width: `${nb.width}px`, height: `${nb.height}px`,
+            fontFamily: cs.fontFamily, fontSize: cs.fontSize, fontWeight: cs.fontWeight,
+            letterSpacing: cs.letterSpacing, lineHeight: cs.lineHeight,
+        });
 
+        // Líneas base de cada letra (relativas al h1), a partir de sus cajas y de la métrica de la fuente
         const node = nameEl.firstChild;
-        const text = node.data;
         const range = document.createRange();
-        const rects = [...text].map((_, i) => { range.setStart(node, i); range.setEnd(node, i + 1); return range.getBoundingClientRect(); });
-        // Distancia de la caja de una letra a su línea base, con un marcador alineado a ella
-        const rest = node.splitText(1);
-        const marker = document.createElement('span');
-        marker.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
-        rest.parentNode.insertBefore(marker, rest);
-        const ascentBox = marker.getBoundingClientRect().top - rects[0].top;
-        marker.remove();
-        nameEl.normalize();
-
-        const cs = getComputedStyle(nameEl), fs = parseFloat(cs.fontSize);
+        const rects = [...node.data].map((ch, i) => { range.setStart(node, i); range.setEnd(node, i + 1); return { ch, r: range.getBoundingClientRect() }; })
+            .filter(x => x.ch.trim());
         const c = document.createElement('canvas').getContext('2d');
         c.font = `${cs.fontStyle} ${cs.fontWeight} ${fs}px ${cs.fontFamily}`;
-        const m = ch => c.measureText(ch);
-        const xh = m('x').actualBoundingBoxAscent, cap = m('H').actualBoundingBoxAscent, asc = m('d').actualBoundingBoxAscent;
-        const oW = m('o').actualBoundingBoxRight + m('o').actualBoundingBoxLeft;
-        const nb = nameEl.getBoundingClientRect();
-        const origin = { x: nb.left - sb.left, y: nb.top - sb.top };
+        const fm = c.measureText('H');
+        const boxAscent = fm.fontBoundingBoxAscent || fs * 0.9;
+        const boxDescent = fm.fontBoundingBoxDescent || fs * 0.22;
+        const baselineOf = r => r.top - nb.top + (r.height - boxAscent - boxDescent) / 2 + boxAscent;
+        const ascent = Math.max(...[...'PGdó'].map(ch => c.measureText(ch).actualBoundingBoxAscent));
+        const xHeight = c.measureText('x').actualBoundingBoxAscent;
+        const baselines = [...new Set(rects.map(x => Math.round(baselineOf(x.r))))].sort((a, b) => a - b);
+        const top = baselines[0] - ascent, bottom = baselines[baselines.length - 1] + fs * 0.03;
+        // Una línea: el corte pasa por la mitad de la altura x. Dos líneas (móvil): entre ellas.
+        const cutY = baselines.length > 1
+            ? (baselines[0] + baselines[1] - ascent) / 2
+            : baselines[0] - xHeight * 0.5;
+        const left = Math.min(...rects.map(x => x.r.left)) - nb.left;
+        const right = Math.max(...rects.map(x => x.r.right)) - nb.left;
 
-        // Letras en coordenadas del nombre (origen = esquina del h1)
-        const letters = [...text].map((ch, i) => {
-            const r = rects[i], mm = m(ch);
-            const pen = r.left - nb.left, base = r.top - nb.top + ascentBox;
-            return { ch, base, left: pen - mm.actualBoundingBoxLeft, right: pen + mm.actualBoundingBoxRight };
-        }).filter(l => l.ch.trim());
-        // Líneas del nombre (en móvil son dos)
-        const lines = [];
-        letters.forEach(l => {
-            let line = lines.find(x => Math.abs(x.base - l.base) < 2);
-            if (!line) { line = { base: l.base, left: Infinity, right: -Infinity }; lines.push(line); }
-            line.left = Math.min(line.left, l.left);
-            line.right = Math.max(line.right, l.right);
-        });
-        const circles = letters.filter(l => 'edoGó'.includes(l.ch)).map(l => {
-            if (l.ch === 'G') return { cx: (l.left + l.right) / 2, cy: l.base - cap / 2, r: cap * 0.53 };
-            if (l.ch === 'd') return { cx: l.left + oW / 2, cy: l.base - xh / 2, r: xh * 0.53 };
-            return { cx: (l.left + l.right) / 2, cy: l.base - xh / 2, r: xh * 0.53 };
-        });
-
-        // Bloque de texto para centrar el nombre grande
-        const textLeft = Math.min(...lines.map(l => l.left)), textRight = Math.max(...lines.map(l => l.right));
-        const textTop = Math.min(...lines.map(l => l.base)) - asc, textBottom = Math.max(...lines.map(l => l.base));
-        const textW = textRight - textLeft, textH = textBottom - textTop;
-        const s0 = Math.max(1, Math.min(1.62, (vw * 0.88) / textW, (vh * 0.46) / textH));
+        const mobile = vw <= 768;
+        const rowH = mobile ? clamp(vh * 0.085, 60, 76) : clamp(vh * 0.08, 56, 80);
+        const pad = rowH * 0.45;
+        const G = rowH * LAYERS.length + pad * 2;
+        const band = bottom - top;
+        const s0 = Math.max(1, Math.min(1.62, (vw * 0.88) / (right - left), (vh * 0.46) / band));
+        const sOpen = Math.min(s0, Math.max(0.5, (vh * 0.78 - G) / band));
         spec = {
-            origin, letters, lines, circles, s0,
-            guides: [-asc, -cap, -xh, 0],
-            start: {
-                dx: vw / 2 - (origin.x + ((textLeft + textRight) / 2) * s0),
-                dy: vh / 2 - (origin.y + ((textTop + textBottom) / 2) * s0),
-            },
-            labels: vw > 768,
+            origin: { x: nb.left - sb.left, y: nb.top - sb.top },
+            cutY, G, pad, rowsH: rowH * LAYERS.length, s0, sOpen, top,
+            centerX: (left + right) / 2, centerY: (top + bottom) / 2,
         };
-        current = -1;
+        stack.style.height = `${G}px`;
+        stack.style.padding = `${pad}px 0`;
+        trace.style.top = `${pad}px`;
+        halves[0].style.clipPath = `polygon(-20% ${-fs}px, 120% ${-fs}px, 120% ${cutY}px, -20% ${cutY}px)`;
+        halves[1].style.clipPath = `polygon(-20% ${cutY}px, 120% ${cutY}px, 120% ${nb.height + fs}px, -20% ${nb.height + fs}px)`;
+        t = -1;
     }
 
-    const line = (c, x0, y0, x1, y1) => { c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y1); c.stroke(); };
-    const white = a => `rgba(255, 255, 255, ${a})`;
-    const gray = v => `rgb(${v}, ${v}, ${v})`;
+    // Traslado que centra la tinta del nombre en pantalla a una escala dada
+    const centered = s => ({
+        x: vw / 2 - (spec.origin.x + spec.centerX * s),
+        y: vh / 2 - (spec.origin.y + spec.centerY * s),
+    });
 
-    // ---------- la escena en el instante t ----------
-    function seek(t) {
-        const live = G.live;
-        const k = spring(t - 3.0, 6);
-        const s = mix(spec.s0, 1, k), dx = mix(spec.start.dx, 0, k), dy = mix(spec.start.dy, 0, k);
-        nameEl.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) scale(${s.toFixed(5)})`;
-        const X = x => spec.origin.x + dx + x * s;
-        const Y = y => spec.origin.y + dy + y * s;
+    // ---------- la escena en el punto p del recorrido ----------
+    function render(p) {
+        const open = ease(prog(p, ...OPEN)) * (1 - ease(prog(p, ...CLOSE)));
+        const settle = ease(prog(p, ...SETTLE));
+        const g = spec.G * open;
+        const sCenter = mix(spec.s0, spec.sOpen, open);
+        const c0 = centered(sCenter);
+        const s = mix(sCenter, 1, settle);
+        const dx = mix(c0.x, 0, settle), dy = mix(c0.y, 0, settle);
+        word.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) scale(${s.toFixed(5)})`;
 
-        cctx.setTransform(1, 0, 0, 1, 0, 0);
-        cctx.clearRect(0, 0, constructCanvas.width, constructCanvas.height);
-        cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        gctx.setTransform(1, 0, 0, 1, 0, 0);
-        gctx.clearRect(0, 0, globeCanvas.width, globeCanvas.height);
-        lctx.setTransform(1, 0, 0, 1, 0, 0);
-        lctx.clearRect(0, 0, layer.width, layer.height);
-        lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        // Las mitades se apartan del corte; un leve desplazamiento lateral delata el corte
+        const nudge = Math.min(10, vw * 0.007) * open;
+        halves[0].style.transform = `translate(${(-nudge / s).toFixed(3)}px, ${(-g / 2 / s).toFixed(3)}px)`;
+        halves[1].style.transform = `translate(${(nudge / s).toFixed(3)}px, ${(g / 2 / s).toFixed(3)}px)`;
 
-        // 1. Medición: guías horizontales con su nombre y una vertical por letra
-        const retract = expoInOut(prog(t, 3.0, 3.45));
-        cctx.lineWidth = 1;
-        spec.lines.forEach((ln, li) => {
-            const cx = X((ln.left + ln.right) / 2);
-            spec.guides.forEach((gy, i) => {
-                const len = expoInOut(prog(t, 0.5 + i * 0.12, 1.5 + i * 0.12)) * (1 - retract);
-                if (len <= 0) return;
-                const half = mix(vw * 0.62, ((ln.right - ln.left) * s) / 2, retract) * len;
-                const y = Math.round(Y(ln.base + gy)) + 0.5;
-                cctx.strokeStyle = white(i === 3 ? 0.75 : 0.42);
-                line(cctx, cx - half, y, cx + half, y);
-                const labelK = expoOut(prog(t, 1.2 + i * 0.12, 1.8 + i * 0.12)) * (1 - expoOut(prog(t, 2.85, 3.15)));
-                if (spec.labels && li === 0 && labelK > 0.01) {
-                    const below = i === 1;
-                    cctx.font = '600 11px Arial, Helvetica, sans-serif';
-                    cctx.letterSpacing = '1.4px';
-                    cctx.textAlign = 'left';
-                    cctx.textBaseline = below ? 'top' : 'bottom';
-                    cctx.fillStyle = white(0.62 * labelK);
-                    cctx.fillText(GUIDE_NAMES[i], Math.max(X(spec.lines[0].left), cx - half + 4), y + (below ? 7 : -6) + (1 - labelK) * 6);
-                }
-            });
+        // El hueco entre las mitades enseña la pila de capas, centrada, como al abrir una caja
+        const cutAt = spec.origin.y + dy + spec.cutY * s;
+        const gapTop = cutAt - g / 2;
+        gap.style.transform = `translateY(${gapTop.toFixed(2)}px)`;
+        gap.style.height = `${g.toFixed(2)}px`;
+        stack.style.transform = `translateY(${((g - spec.G) / 2).toFixed(2)}px)`;
+        stack.style.opacity = clamp(open * 1.6).toFixed(3);
+
+        // Bordes del corte: cruzan la pantalla antes de abrir y se recogen tras cerrar
+        const score = out(prog(p, ...SCORE)) * (1 - out(prog(p, CLOSE[1] - 0.03, CLOSE[1] + 0.04)));
+        edges[0].style.transform = `translateY(${gapTop.toFixed(2)}px) scaleX(${score.toFixed(4)})`;
+        edges[1].style.transform = `translateY(${(gapTop + g).toFixed(2)}px) scaleX(${score.toFixed(4)})`;
+
+        // El trazo baja por la pila y cada capa se «enciende» al llegar a ella
+        const traceK = ease(prog(p, ...TRACE));
+        trace.style.height = `${(spec.rowsH * traceK).toFixed(2)}px`;
+        trace.style.opacity = (traceK > 0 ? 1 : 0).toString();
+        rows.forEach((row, k) => row.classList.toggle('is-lit', traceK >= (k + 0.35) / rows.length));
+
+        caption.style.transform = `translateY(${(spec.origin.y + dy + spec.top * s - g / 2 - 46).toFixed(2)}px)`;
+        caption.style.opacity = clamp((open - 0.55) / 0.45).toFixed(3);
+
+        // Resto de la cabecera y globo de la página
+        reveal.forEach((node, i) => {
+            const a = REVEAL[0] + i * 0.012;
+            node.style.setProperty('--k', out(prog(p, a, a + 0.09)).toFixed(4));
         });
-        spec.letters.forEach((l, i) => {
-            const len = expoInOut(prog(t, 1.0 + i * 0.05, 1.9 + i * 0.05)) * (1 - retract);
-            if (len <= 0.03) return;
-            const top = Y(l.base + spec.guides[0]) - 60 * s / spec.s0, bottom = Y(l.base) + 60 * s / spec.s0;
-            const x = Math.round(X(l.left)) + 0.5;
-            cctx.strokeStyle = white(0.3);
-            line(cctx, x, top, x, top + (bottom - top) * len);
-        });
-
-        if (!live || !live.size) return;
-        // Destino: el globo de la página tal y como está ahora (posición, tamaño, giro, opacidad).
-        // Su lienzo es fijo a la pantalla, así que coincide aunque la cabecera ya se esté yendo.
-        const R = 0.445 * live.size * live.scale;
-        const gx = live.x, gy = live.y;
-        const nameShift = stage.getBoundingClientRect().top; // el nombre sí se mueve con la página
-        const settle = expoInOut(prog(t, 4.1, 4.8));
-        const layerAlpha = mix(1, live.opacity, settle);
-        // Mismo giro e inclinación que el globo de la página en todo momento: al montarse ya está
-        // en su posición definitiva y no hay nada que recolocar
-        const rotation = live.rotation, tilt = G.tilt;
-        const ct = Math.cos(tilt), st = Math.sin(tilt);
-        const assembled = t >= 4.8;
-
-        // 2–3. Círculos de construcción que salen del nombre y se vuelven meridianos: cada punto
-        // del círculo viaja a su punto del meridiano proyectado (par de longitudes L y L + 180)
-        if (!assembled) {
-            const SEG = 96;
-            spec.circles.forEach((c, i) => {
-                const draw = expoInOut(prog(t, 1.6 + i * 0.09, 2.4 + i * 0.09));
-                if (draw <= 0) return;
-                const fly = spring(t - 3.05 - i * 0.05, 5.5);
-                const morph = expoInOut(prog(t, 3.3 + i * 0.05, 4.1 + i * 0.05));
-                const L = LONS[i] + rotation;
-                const sl = Math.sin(L), cl = Math.cos(L);
-                const ox = mix(X(c.cx), gx, fly);
-                const oy = mix(Y(c.cy) + nameShift, gy, fly) + Math.sin(Math.PI * fly) * vh * 0.14;
-                const r = mix(c.r * s, R, morph);
-                const onName = morph <= 0;
-                const ctx = onName ? cctx : lctx;
-                ctx.lineWidth = onName ? 1.2 : mix(1.2, 0.7 * live.scale, settle);
-                const point = phi => {
-                    const cp = Math.cos(phi), sp = Math.sin(phi);
-                    // Meridiano con la inclinación del globo, relativo a su centro y en radios
-                    const mx = cp * sl, my = sp, mz = cp * cl;
-                    const ty = my * ct - mz * st, tz = my * st + mz * ct;
-                    // Círculo de construcción, en la misma parametrización
-                    return {
-                        x: ox + mix(cp, mx, morph) * r,
-                        y: oy - mix(sp, ty, morph) * r,
-                        z: tz,
-                    };
-                };
-                const n = Math.max(1, Math.round(SEG * draw));
-                let prev = point(Math.PI / 2);
-                for (let k = 1; k <= n; k++) {
-                    const next = point(Math.PI / 2 + (k / SEG) * Math.PI * 2);
-                    const front = prev.z + next.z >= 0;
-                    ctx.strokeStyle = onName ? white(0.95) : gray(Math.round(mix(17, front ? 184 : 227, settle)));
-                    ctx.beginPath();
-                    ctx.moveTo(prev.x, prev.y);
-                    ctx.lineTo(next.x, next.y);
-                    ctx.stroke();
-                    prev = next;
-                }
-            });
-        }
-
-        // 4. El globo de la página, dibujado por partes hasta quedar completo
-        if (t >= 3.9) {
-            G.draw(lctx, {
-                centerX: gx, centerY: gy, radius: R, rotation, theme: 0, lineScale: live.scale, tilt,
-                fill: expoOut(prog(t, 4.0, 4.8)),
-                build: {
-                    outline: expoInOut(prog(t, 3.9, 4.45)),
-                    meridians: assembled ? 1 : 0,
-                    parallels: expoInOut(prog(t, 4.3, 5.0)),
-                    land: expoInOut(prog(t, 4.6, 5.4)),
-                },
-            });
-        }
-        gctx.setTransform(1, 0, 0, 1, 0, 0);
-        gctx.globalAlpha = layerAlpha;
-        gctx.drawImage(layer, 0, 0);
-        gctx.globalAlpha = 1;
+        if (shell) shell.style.setProperty('--intro-globe', ease(prog(p, 0.8, 0.97)).toFixed(4));
+        hero.classList.toggle('intro-finished', p >= END);
+        hero.classList.toggle('cue-hidden', p > 0.004);
     }
 
     // ---------- scroll ----------
@@ -254,73 +188,16 @@
         const r = hero.getBoundingClientRect();
         return clamp(-r.top / Math.max(1, r.height - vh));
     };
-    // Punto de disparo: deja HOLD px fijos al final, iguales en cualquier pantalla (unos 6 clics
-    // de rueda), para no saltarse la formación por bajar un poco de más
-    const HOLD = 600;
-    const triggerAt = () => {
-        const range = Math.max(1, hero.offsetHeight - vh);
-        return clamp((range - HOLD) / range, 0.3, 0.98);
-    };
-
-    // El scroll mide el nombre y dibuja los círculos de construcción (hasta TRIGGER). Al llegar
-    // ahí, la formación del globo se reproduce sola a ritmo fijo (RATE segundos de la
-    // previsualización por segundo real); al volver arriba se deshace igual. Tras el disparo
-    // quedan HOLD px fijos; si se sigue bajando, la formación termina más deprisa.
-    const T_SPLIT = 3.0, RATE = 0.75, REWIND = 1.3, HURRY = 3;
-    const TEXT_AT = 3.75; // el nombre ya está casi en su sitio de cabecera
-    let TRIGGER = 0.8;
-    const scrollTime = p => mix(T0, T_SPLIT, clamp(p / TRIGGER));
-    let t = -1, last = 0;
-    function update(now = performance.now()) {
+    // El escenario sigue al scroll con un suavizado corto (la rueda da saltos), pero el destino es
+    // siempre la posición real: si se para, la escena se para; si se vuelve arriba, se deshace.
+    function update() {
         frame = 0;
-        const dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
-        last = now;
-        TRIGGER = triggerAt();
         const p = progress();
-        const gone = hero.getBoundingClientRect().bottom <= 0;
-        // El indicador de scroll se recoge en cuanto se empieza a bajar
-        hero.classList.toggle('cue-hidden', p > 0.004);
-        let animating = false;
-        if (t < 0) {
-            // Al cargar a media página se coloca directamente en su sitio
-            t = p >= TRIGGER ? T1 : scrollTime(p);
-        } else if (gone) {
-            t = T1; // si la cabecera ya no se ve, el globo queda formado sin esperar
-        } else if (p >= TRIGGER && t >= T_SPLIT - 0.01) {
-            // Si se sigue bajando y la cabecera empieza a irse, la formación acelera
-            t = Math.min(T1, Math.max(t, T_SPLIT) + dt * RATE * (p >= 1 ? HURRY : 1));
-            animating = t < T1;
-        } else if (p < TRIGGER && t > T_SPLIT + 0.001) {
-            t = Math.max(T_SPLIT, t - dt * RATE * REWIND);
-            animating = true;
-        } else {
-            // Tramo controlado por el scroll, con suavizado: la rueda empuja la escena
-            const target = scrollTime(p);
-            t += (target - t) * 0.14;
-            if (Math.abs(target - t) < 0.002) t = target;
-            animating = t !== target || p >= TRIGGER;
-        }
-        const finished = t >= T1 - 0.0005;
-        shell.classList.toggle('is-intro', !finished);
-        hero.classList.toggle('intro-finished', finished);
-        if (finished) {
-            // El globo de la página toma el relevo, idéntico al último fotograma
-            if (current !== 1) {
-                seek(T1);
-                gctx.clearRect(0, 0, globeCanvas.width, globeCanvas.height);
-                current = 1;
-            }
-        } else {
-            seek(t);
-            current = t;
-        }
-        // El resto de la cabecera entra en cuanto el nombre se ha encogido y ya cabe debajo,
-        // mientras los círculos viajan: texto y globo terminan casi a la vez (se recoge al volver)
-        if (!done && t >= TEXT_AT) { done = true; hero.classList.add('intro-done'); }
-        else if (done && t < TEXT_AT - 0.2) { done = false; hero.classList.remove('intro-done'); }
-        // Mientras la escena está en curso se redibuja siempre: el globo gira solo
-        if ((!finished || animating) && !gone) frame = requestAnimationFrame(update);
-        else last = 0;
+        if (t < 0) t = p;
+        else t += (p - t) * 0.2;
+        if (Math.abs(p - t) < 0.0004) t = p;
+        render(t);
+        if (t !== p) frame = requestAnimationFrame(update);
     }
     const wake = () => { if (!frame) frame = requestAnimationFrame(update); };
 
@@ -335,7 +212,7 @@
         if (coarse && window.innerWidth === lastWidth) return;
         lastWidth = window.innerWidth;
         measure();
-        wake();
+        update();
     });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); wake(); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); update(); });
 })();
