@@ -14,6 +14,7 @@
     if (!stage || !ctx) return;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const plate = section.querySelector('.net-plate');
+    const plateGlobo = section.querySelector('.net-plate-globo');
 
     const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
     const mix = (a, b, k) => a + (b - a) * k;
@@ -295,6 +296,11 @@
             const k = 1 - ease(prog(p, 0.17, 0.27));
             plate.style.opacity = (k * 0.9).toFixed(3);
             plate.style.transform = `translateY(${(-p * 60).toFixed(2)}px)`;
+        }
+        // La trayectoria del globo acompaña al texto del segundo tramo
+        if (plateGlobo) {
+            plateGlobo.style.opacity = c2.toFixed(3);
+            plateGlobo.style.transform = `translateY(${((1 - c2) * 12).toFixed(2)}px)`;
         }
     }
 

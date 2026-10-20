@@ -3311,3 +3311,88 @@ html.has-intro .hero.cue-hidden .scroll-cue {
         text-align: left;
     }
 }
+
+/* Transición, segundo tramo: la gráfica del globo arriba a la derecha, sobre el blanco */
+.net-plate-globo {
+    /* Encima de las columnas cortas (Kyndryl, Estación Diseño), donde la línea del tiempo deja aire */
+    left: 50%;
+    right: auto;
+    top: clamp(6.5rem, 15vh, 9rem);
+    bottom: auto;
+    width: clamp(200px, 18vw, 270px);
+}
+
+.net-plate-globo img {
+    -webkit-mask-image: none;
+    mask-image: none;
+    mix-blend-mode: multiply;
+}
+
+.net-plate-globo figcaption {
+    color: var(--text-secondary);
+}
+
+.net-plate-globo .lamina-num {
+    color: var(--text-tertiary);
+}
+
+/* Otros proyectos (fondo oscuro): grabado invertido, trazo claro sobre el negro */
+.lamina-oscura img {
+    mix-blend-mode: screen;
+    opacity: 0.88;
+}
+
+.lamina-oscura figcaption {
+    color: #9d9d9d;
+}
+
+.lamina-oscura .lamina-num {
+    color: #6f6f6f;
+}
+
+.lamina-kempelen {
+    max-width: 520px;
+}
+
+/* Recomendación: la rueda de lectura bajo el contexto, en la columna estrecha */
+.lamina-rueda {
+    width: min(100%, 250px);
+    margin-top: 3rem;
+}
+
+.lamina-rueda img {
+    mix-blend-mode: multiply;
+}
+
+/* Sin los estilos de la cita de la recomendación, que también es un figure */
+.recommendation .lamina-rueda {
+    padding-top: 0;
+    border-top: 0;
+}
+
+.recommendation .lamina-rueda figcaption {
+    display: block;
+    margin-bottom: 0;
+}
+
+.recommendation .lamina-rueda figcaption .lamina-num {
+    display: block;
+    color: var(--text-tertiary);
+    line-height: 1.5;
+}
+
+/* Contacto: las palomas mensajeras debajo de los enlaces */
+.lamina-palomas {
+    width: min(100%, 420px);
+    margin-top: 5rem;
+}
+
+.lamina-palomas img {
+    mix-blend-mode: multiply;
+}
+
+@media (max-width: 900px) {
+    .lamina-kempelen {
+        max-width: 100%;
+    }
+}
