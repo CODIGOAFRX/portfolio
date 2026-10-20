@@ -170,12 +170,31 @@ async function listJobs(env) {
 // guarda tal cual, con un límite de tamaño.
 const MAX_SCHEDULE_BYTES = 200_000;
 
-async function readSchedule(env) {
-    const row = await env.DB.prepare('SELECT data, updated_at FROM schedules WHERE id = ?').bind('main').first();
+// Cada cuenta tiene su documento: `main` es el horario original y `u:<id>` el de cada usuario.
+// Vercel indica cuál en ?id= y la IP del visitante en X-Client-IP; si la IP está bloqueada o la
+// cuenta ya no existe, se niega el acceso.
+async function scheduleAccess(request, env, url) {
+    const id = url.searchParams.get('id') || 'main';
+    const match = id.match(/^u:(\d{1,10})$/);
+    if (id !== 'main' && !match) return { error: json({ error: 'Horario no válido' }, 400) };
+    if (await isBlocked(env, request.headers.get('X-Client-IP'))) return { error: json({ error: 'Acceso bloqueado' }, 403) };
+    if (match) {
+        const user = await env.DB.prepare('SELECT id FROM horario_users WHERE id = ?').bind(Number(match[1])).first();
+        if (!user) return { error: json({ error: 'La cuenta no existe' }, 404) };
+    }
+    return { id };
+}
+
+async function readSchedule(request, env, url) {
+    const access = await scheduleAccess(request, env, url);
+    if (access.error) return access.error;
+    const row = await env.DB.prepare('SELECT data, updated_at FROM schedules WHERE id = ?').bind(access.id).first();
     return json({ data: row?.data ?? null, updatedAt: row?.updated_at ?? null });
 }
 
-async function saveSchedule(request, env) {
+async function saveSchedule(request, env, url) {
+    const access = await scheduleAccess(request, env, url);
+    if (access.error) return access.error;
     const body = await request.json().catch(() => ({}));
     const data = typeof body.data === 'string' ? body.data : '';
     if (!data || data.length > MAX_SCHEDULE_BYTES) return json({ error: 'Horario no válido' }, 400);
@@ -188,9 +207,127 @@ async function saveSchedule(request, env) {
     const updatedAt = new Date().toISOString();
     await env.DB.prepare(`INSERT INTO schedules (id, data, updated_at) VALUES (?, ?, ?)
         ON CONFLICT(id) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at`)
-        .bind('main', data, updatedAt)
+        .bind(access.id, data, updatedAt)
         .run();
     return json({ ok: true, updatedAt });
+}
+
+// ---------- Cuentas del horario y bloqueo de IPs ----------
+// Vercel crea las cuentas (con la contraseña ya derivada con scrypt) y comprueba el acceso; aquí
+// se guardan, se limita cuántas se crean desde una misma IP y se aplican los bloqueos.
+const USERNAME_PATTERN = /^[a-z0-9][a-z0-9._-]{2,31}$/;
+const SIGNUPS_PER_IP_PER_DAY = 5;
+const MAX_USERS = 2000;
+
+function ipText(value) {
+    const ip = text(value, 64);
+    return ip && /^[0-9a-f:.]+$/i.test(ip) ? ip.toLowerCase() : null;
+}
+
+async function isBlocked(env, ip) {
+    const clean = ipText(ip);
+    if (!clean) return false;
+    return Boolean(await env.DB.prepare('SELECT ip FROM horario_blocked_ips WHERE ip = ?').bind(clean).first());
+}
+
+function serializeUser(row) {
+    return {
+        id: row.id,
+        username: row.username,
+        createdAt: row.created_at,
+        createdIp: row.created_ip,
+        lastLoginAt: row.last_login_at,
+        lastIp: row.last_ip,
+        scheduleUpdatedAt: row.schedule_updated_at ?? null,
+        scheduleBytes: row.schedule_bytes ?? 0
+    };
+}
+
+async function createUser(request, env) {
+    const body = await request.json().catch(() => ({}));
+    const username = String(body.username || '').trim().toLowerCase();
+    const passwordHash = text(body.passwordHash, 300);
+    const ip = ipText(body.ip);
+    if (!USERNAME_PATTERN.test(username) || !passwordHash) return json({ error: 'Datos no válidos' }, 400);
+    if (await isBlocked(env, ip)) return json({ error: 'Acceso bloqueado' }, 403);
+
+    if (ip) {
+        const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const recent = await env.DB.prepare('SELECT COUNT(*) AS total FROM horario_users WHERE created_ip = ? AND created_at > ?')
+            .bind(ip, since).first();
+        if ((recent?.total || 0) >= SIGNUPS_PER_IP_PER_DAY) return json({ error: 'Demasiadas cuentas nuevas desde esta conexión' }, 429);
+    }
+    const count = await env.DB.prepare('SELECT COUNT(*) AS total FROM horario_users').first();
+    if ((count?.total || 0) >= MAX_USERS) return json({ error: 'No se admiten más cuentas por ahora' }, 503);
+
+    const now = new Date().toISOString();
+    try {
+        const row = await env.DB.prepare(`INSERT INTO horario_users (username, password_hash, created_at, created_ip, last_login_at, last_ip)
+            VALUES (?, ?, ?, ?, ?, ?) RETURNING *`)
+            .bind(username, passwordHash, now, ip, now, ip)
+            .first();
+        return json({ user: serializeUser(row) }, 201);
+    } catch (error) {
+        if (/UNIQUE/i.test(String(error?.message))) return json({ error: 'Ese nombre de usuario ya existe' }, 409);
+        throw error;
+    }
+}
+
+// Para iniciar sesión: devuelve también el hash, que sólo compara Vercel
+async function findUser(env, username) {
+    const row = await env.DB.prepare('SELECT * FROM horario_users WHERE username = ?')
+        .bind(String(username || '').trim().toLowerCase())
+        .first();
+    if (!row) return json({ error: 'La cuenta no existe' }, 404);
+    return json({ user: { ...serializeUser(row), passwordHash: row.password_hash } });
+}
+
+async function touchUser(request, env, id) {
+    const body = await request.json().catch(() => ({}));
+    await env.DB.prepare('UPDATE horario_users SET last_login_at = ?, last_ip = ? WHERE id = ?')
+        .bind(new Date().toISOString(), ipText(body.ip), Number(id))
+        .run();
+    return json({ ok: true });
+}
+
+async function listUsers(env) {
+    const users = await env.DB.prepare(`SELECT u.*, s.updated_at AS schedule_updated_at, LENGTH(s.data) AS schedule_bytes
+        FROM horario_users u LEFT JOIN schedules s ON s.id = 'u:' || u.id
+        ORDER BY u.created_at DESC`).all();
+    const blocked = await env.DB.prepare('SELECT ip, reason, created_at FROM horario_blocked_ips ORDER BY created_at DESC').all();
+    return json({
+        users: (users.results || []).map(serializeUser),
+        blocked: (blocked.results || []).map(row => ({ ip: row.ip, reason: row.reason, createdAt: row.created_at }))
+    });
+}
+
+async function deleteUser(env, id) {
+    const numericId = Number(id);
+    const existing = await env.DB.prepare('SELECT id FROM horario_users WHERE id = ?').bind(numericId).first();
+    if (!existing) return json({ error: 'La cuenta no existe' }, 404);
+    await env.DB.batch([
+        env.DB.prepare('DELETE FROM schedules WHERE id = ?').bind(`u:${numericId}`),
+        env.DB.prepare('DELETE FROM horario_users WHERE id = ?').bind(numericId)
+    ]);
+    return json({ ok: true });
+}
+
+async function blockIp(request, env) {
+    const body = await request.json().catch(() => ({}));
+    const ip = ipText(body.ip);
+    if (!ip) return json({ error: 'IP no válida' }, 400);
+    await env.DB.prepare(`INSERT INTO horario_blocked_ips (ip, reason, created_at) VALUES (?, ?, ?)
+        ON CONFLICT(ip) DO UPDATE SET reason = excluded.reason`)
+        .bind(ip, text(body.reason, 200), new Date().toISOString())
+        .run();
+    return json({ ok: true, ip });
+}
+
+async function unblockIp(env, ip) {
+    const clean = ipText(ip);
+    if (!clean) return json({ error: 'IP no válida' }, 400);
+    await env.DB.prepare('DELETE FROM horario_blocked_ips WHERE ip = ?').bind(clean).run();
+    return json({ ok: true });
 }
 
 async function updateJob(request, env, id) {
@@ -280,10 +417,35 @@ export default {
                 return listJobs(env);
             }
             if (url.pathname === '/schedule' && request.method === 'GET') {
-                return readSchedule(env);
+                return readSchedule(request, env, url);
             }
             if (url.pathname === '/schedule' && request.method === 'PUT') {
-                return saveSchedule(request, env);
+                return saveSchedule(request, env, url);
+            }
+            if (url.pathname === '/horario/access' && request.method === 'GET') {
+                return json({ blocked: await isBlocked(env, url.searchParams.get('ip')) });
+            }
+            if (url.pathname === '/horario/users' && request.method === 'GET') {
+                return listUsers(env);
+            }
+            if (url.pathname === '/horario/users' && request.method === 'POST') {
+                return createUser(request, env);
+            }
+            if (url.pathname === '/horario/users/find' && request.method === 'GET') {
+                return findUser(env, url.searchParams.get('username'));
+            }
+            const userMatch = url.pathname.match(/^\/horario\/users\/(\d{1,10})(\/seen)?$/);
+            if (userMatch && !userMatch[2] && request.method === 'DELETE') {
+                return deleteUser(env, userMatch[1]);
+            }
+            if (userMatch && userMatch[2] && request.method === 'POST') {
+                return touchUser(request, env, userMatch[1]);
+            }
+            if (url.pathname === '/horario/blocked' && request.method === 'POST') {
+                return blockIp(request, env);
+            }
+            if (url.pathname === '/horario/blocked' && request.method === 'DELETE') {
+                return unblockIp(env, url.searchParams.get('ip'));
             }
             const jobMatch = url.pathname.match(/^\/jobs\/(\d+)$/);
             if (jobMatch && request.method === 'PATCH') {

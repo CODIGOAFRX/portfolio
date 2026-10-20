@@ -2,10 +2,12 @@
 
 Horario semanal privado, de lunes a domingo por horas, que vive en [pedrogomez.dev/horario](https://pedrogomez.dev/horario). Se edita arrastrando, como en papel, y se añade a la pantalla de inicio del iPhone como si fuera una app.
 
-Es de uso personal: la página pide iniciar sesión y no se indexa.
+Cualquiera puede crear su cuenta y tener su propio horario; un administrador ve las cuentas, las borra y bloquea IPs. La página no se indexa.
 
 ## Qué hace
 
+- **Cuentas abiertas.** En `/horario/login` hay dos pestañas, *Entrar* y *Crear cuenta*. Cada cuenta tiene su horario (en D1, `u:<id>`), y el original del propietario sigue en `main`. Contraseñas con scrypt; como mucho 5 cuentas nuevas por IP y día.
+- **Administrador.** El usuario `admin` (contraseña en `HORARIO_ADMIN_PASSWORD`) entra a `/horario/admin`: lista de cuentas con alta, último acceso, IP y horario; borrar una cuenta (con su horario) y bloquear o desbloquear IPs. Una IP bloqueada no puede entrar, crear cuentas ni leer o guardar horarios. No deja bloquear la IP propia.
 - **Arrastrar para todo.** Arrastrar sobre un día crea una actividad, arrastrar una actividad la mueve y su borde inferior la alarga. Con Ctrl (o Alt/Cmd) pulsado, arrastrar la duplica.
 - **Editor flotante** con título, días, hora, lugar, notas y color. En móvil sale como hoja inferior.
 - **Semana y día.** En móvil se ve la semana completa o un día, y se pasa de un día a otro deslizando.
@@ -19,12 +21,15 @@ Es de uso personal: la página pide iniciar sesión y no se indexa.
 | Pieza | Dónde |
 | --- | --- |
 | Interfaz (rejilla, gestos, editor, menú) | `horario/app.js`, `horario/horario.css` |
-| Inicio de sesión | `horario/login.js`, `lib/horario-login-page.js` |
+| Acceso (entrar y crear cuenta) | `horario/login.js`, `lib/horario-login-page.js`, `api/horario-session.js` |
+| Cuentas, contraseñas e IPs | `lib/horario-accounts.js` |
+| Panel del administrador | `api/horario-admin.js`, `lib/horario-admin-page.js`, `horario/admin.js` |
 | Página servida con sesión | `api/horario-page.js`, `lib/horario-page.js` |
 | API del horario (leer y guardar) | `api/horario.js` |
 | Sesión (cookie propia, separada del panel de candidaturas) | `api/horario-session.js`, `lib/auth.js` |
 | Formato y saneado del horario | `lib/horario-schedule.js` |
-| Almacenamiento en D1 | `worker/src/index.js` (`/schedule`), `worker/migrations/0003_schedules.sql` |
+| Almacenamiento en D1 | `worker/src/index.js` (`/schedule`, `/horario/*`), `worker/migrations/0003_schedules.sql`, `0004_horario_users.sql` |
+| Vista local de punta a punta | `scripts/dev-horario.mjs` (Worker real sobre `node:sqlite`) |
 | Pruebas | `tests/horario.test.mjs` |
 
 - **Frontend:** JavaScript y CSS sin frameworks, con la estética de la web (blanco, negro y grises).
@@ -45,9 +50,21 @@ El horario es un único documento:
 
 Variables en `.env` (ver `.env.example`):
 
-- `HORARIO_USERNAME` y `HORARIO_PASSWORD`: credenciales de acceso.
+- `HORARIO_USERNAME` y `HORARIO_PASSWORD`: credenciales del propietario (el horario original).
+- `HORARIO_ADMIN_PASSWORD`: contraseña del usuario `admin`. Vacía = sin administrador.
 - Las del Worker del portfolio, que es quien guarda los datos.
 
+Antes de desplegar el Worker con esta versión hay que crear las tablas nuevas en D1:
+
 ```bash
-node --test tests/horario.test.mjs
+cd worker
+npx wrangler d1 execute pedro-candidaturas-db --remote --file migrations/0004_horario_users.sql
+npx wrangler deploy
+```
+
+Probar en local, sin tocar producción (propietario `pedro` / `pedro-local`, admin `admin` / `admin`):
+
+```bash
+node scripts/dev-horario.mjs
+node tests/horario.test.mjs
 ```

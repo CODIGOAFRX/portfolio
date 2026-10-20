@@ -37,6 +37,10 @@
     {
       "source": "/horario/login",
       "destination": "/api/horario-page?view=login"
+    },
+    {
+      "source": "/horario/admin",
+      "destination": "/api/horario-page?view=admin"
     }
   ],
   "headers": [
@@ -113,7 +117,7 @@
       ]
     },
     {
-      "source": "/horario(/login)?",
+      "source": "/horario(/login|/admin)?",
       "headers": [
         {
           "key": "Cache-Control",

@@ -22,7 +22,9 @@ const COLORS = {
     teal: ['Petróleo', '#2f6b6e', true],
     orange: ['Teja', '#a5552a', true]
 };
-const STORAGE_KEY = 'horario:v1';
+// Copia local por cuenta: en un mismo navegador pueden entrar personas distintas
+const ACCOUNT = document.body.dataset.account || '';
+const STORAGE_KEY = ACCOUNT ? `horario:v1:${ACCOUNT}` : 'horario:v1';
 const PREFS_KEY = 'horario:prefs';
 const SNAP = 15;
 const MAX_EVENTS = 400;
@@ -38,7 +40,7 @@ const mobile = matchMedia('(max-width: 759px)');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
 const prefs = readJson(PREFS_KEY) || {};
-const local = readJson(STORAGE_KEY);
+const local = readJson(STORAGE_KEY) || adoptLegacyCopy();
 
 const state = {
     schedule: normalizeSchedule(local?.schedule),
@@ -67,6 +69,20 @@ function readJson(key) {
     } catch {
         return null;
     }
+}
+
+// Antes de las cuentas, la copia local se guardaba sin nombre. Sólo puede ser del propietario:
+// se la queda él (con sus cambios sin sincronizar) y nadie más la ve.
+function adoptLegacyCopy() {
+    if (document.body.dataset.role !== 'owner') return null;
+    const legacy = readJson('horario:v1');
+    try {
+        localStorage.removeItem('horario:v1');
+    } catch {
+        // Sin almacenamiento local no hay copia que mover.
+    }
+    if (legacy) writeJson(STORAGE_KEY, legacy);
+    return legacy;
 }
 
 function writeJson(key, value) {

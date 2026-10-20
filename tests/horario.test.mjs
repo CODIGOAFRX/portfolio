@@ -64,3 +64,54 @@ test('the schedule cookie survives opening the app from the home screen', () => 
     assert.match(horarioCookie, new RegExp(`Max-Age=${60 * 60 * 24 * 365}`));
     assert.match(adminCookie, /SameSite=Strict/);
 });
+
+test('passwords are stored as scrypt hashes and verified against them', async () => {
+    const { hashPassword, verifyPassword } = await import('../lib/horario-accounts.js');
+    const stored = await hashPassword('una-contraseña-larga');
+
+    assert.match(stored, /^scrypt\$16384\$8\$1\$[\w-]+\$[\w-]+$/);
+    assert.doesNotMatch(stored, /una-contraseña-larga/);
+    assert.equal(await verifyPassword('una-contraseña-larga', stored), true);
+    assert.equal(await verifyPassword('otra', stored), false);
+    assert.equal(await verifyPassword('una-contraseña-larga', 'texto-plano'), false);
+});
+
+test('new accounts need a valid, unreserved username and a long enough password', async () => {
+    const { signupProblem } = await import('../lib/horario-accounts.js');
+
+    assert.equal(signupProblem('ana.lopez', 'secreto123'), null);
+    assert.match(signupProblem('ab', 'secreto123'), /entre 3 y 32/);
+    assert.match(signupProblem('josé', 'secreto123'), /sin tildes/);
+    assert.match(signupProblem('admin', 'secreto123'), /ya existe/);
+    assert.match(signupProblem(process.env.HORARIO_USERNAME, 'secreto123'), /ya existe/);
+    assert.match(signupProblem('ana.lopez', 'corta'), /al menos 8/);
+});
+
+test('each kind of schedule session opens only its own document', async () => {
+    const { scheduleIdFor } = await import('../lib/horario-accounts.js');
+    const read = token => horarioAuth.readSession({ headers: { cookie: `__Host-pg_horario=${token}` } });
+
+    const user = read(horarioAuth.createSession('ana', { role: 'user', uid: 7 }));
+    assert.equal(scheduleIdFor(user), 'u:7');
+    assert.equal(scheduleIdFor(read(horarioAuth.createSession('admin', { role: 'owner' }))), 'main');
+
+    // Sin HORARIO_ADMIN_PASSWORD no hay administrador, aunque la cookie diga que lo es
+    delete process.env.HORARIO_ADMIN_PASSWORD;
+    assert.equal(read(horarioAuth.createSession('admin', { role: 'admin' })), null);
+    process.env.HORARIO_ADMIN_PASSWORD = 'admin-password';
+    const admin = read(horarioAuth.createSession('admin', { role: 'admin' }));
+    assert.equal(admin.role, 'admin');
+    assert.equal(scheduleIdFor(admin), null);
+
+    // Un usuario sin id válido no vale, y nadie se hace pasar por el propietario con otro nombre
+    assert.equal(read(horarioAuth.createSession('ana', { role: 'user', uid: 'x' })), null);
+    assert.equal(read(horarioAuth.createSession('ana', { role: 'owner' })), null);
+});
+
+test('the visitor IP comes from the first x-forwarded-for address', async () => {
+    const { clientIp } = await import('../lib/horario-accounts.js');
+
+    assert.equal(clientIp({ headers: { 'x-forwarded-for': '203.0.113.9, 10.0.0.1' } }), '203.0.113.9');
+    assert.equal(clientIp({ headers: { 'x-real-ip': '2001:DB8::1' } }), '2001:db8::1');
+    assert.equal(clientIp({ headers: { 'x-forwarded-for': '<script>' } }), '');
+});

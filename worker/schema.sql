@@ -39,3 +39,21 @@ CREATE TABLE IF NOT EXISTS schedules (
     data TEXT NOT NULL,
     updated_at TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS horario_users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL UNIQUE COLLATE NOCASE,
+    password_hash TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    created_ip TEXT,
+    last_login_at TEXT,
+    last_ip TEXT
+);
+
+CREATE INDEX IF NOT EXISTS horario_users_created_ip_idx ON horario_users(created_ip, created_at);
+
+CREATE TABLE IF NOT EXISTS horario_blocked_ips (
+    ip TEXT PRIMARY KEY,
+    reason TEXT,
+    created_at TEXT NOT NULL
+);
