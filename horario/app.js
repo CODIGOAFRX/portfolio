@@ -5,7 +5,8 @@
 //
 // Dos capas: la «semana tipo» (events), que se repite, y los «cambios de la semana» (weeks[lunes]):
 // en ese modo lo fijo es solo un fondo gris que no se toca; pulsar o arrastrar encima crea
-// actividades de esa semana, que van en color por encima.
+// actividades de esa semana, que van en color por encima. En ese modo cada actividad tiene una
+// casilla para darla por hecha (esa semana), y el registro resume lo hecho semana a semana.
 
 const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const SHORT = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
@@ -194,11 +195,13 @@ function normalizeSchedule(raw) {
 function normalizeWeeks(raw) {
     const weeks = {};
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return weeks;
-    for (const key of Object.keys(raw).filter(key => /^\d{4}-\d{2}-\d{2}$/.test(key)).sort().reverse().slice(0, 26)) {
+    for (const key of Object.keys(raw).filter(key => /^\d{4}-\d{2}-\d{2}$/.test(key)).sort().reverse().slice(0, 52)) {
         const events = normalizeEvents(raw[key]?.events, MAX_WEEK_EVENTS);
         const hidden = [...new Set((Array.isArray(raw[key]?.hidden) ? raw[key].hidden : [])
             .map(id => String(id).replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40)).filter(Boolean))];
-        if (events.length || hidden.length) weeks[key] = { events, hidden };
+        const done = normalizeEvents(raw[key]?.done, MAX_EVENTS)
+            .map(({ id, title, day, start, end }) => ({ id, title, day, start, end }));
+        if (events.length || hidden.length || done.length) weeks[key] = { events, hidden, done };
     }
     return weeks;
 }
@@ -239,8 +242,8 @@ const inWeek = () => state.mode === 'week';
 // Cambios de la semana que se está viendo. Solo se crea el registro al modificar algo.
 function weekDoc(create = false) {
     const found = state.schedule.weeks[state.week];
-    if (found || !create) return found || { events: [], hidden: [] };
-    state.schedule.weeks[state.week] = { events: [], hidden: [] };
+    if (found || !create) return found || { events: [], hidden: [], done: [] };
+    state.schedule.weeks[state.week] = { events: [], hidden: [], done: [] };
     return state.schedule.weeks[state.week];
 }
 
@@ -257,11 +260,16 @@ function setEditableEvents(list) {
 const editableLimit = () => (inWeek() ? MAX_WEEK_EVENTS : MAX_EVENTS);
 const findEvent = id => editableEvents().find(event => event.id === id);
 
-// Semanas vacías o de hace más de dos meses no se guardan
+// De las semanas de hace más de dos meses solo se guarda el registro de lo hecho; las vacías, nada
 function pruneWeeks() {
     const oldest = shiftWeek(currentWeek(), -8);
     for (const [key, week] of Object.entries(state.schedule.weeks)) {
-        if (key < oldest || (!week.events.length && !week.hidden.length)) delete state.schedule.weeks[key];
+        week.done ||= [];
+        if (key < oldest) {
+            week.events = [];
+            week.hidden = [];
+        }
+        if (!week.events.length && !week.hidden.length && !week.done.length) delete state.schedule.weeks[key];
     }
 }
 
@@ -550,6 +558,7 @@ function render() {
     const week = inWeek() ? weekDoc() : null;
     const events = editableEvents();
     const base = week ? state.schedule.events : [];
+    const done = new Set((week?.done || []).map(item => item.id));
     const alive = new Set();
     const aliveBase = new Set();
     const totals = Array(7).fill(0);
@@ -580,7 +589,8 @@ function render() {
                 baseNodes.set(event.id, node);
                 enter(node);
             }
-            placeNode(node, event, basePlaced.get(event.id), ', semana tipo');
+            markDone(node, done.has(event.id));
+            placeNode(node, event, basePlaced.get(event.id), `, semana tipo${done.has(event.id) ? ', hecha' : ''}`);
         }
 
         const dayEvents = events.filter(event => event.day === day);
@@ -596,7 +606,8 @@ function render() {
                 enter(node);
             }
             node.classList.toggle('is-week', Boolean(week));
-            placeNode(node, event, placed.get(event.id), week ? ', solo esta semana' : '');
+            markDone(node, done.has(event.id));
+            placeNode(node, event, placed.get(event.id), week ? `, solo esta semana${done.has(event.id) ? ', hecha' : ''}` : '');
         }
     }
 
@@ -610,9 +621,11 @@ function render() {
 
     const total = totals.reduce((sum, value) => sum + value, 0);
     if (week) {
-        $('summary').textContent = events.length
-            ? `${events.length} ${events.length === 1 ? 'añadida' : 'añadidas'} solo esta semana · ${duration(total)} en total`
-            : 'Lo fijo sale en gris, de fondo. Lo que añadas encima solo vale esta semana.';
+        const planned = base.length + events.length;
+        $('summary').textContent = [
+            events.length ? `${events.length} ${events.length === 1 ? 'añadida' : 'añadidas'} solo esta semana` : 'Lo fijo sale en gris, de fondo. Lo que añadas encima solo vale esta semana',
+            planned ? `${done.size} de ${planned} hechas` : ''
+        ].filter(Boolean).join(' · ');
     } else {
         $('summary').textContent = events.length
             ? `${events.length} ${events.length === 1 ? 'actividad' : 'actividades'} · ${duration(total)} a la semana`
@@ -622,12 +635,20 @@ function render() {
     state.firstPaint = false;
 }
 
+function markDone(node, isDone) {
+    node.classList.toggle('is-done', isDone);
+    const check = node.querySelector('.ev-check');
+    check.setAttribute('aria-checked', String(isDone));
+    check.title = isDone ? 'Hecha esta semana · pulsa para desmarcar' : 'Marcar como hecha esta semana';
+}
+
 function createEventNode(id) {
     const node = document.createElement('button');
     node.type = 'button';
     node.className = 'ev';
     node.dataset.id = id;
-    node.innerHTML = '<span class="ev-title"></span><span class="ev-meta"></span><span class="ev-resize" aria-hidden="true"></span>';
+    node.innerHTML = '<span class="ev-title"></span><span class="ev-meta"></span><span class="ev-resize" aria-hidden="true"></span>'
+        + `<span class="ev-check" role="checkbox" aria-checked="false" aria-label="Hecha esta semana">${svg('<path d="M5 10.5 8.5 14 15 6.5"/>')}</span>`;
     node.addEventListener('animationend', () => node.classList.remove('is-entering', 'is-flash'));
     return node;
 }
@@ -789,6 +810,12 @@ function scrollToMinute(minutes, behavior = 'auto') {
 
 function onPointerDown(event) {
     if (event.button !== 0 || editing) return;
+    const check = event.target.closest('.ev-check');
+    if (check && inWeek()) {
+        event.preventDefault();
+        toggleDone(check.closest('.ev').dataset.id);
+        return;
+    }
     const col = event.target.closest('.col');
     if (!col) return;
     const node = event.target.closest('.ev');
@@ -1032,6 +1059,126 @@ function cancelGesture() {
 wrap.addEventListener('touchmove', event => {
     if (gesture?.active) event.preventDefault();
 }, { passive: false });
+
+// ---------------------------------------------------------------- hecho y registro
+
+// Da por hecha (o no) una actividad en la semana que se está viendo, con una foto de cómo era
+function toggleDone(id) {
+    const event = findEvent(id) || state.schedule.events.find(item => item.id === id);
+    if (!event) return;
+    const wasDone = weekDoc().done?.some(item => item.id === id);
+    commit(() => {
+        const week = weekDoc(true);
+        week.done = (week.done || []).filter(item => item.id !== id);
+        if (!wasDone) {
+            const { title, day, start, end } = event;
+            week.done.push({ id, title, day, start, end });
+        }
+    });
+    const node = nodes.get(id) || baseNodes.get(id);
+    if (!wasDone) node?.classList.add('is-flash');
+    toast(wasDone ? `«${event.title}» vuelve a estar pendiente` : `«${event.title}» hecha`, 'Deshacer', undo);
+    if (!$('log').hidden) renderLog();
+}
+
+// Lo previsto de una semana: la semana tipo de ahora más lo que se añadió esa semana
+function plannedFor(key) {
+    return state.schedule.events.length + (state.schedule.weeks[key]?.events.length || 0);
+}
+
+function renderLog() {
+    const current = currentWeek();
+    const keys = new Set([current]);
+    for (const [key, week] of Object.entries(state.schedule.weeks)) if (week.done?.length) keys.add(key);
+    const sorted = [...keys].filter(key => key <= current || state.schedule.weeks[key]?.done?.length).sort().reverse();
+
+    const totalDone = sorted.reduce((sum, key) => sum + (state.schedule.weeks[key]?.done?.length || 0), 0);
+    const activeWeeks = sorted.filter(key => state.schedule.weeks[key]?.done?.length).length;
+    $('log-summary').textContent = totalDone
+        ? `${totalDone} ${totalDone === 1 ? 'tarea hecha' : 'tareas hechas'} en ${activeWeeks} ${activeWeeks === 1 ? 'semana' : 'semanas'}`
+        : 'Todavía no has marcado nada como hecho. Hazlo en «Cambios de la semana» con la casilla de cada tarea.';
+
+    const list = $('log-weeks');
+    list.replaceChildren(...sorted.map(key => {
+        const done = state.schedule.weeks[key]?.done || [];
+        const planned = Math.max(plannedFor(key), done.length);
+        const minutes = done.reduce((sum, item) => sum + item.end - item.start, 0);
+        const section = document.createElement('section');
+        section.className = 'log-week';
+        const head = document.createElement('header');
+        head.className = 'log-head';
+        const title = document.createElement('h3');
+        title.textContent = weekLabel(key);
+        const tag = document.createElement('span');
+        tag.className = 'log-tag';
+        tag.textContent = key === current ? 'Esta semana' : key === shiftWeek(current, -1) ? 'La semana pasada' : '';
+        const open = document.createElement('button');
+        open.type = 'button';
+        open.className = 'btn btn-quiet log-open';
+        open.textContent = 'Ver semana';
+        open.addEventListener('click', () => {
+            closeLog();
+            setMode('week', key);
+        });
+        head.append(title, tag, open);
+
+        const stats = document.createElement('p');
+        stats.className = 'log-stats';
+        stats.textContent = planned
+            ? `${done.length} de ${planned} hechas${minutes ? ` · ${duration(minutes)}` : ''}`
+            : 'Sin tareas previstas';
+        const bar = document.createElement('div');
+        bar.className = 'log-bar';
+        bar.style.setProperty('--p', planned ? Math.round((done.length / planned) * 100) : 0);
+
+        section.append(head, stats, bar);
+        if (done.length) {
+            const items = document.createElement('ol');
+            items.className = 'log-items';
+            let lastDay = -1;
+            for (const item of done) {
+                const li = document.createElement('li');
+                const day = document.createElement('span');
+                day.className = 'log-day';
+                day.textContent = item.day !== lastDay ? `${SHORT[item.day]} ${weekDate(key, item.day).getDate()}` : '';
+                lastDay = item.day;
+                const time = document.createElement('span');
+                time.className = 'log-time';
+                time.textContent = fmt(item.start);
+                const name = document.createElement('span');
+                name.className = 'log-name';
+                name.textContent = item.title;
+                li.append(day, time, name);
+                items.append(li);
+            }
+            section.append(items);
+        }
+        return section;
+    }));
+}
+
+function openLog() {
+    closeMenu();
+    renderLog();
+    const log = $('log');
+    log.classList.remove('is-closing');
+    log.hidden = false;
+    $('log-close').focus({ preventScroll: true });
+}
+
+function closeLog() {
+    const log = $('log');
+    if (log.hidden) return;
+    if (reducedMotion.matches) {
+        log.hidden = true;
+        return;
+    }
+    log.classList.add('is-closing');
+    setTimeout(() => {
+        log.hidden = true;
+        log.classList.remove('is-closing');
+    }, 180);
+}
 
 // ---------------------------------------------------------------- editor
 
@@ -1318,6 +1465,8 @@ async function menuAction(action) {
         setTimeout(() => URL.revokeObjectURL(link.href), 1000);
     } else if (action === 'import') {
         $('import-file').click();
+    } else if (action === 'log') {
+        openLog();
     } else if (action === 'clear') {
         if (inWeek()) {
             if (!state.schedule.weeks[state.week]) return;
@@ -1514,6 +1663,11 @@ function bind() {
 
     grid.addEventListener('keydown', event => {
         const node = event.target.closest('.ev');
+        if (node && inWeek() && !event.metaKey && !event.ctrlKey && !event.altKey && event.key.toLowerCase() === 'h') {
+            event.preventDefault();
+            toggleDone(node.dataset.id);
+            return;
+        }
         if (node && !event.metaKey && !event.ctrlKey && !event.altKey && moveWithKeys(event, node)) {
             event.preventDefault();
         }
@@ -1530,6 +1684,11 @@ function bind() {
     $('week-prev').addEventListener('click', () => setMode('week', shiftWeek(state.week, -1)));
     $('week-next').addEventListener('click', () => setMode('week', shiftWeek(state.week, 1)));
     $('week-today').addEventListener('click', () => setMode('week', currentWeek()));
+    $('open-log').addEventListener('click', openLog);
+    $('log-close').addEventListener('click', closeLog);
+    $('log').addEventListener('click', event => {
+        if (event.target === $('log')) closeLog();
+    });
 
     $('daybar').addEventListener('click', event => {
         const button = event.target.closest('button[data-day]');
@@ -1645,6 +1804,10 @@ function bind() {
     // Atajos globales
     document.addEventListener('keydown', event => {
         syncCopyKey(event);
+        if (event.key === 'Escape' && !$('log').hidden) {
+            closeLog();
+            return;
+        }
         if (event.key === 'Escape' && !menu.hidden) {
             closeMenu({ focus: true });
             return;

@@ -137,3 +137,23 @@ test('weekly changes are kept per Monday and cleaned before saving', async () =>
     assert.equal(schedule.weeks['2026-10-26'].events[0].title, 'Examen');
     assert.deepEqual(normalizeSchedule({}).weeks, {});
 });
+
+test('done tasks are stored as a compact snapshot per week', async () => {
+    const { normalizeSchedule } = await import('../lib/horario-schedule.js');
+    const { weeks } = normalizeSchedule({
+        weeks: {
+            '2026-10-26': {
+                done: [
+                    { id: 'clase', title: 'Clase', day: 0, start: 540, end: 600, color: 'red', notes: 'x' },
+                    { id: 'clase', title: 'Repetida', day: 1, start: 60, end: 120 },
+                    { id: 'mala', title: '', day: 0, start: 60, end: 120 }
+                ]
+            },
+            '2026-11-02': { done: [] }
+        }
+    });
+
+    assert.deepEqual(Object.keys(weeks), ['2026-10-26']);
+    assert.deepEqual(weeks['2026-10-26'].done, [{ id: 'clase', title: 'Clase', day: 0, start: 540, end: 600 }]);
+    assert.deepEqual(weeks['2026-10-26'].events, []);
+});

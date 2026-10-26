@@ -168,7 +168,8 @@ async function listJobs(env) {
 
 // Horario semanal privado (pedrogomez.dev/horario). Vercel ya valida el documento; aquí solo se
 // guarda tal cual, con un límite de tamaño.
-const MAX_SCHEDULE_BYTES = 200_000;
+// Con el registro de tareas hechas (hasta un año de semanas) el documento crece algo más.
+const MAX_SCHEDULE_BYTES = 600_000;
 
 // Cada cuenta tiene su documento: `main` es el horario original y `u:<id>` el de cada usuario.
 // Vercel indica cuál en ?id= y la IP del visitante en X-Client-IP; si la IP está bloqueada o la
