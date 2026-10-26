@@ -23,7 +23,7 @@ proyectos en vivo y le escriba o descargue un CV.
 
 Todo lo que se enseña funciona: los proyectos son demos en producción dentro del propio dominio
 (AFR-MIND, PERA ERP, AFORO, FinanX, Catábasis, Tune, ORBIS 2, SCORM a PDF) y productos reales para
-clientes (Biblioteca Estación Diseño, AfroPX Music, Historia de la Moda). La propia web es una muestra
+clientes (Biblioteca y Leads de Estación Diseño, AfroPX Music, Historia de la Moda). La propia web es una muestra
 de oficio: transiciones atadas al scroll y escenas hechas a mano, sin plantillas.
 
 ## Operating Context
