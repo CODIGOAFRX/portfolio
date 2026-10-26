@@ -2285,14 +2285,14 @@ body[data-mode="week"] .board {
 
 .ev-check {
     position: absolute;
-    top: 4px;
-    right: 4px;
+    top: 3px;
+    right: 3px;
     z-index: 1;
     display: none;
     place-items: center;
-    width: 15px;
-    height: 15px;
-    border: 1.5px solid currentColor;
+    width: 10px;
+    height: 10px;
+    border: 1px solid currentColor;
     border-radius: 2px;
     color: inherit;
     opacity: 0.85;
@@ -2309,10 +2309,10 @@ body[data-mode="week"] .board {
 }
 
 .ev-check svg {
-    width: 11px;
-    height: 11px;
+    width: 8px;
+    height: 8px;
     stroke: var(--bg-ev);
-    stroke-width: 2.6;
+    stroke-width: 3;
     opacity: 0;
     transform: scale(0.6);
     transition: opacity 0.18s var(--ease), transform 0.2s var(--ease);
@@ -2331,7 +2331,12 @@ body[data-mode="week"] .ev:not(.is-ghost) .ev-check {
 }
 
 body[data-mode="week"] .ev:not(.is-ghost) .ev-title {
-    padding-right: 18px;
+    padding-right: 12px;
+}
+
+/* En las tareas cortas, la casilla centrada en vertical para que no asome por abajo */
+.ev.is-compact .ev-check {
+    top: calc(50% - 5px);
 }
 
 .ev.is-done .ev-check {
@@ -2528,18 +2533,21 @@ body[data-mode="week"] .ev:not(.is-ghost) .ev-title {
     .ev-check {
         top: 2px;
         right: 2px;
-        width: 12px;
-        height: 12px;
-        border-width: 1.2px;
+        width: 8px;
+        height: 8px;
     }
 
     .ev-check svg {
-        width: 9px;
-        height: 9px;
+        width: 7px;
+        height: 7px;
+    }
+
+    .ev.is-compact .ev-check {
+        top: 2px;
     }
 
     body[data-mode="week"] .grid[data-view="week"] .ev:not(.is-ghost) .ev-title {
-        padding-right: 11px;
+        padding-right: 8px;
     }
 
     .log-button span {
