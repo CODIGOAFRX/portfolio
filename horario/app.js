@@ -2,6 +2,10 @@
 // sincroniza con /api/horario. Arrastrar sobre un día crea, arrastrar una actividad la mueve y su
 // borde inferior la alarga; con Ctrl (o Alt/Cmd) pulsado, arrastrar la duplica. Teclado: N nueva,
 // flechas mueven, Supr borra, Ctrl+C/X/V copia, corta y pega, Ctrl+Z deshace.
+//
+// Dos capas: la «semana tipo» (events), que se repite, y los «cambios de la semana» (weeks[lunes]):
+// en ese modo lo fijo sale en gris, lo nuevo va en color encima, y una actividad gris se puede
+// quitar, cambiar o mover solo esa semana sin tocar la plantilla.
 
 const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const SHORT = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
@@ -28,6 +32,8 @@ const STORAGE_KEY = ACCOUNT ? `horario:v1:${ACCOUNT}` : 'horario:v1';
 const PREFS_KEY = 'horario:prefs';
 const SNAP = 15;
 const MAX_EVENTS = 400;
+const MAX_WEEK_EVENTS = 200;
+const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 
 const $ = id => document.getElementById(id);
 const grid = $('grid');
@@ -47,6 +53,8 @@ const state = {
     dirty: Boolean(local?.dirty),
     rev: 0,
     view: prefs.view === 'day' ? 'day' : 'week',
+    mode: prefs.mode === 'week' ? 'week' : 'template',
+    week: currentWeek(),
     day: todayIndex(),
     history: [],
     future: [],
@@ -54,6 +62,7 @@ const state = {
 };
 
 const nodes = new Map();
+const baseNodes = new Map();
 let cols = [];
 let heads = [];
 let gesture = null;
@@ -95,6 +104,32 @@ function writeJson(key, value) {
 
 function todayIndex() {
     return (new Date().getDay() + 6) % 7;
+}
+
+// Semanas por su lunes, en hora local: 'AAAA-MM-DD'
+function weekKey(date) {
+    const monday = new Date(date.getFullYear(), date.getMonth(), date.getDate() - (date.getDay() + 6) % 7);
+    return `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, '0')}-${String(monday.getDate()).padStart(2, '0')}`;
+}
+
+function currentWeek() {
+    return weekKey(new Date());
+}
+
+function weekDate(key, day = 0) {
+    const [y, m, d] = key.split('-').map(Number);
+    return new Date(y, m - 1, d + day);
+}
+
+function shiftWeek(key, weeks) {
+    return weekKey(weekDate(key, weeks * 7));
+}
+
+function weekLabel(key) {
+    const first = weekDate(key);
+    const last = weekDate(key, 6);
+    const left = first.getMonth() === last.getMonth() ? `${first.getDate()}` : `${first.getDate()} ${MONTHS[first.getMonth()]}`;
+    return `${left} – ${last.getDate()} ${MONTHS[last.getMonth()]}`;
 }
 
 function nowMinutes() {
@@ -142,7 +177,7 @@ function svg(path, extra = '') {
 }
 
 function emptySchedule() {
-    return { version: 1, settings: { startHour: 7, endHour: 23 }, events: [] };
+    return { version: 1, settings: { startHour: 7, endHour: 23 }, events: [], weeks: {} };
 }
 
 // Misma forma que lib/horario-schedule.js (el servidor vuelve a sanear al guardar).
@@ -153,9 +188,25 @@ function normalizeSchedule(raw) {
     let endHour = clamp(Math.round(Number(raw.settings?.endHour ?? 23)) || 24, 1, 24);
     if (endHour <= startHour) [startHour, endHour] = [7, 23];
 
+    return { version: 1, settings: { startHour, endHour }, events: normalizeEvents(raw.events, MAX_EVENTS), weeks: normalizeWeeks(raw.weeks) };
+}
+
+function normalizeWeeks(raw) {
+    const weeks = {};
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return weeks;
+    for (const key of Object.keys(raw).filter(key => /^\d{4}-\d{2}-\d{2}$/.test(key)).sort().reverse().slice(0, 26)) {
+        const events = normalizeEvents(raw[key]?.events, MAX_WEEK_EVENTS);
+        const hidden = [...new Set((Array.isArray(raw[key]?.hidden) ? raw[key].hidden : [])
+            .map(id => String(id).replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40)).filter(Boolean))];
+        if (events.length || hidden.length) weeks[key] = { events, hidden };
+    }
+    return weeks;
+}
+
+function normalizeEvents(list, max) {
     const seen = new Set();
     const events = [];
-    for (const item of Array.isArray(raw.events) ? raw.events.slice(0, MAX_EVENTS) : []) {
+    for (const item of Array.isArray(list) ? list.slice(0, max) : []) {
         if (!item || typeof item !== 'object') continue;
         const id = String(item.id || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40);
         const title = String(item.title || '').trim().slice(0, 80);
@@ -175,7 +226,7 @@ function normalizeSchedule(raw) {
             notes: String(item.notes || '').trim().slice(0, 500)
         });
     }
-    return { version: 1, settings: { startHour, endHour }, events };
+    return events;
 }
 
 const range = () => ({
@@ -183,7 +234,37 @@ const range = () => ({
     end: state.schedule.settings.endHour * 60
 });
 
-const findEvent = id => state.schedule.events.find(event => event.id === id);
+const inWeek = () => state.mode === 'week';
+
+// Cambios de la semana que se está viendo. Solo se crea el registro al modificar algo.
+function weekDoc(create = false) {
+    const found = state.schedule.weeks[state.week];
+    if (found || !create) return found || { events: [], hidden: [] };
+    state.schedule.weeks[state.week] = { events: [], hidden: [] };
+    return state.schedule.weeks[state.week];
+}
+
+// Lo que se edita ahora: la semana tipo o las actividades de esta semana
+function editableEvents(create = false) {
+    return inWeek() ? weekDoc(create).events : state.schedule.events;
+}
+
+function setEditableEvents(list) {
+    if (inWeek()) weekDoc(true).events = list;
+    else state.schedule.events = list;
+}
+
+const editableLimit = () => (inWeek() ? MAX_WEEK_EVENTS : MAX_EVENTS);
+const findEvent = id => editableEvents().find(event => event.id === id);
+const findBase = id => state.schedule.events.find(event => event.id === id);
+
+// Semanas vacías o de hace más de dos meses no se guardan
+function pruneWeeks() {
+    const oldest = shiftWeek(currentWeek(), -8);
+    for (const [key, week] of Object.entries(state.schedule.weeks)) {
+        if (key < oldest || (!week.events.length && !week.hidden.length)) delete state.schedule.weeks[key];
+    }
+}
 
 // ---------------------------------------------------------------- historial y guardado
 
@@ -204,6 +285,7 @@ function commit(mutate) {
 }
 
 function changed({ rebuild = false } = {}) {
+    pruneWeeks();
     state.rev += 1;
     state.dirty = true;
     writeJson(STORAGE_KEY, { schedule: state.schedule, dirty: true });
@@ -282,7 +364,7 @@ async function pull() {
 
         if (state.dirty) return save();
         if (!schedule) {
-            if (state.schedule.events.length) save();
+            if (state.schedule.events.length || Object.keys(state.schedule.weeks).length) save();
             else setSync('saved');
             return;
         }
@@ -332,12 +414,13 @@ function buildGrid() {
     grid.style.setProperty('--hours', hours);
     grid.dataset.view = state.view;
     nodes.clear();
+    baseNodes.clear();
 
     const head = document.createElement('div');
     head.className = 'grid-head';
     head.innerHTML = '<div class="corner"></div>' + DAYS.map((name, day) => `
         <button type="button" class="col-head${day === today ? ' is-today' : ''}" data-day="${day}">
-            <span class="col-name"><span class="col-long">${name}</span><span class="col-short">${SHORT[day]}</span></span>
+            <span class="col-name"><span class="col-long">${name}</span><span class="col-short">${SHORT[day]}</span><span class="col-date"></span></span>
             <span class="col-meta"></span>
         </button>`).join('');
 
@@ -357,8 +440,47 @@ function buildGrid() {
     cols[today].append(now);
 
     applyView();
+    applyMode();
     updateNow();
     fillRangeSelects();
+}
+
+// Semana tipo o cambios de una semana: fechas en las columnas, «hoy» solo en la semana actual y
+// los textos que dependen de qué se está editando.
+function applyMode() {
+    const week = inWeek();
+    const isCurrent = !week || state.week === currentWeek();
+    const today = todayIndex();
+    document.body.dataset.mode = state.mode;
+    document.querySelectorAll('.mode-item').forEach(item => {
+        item.setAttribute('aria-selected', String(item.dataset.mode === state.mode));
+    });
+    $('weeknav').hidden = !week;
+    $('week-label').textContent = weekLabel(state.week);
+    $('week-today').hidden = isCurrent;
+    $('mode-eyebrow').textContent = week
+        ? (isCurrent ? `Cambios de esta semana · ${weekLabel(state.week)}` : `Cambios de la semana del ${weekLabel(state.week)}`)
+        : 'Se repite cada semana';
+    heads.forEach((head, day) => {
+        head.querySelector('.col-date').textContent = week ? String(weekDate(state.week, day).getDate()) : '';
+        head.classList.toggle('is-today', isCurrent && day === today);
+    });
+    cols.forEach((col, day) => col.classList.toggle('is-today', isCurrent && day === today));
+    $('daybar').querySelectorAll('button').forEach((button, day) => button.classList.toggle('is-today', isCurrent && day === today));
+    const clear = menu.querySelector('[data-action="clear"] .menu-item-label');
+    if (clear) clear.textContent = week ? 'Quitar los cambios de esta semana' : 'Vaciar horario';
+    if (cols.length) updateNow();
+}
+
+function setMode(mode, week = state.week) {
+    if (mode === state.mode && week === state.week) return;
+    closeBasePop();
+    state.mode = mode;
+    state.week = week;
+    prefs.mode = mode;
+    writeJson(PREFS_KEY, prefs);
+    applyMode();
+    render();
 }
 
 function layoutDay(events) {
@@ -388,71 +510,103 @@ function layoutDay(events) {
     return placed;
 }
 
-function render() {
+// Coloca un nodo de actividad en su columna y con su tamaño, su texto y su etiqueta accesible
+function placeNode(node, event, slot, label) {
     const { start: rangeStart, end: rangeEnd } = range();
-    const events = state.schedule.events;
+    const col = cols[event.day];
+    if (node.parentElement !== col) {
+        const hadFocus = document.activeElement === node;
+        col.append(node);
+        if (hadFocus) node.focus({ preventScroll: true });
+    }
+    const top = Math.max(event.start, rangeStart);
+    const bottom = Math.min(event.end, rangeEnd);
+    node.hidden = bottom <= top;
+    node.dataset.color = event.color;
+    node.style.setProperty('--top', `calc(var(--hour) * ${(top - rangeStart) / 60})`);
+    node.style.setProperty('--h', `calc(var(--hour) * ${(bottom - top) / 60})`);
+    node.style.setProperty('--l', (slot.lane / slot.lanes) * 100);
+    node.style.setProperty('--w', 100 / slot.lanes);
+    node.style.setProperty('--lane', slot.lane);
+
+    const length = event.end - event.start;
+    node.classList.toggle('is-compact', length < 45);
+    node.classList.toggle('is-tiny', length <= 20);
+    // Líneas de título que caben: con la hora debajo (escritorio, 48 px/h) o solas en las
+    // columnas estrechas del móvil (46 px/h, título de 10 px).
+    node.style.setProperty('--lines', clamp(Math.floor((length / 60 * 48 - 24) / 16), 1, 4));
+    node.style.setProperty('--lines-m', clamp(Math.floor((length / 60 * 46 - 5) / 11.5), 1, 8));
+
+    node.querySelector('.ev-title').textContent = event.title;
+    node.querySelector('.ev-meta').textContent = `${fmt(event.start)} – ${fmt(event.end)}${event.place ? ` · ${event.place}` : ''}`;
+    node.setAttribute('aria-label', `${event.title}, ${DAYS[event.day].toLowerCase()} de ${fmt(event.start)} a ${fmt(event.end)}${event.place ? `, ${event.place}` : ''}${label}`);
+}
+
+function dropNode(map, id, node) {
+    map.delete(id);
+    node.classList.add('is-leaving');
+    setTimeout(() => node.remove(), reducedMotion.matches ? 0 : 220);
+}
+
+function render() {
+    const week = inWeek() ? weekDoc() : null;
+    const events = editableEvents();
+    const base = week ? state.schedule.events : [];
+    const hidden = new Set(week?.hidden || []);
     const alive = new Set();
+    const aliveBase = new Set();
     const totals = Array(7).fill(0);
     const counts = Array(7).fill(0);
     let entering = 0;
 
+    const enter = node => {
+        if (reducedMotion.matches) return;
+        node.classList.add('is-entering');
+        node.style.setProperty('--d', `${state.firstPaint ? Math.min(entering * 22, 320) : 0}ms`);
+        entering += 1;
+    };
+
     for (let day = 0; day < 7; day += 1) {
+        // Capa gris: la semana tipo, por debajo de los cambios de esta semana
+        const dayBase = base.filter(event => event.day === day);
+        const basePlaced = layoutDay(dayBase);
+        for (const event of dayBase) {
+            const off = hidden.has(event.id);
+            if (!off) {
+                totals[day] += event.end - event.start;
+                counts[day] += 1;
+            }
+            aliveBase.add(event.id);
+            let node = baseNodes.get(event.id);
+            if (!node) {
+                node = createEventNode(event.id);
+                node.classList.add('is-base');
+                baseNodes.set(event.id, node);
+                enter(node);
+            }
+            node.classList.toggle('is-off', off);
+            placeNode(node, event, basePlaced.get(event.id), off ? ', semana tipo, quitada esta semana' : ', semana tipo');
+        }
+
         const dayEvents = events.filter(event => event.day === day);
         const placed = layoutDay(dayEvents);
-
         for (const event of dayEvents) {
             totals[day] += event.end - event.start;
             counts[day] += 1;
             alive.add(event.id);
-
             let node = nodes.get(event.id);
             if (!node) {
                 node = createEventNode(event.id);
                 nodes.set(event.id, node);
-                if (!reducedMotion.matches) {
-                    node.classList.add('is-entering');
-                    node.style.setProperty('--d', `${state.firstPaint ? Math.min(entering * 22, 320) : 0}ms`);
-                    entering += 1;
-                }
+                enter(node);
             }
-            if (node.parentElement !== cols[day]) {
-                const hadFocus = document.activeElement === node;
-                cols[day].append(node);
-                if (hadFocus) node.focus({ preventScroll: true });
-            }
-
-            const top = Math.max(event.start, rangeStart);
-            const bottom = Math.min(event.end, rangeEnd);
-            const { lane, lanes } = placed.get(event.id);
-            node.hidden = bottom <= top;
-            node.dataset.color = event.color;
-            node.style.setProperty('--top', `calc(var(--hour) * ${(top - rangeStart) / 60})`);
-            node.style.setProperty('--h', `calc(var(--hour) * ${(bottom - top) / 60})`);
-            node.style.setProperty('--l', (lane / lanes) * 100);
-            node.style.setProperty('--w', 100 / lanes);
-            node.style.setProperty('--lane', lane);
-
-            const length = event.end - event.start;
-            node.classList.toggle('is-compact', length < 45);
-            node.classList.toggle('is-tiny', length <= 20);
-            // Líneas de título que caben: con la hora debajo (escritorio, 48 px/h) o solas en las
-            // columnas estrechas del móvil (46 px/h, título de 10 px).
-            node.style.setProperty('--lines', clamp(Math.floor((length / 60 * 48 - 24) / 16), 1, 4));
-            node.style.setProperty('--lines-m', clamp(Math.floor((length / 60 * 46 - 5) / 11.5), 1, 8));
-
-            const meta = `${fmt(event.start)} – ${fmt(event.end)}${event.place ? ` · ${event.place}` : ''}`;
-            node.querySelector('.ev-title').textContent = event.title;
-            node.querySelector('.ev-meta').textContent = meta;
-            node.setAttribute('aria-label', `${event.title}, ${DAYS[day].toLowerCase()} de ${fmt(event.start)} a ${fmt(event.end)}${event.place ? `, ${event.place}` : ''}`);
+            node.classList.toggle('is-week', Boolean(week));
+            placeNode(node, event, placed.get(event.id), week ? ', solo esta semana' : '');
         }
     }
 
-    for (const [id, node] of nodes) {
-        if (alive.has(id)) continue;
-        nodes.delete(id);
-        node.classList.add('is-leaving');
-        setTimeout(() => node.remove(), reducedMotion.matches ? 0 : 220);
-    }
+    for (const [id, node] of nodes) if (!alive.has(id)) dropNode(nodes, id, node);
+    for (const [id, node] of baseNodes) if (!aliveBase.has(id)) dropNode(baseNodes, id, node);
 
     heads.forEach((head, day) => {
         head.querySelector('.col-meta').textContent = totals[day] ? duration(totals[day]) : '';
@@ -460,10 +614,20 @@ function render() {
     renderDaybar(counts);
 
     const total = totals.reduce((sum, value) => sum + value, 0);
-    $('summary').textContent = events.length
-        ? `${events.length} ${events.length === 1 ? 'actividad' : 'actividades'} · ${duration(total)} a la semana`
-        : '';
-    $('empty').hidden = events.length > 0 || Boolean(editing);
+    if (week) {
+        const changes = [
+            events.length ? `${events.length} ${events.length === 1 ? 'añadida' : 'añadidas'}` : '',
+            hidden.size ? `${hidden.size} ${hidden.size === 1 ? 'quitada' : 'quitadas'}` : ''
+        ].filter(Boolean).join(' · ');
+        $('summary').textContent = changes
+            ? `${changes} solo esta semana · ${duration(total)} en total`
+            : 'Lo fijo sale en gris. Lo que añadas aquí solo vale esta semana.';
+    } else {
+        $('summary').textContent = events.length
+            ? `${events.length} ${events.length === 1 ? 'actividad' : 'actividades'} · ${duration(total)} a la semana`
+            : '';
+    }
+    $('empty').hidden = Boolean(week) || events.length > 0 || Boolean(editing);
     state.firstPaint = false;
 }
 
@@ -576,7 +740,7 @@ function updateNow() {
     const minutes = nowMinutes();
     const { start, end } = range();
     const today = todayIndex();
-    const visible = minutes >= start && minutes <= end;
+    const visible = minutes >= start && minutes <= end && (!inWeek() || state.week === currentWeek());
     const y = `calc(var(--hour) * ${(minutes - start) / 60})`;
     const line = grid.querySelector('.now');
     const label = grid.querySelector('.now-label');
@@ -650,7 +814,20 @@ function onPointerDown(event) {
         day
     };
 
-    if (node) {
+    if (node?.classList.contains('is-base')) {
+        const target = findBase(node.dataset.id);
+        if (!target) return;
+        gesture = {
+            ...base,
+            kind: 'base',
+            node,
+            id: target.id,
+            before: snapshot(),
+            original: { ...target },
+            grab: minuteAt(col, event.clientY) - target.start,
+            copy: wantsCopy(event)
+        };
+    } else if (node) {
         const target = findEvent(node.dataset.id);
         if (!target) return;
         gesture = {
@@ -678,6 +855,10 @@ function onPointerDown(event) {
 function activate(g) {
     if (gesture !== g || g.active) return;
     g.active = true;
+    if (g.kind === 'base' && !materializeBase(g)) {
+        cancelGesture();
+        return;
+    }
     if (g.kind === 'create') {
         g.ghost = createEventNode('ghost');
         g.ghost.classList.add('is-ghost');
@@ -697,6 +878,35 @@ function activate(g) {
     autoScroll();
 }
 
+// Arrastrar una actividad gris la mueve solo esta semana: se crea su copia en los cambios de la
+// semana (que es lo que se arrastra) y la original se quita esa semana. Con Ctrl, la original se
+// queda y la copia es un extra.
+function materializeBase(g) {
+    if (weekDoc().events.length >= MAX_WEEK_EVENTS) return false;
+    const copyId = uid();
+    weekDoc(true).events.push({ ...g.original, id: copyId });
+    g.fromBase = g.original.id;
+    g.kind = 'move';
+    g.id = copyId;
+    g.original = { ...g.original, id: copyId };
+    g.node = null;
+    setBaseHidden(g, !g.copy);
+    render();
+    g.node = nodes.get(copyId);
+    if (!g.node) return false;
+    g.node.classList.toggle('is-copying', Boolean(g.copy));
+    return true;
+}
+
+function setBaseHidden(g, hide) {
+    const week = weekDoc(true);
+    week.hidden = week.hidden.filter(id => id !== g.fromBase);
+    if (hide) week.hidden.push(g.fromBase);
+    g.copy = !hide;
+    g.node?.classList.toggle('is-copying', !hide);
+    document.body.style.cursor = hide ? 'grabbing' : 'copy';
+}
+
 function wantsCopy(event) {
     return event.ctrlKey || event.metaKey || event.altKey;
 }
@@ -705,17 +915,24 @@ function wantsCopy(event) {
 // actividad original. Soltar Ctrl a mitad de gesto lo convierte otra vez en un movimiento normal.
 function setCopying(g, copy) {
     if (!g || g.kind !== 'move' || !g.active) return;
+    if (g.fromBase) {
+        if (copy !== g.copy) {
+            setBaseHidden(g, !copy);
+            render();
+        }
+        return;
+    }
     g.copy = copy;
     const hasClone = Boolean(g.cloneId);
     if (copy && !hasClone) {
-        if (state.schedule.events.length >= MAX_EVENTS) {
+        if (editableEvents().length >= editableLimit()) {
             g.copy = false;
         } else {
             g.cloneId = uid();
-            state.schedule.events.push({ ...g.original, id: g.cloneId });
+            editableEvents(true).push({ ...g.original, id: g.cloneId });
         }
     } else if (!copy && hasClone) {
-        state.schedule.events = state.schedule.events.filter(item => item.id !== g.cloneId);
+        setEditableEvents(editableEvents().filter(item => item.id !== g.cloneId));
         g.cloneId = null;
     }
     g.node.classList.toggle('is-copying', Boolean(g.cloneId));
@@ -834,21 +1051,26 @@ function onPointerUp(event) {
 
     g.node.classList.remove('is-dragging', 'is-resizing');
     if (!g.active) {
-        openEditor({ id: g.id, anchor: g.node });
+        if (g.kind === 'base') openBasePop(g.id, g.node);
+        else openEditor({ id: g.id, anchor: g.node });
         return;
     }
     g.node.classList.remove('is-copying');
     const event2 = findEvent(g.id);
     const moved = event2 && (event2.start !== g.original.start || event2.end !== g.original.end || event2.day !== g.original.day);
-    if (g.cloneId && !moved) {
-        state.schedule.events = state.schedule.events.filter(item => item.id !== g.cloneId);
+    if ((g.cloneId || g.fromBase) && !moved) {
+        state.schedule = g.before;
         render();
         return;
     }
     if (moved) {
         pushHistory(g.before);
         changed();
-        if (g.cloneId) {
+        if (g.fromBase) {
+            g.node.classList.add('is-flash');
+            const what = g.copy ? 'copiada' : 'movida';
+            toast(`«${event2.title}» ${what} solo esta semana: ${DAYS[event2.day].toLowerCase()} a las ${fmt(event2.start)}`, 'Deshacer', undo);
+        } else if (g.cloneId) {
             g.node.classList.add('is-flash');
             toast(`«${event2.title}» duplicada en ${DAYS[event2.day].toLowerCase()} a las ${fmt(event2.start)}`, 'Deshacer', undo);
         }
@@ -866,12 +1088,10 @@ function cancelGesture() {
     endListeners();
     gesture = null;
     g.ghost?.remove();
-    if (g.node) {
-        g.node.classList.remove('is-dragging', 'is-resizing', 'is-copying');
-        if (g.active) {
-            state.schedule = g.before;
-            render();
-        }
+    g.node?.classList.remove('is-dragging', 'is-resizing', 'is-copying');
+    if (g.active && g.before) {
+        state.schedule = g.before;
+        render();
     }
 }
 
@@ -879,6 +1099,92 @@ function cancelGesture() {
 wrap.addEventListener('touchmove', event => {
     if (gesture?.active) event.preventDefault();
 }, { passive: false });
+
+// ---------------------------------------------------------------- actividades grises
+
+let basePopId = null;
+
+function toggleBaseHidden(id) {
+    const event = findBase(id);
+    if (!event) return;
+    const wasHidden = weekDoc().hidden.includes(id);
+    commit(() => {
+        const week = weekDoc(true);
+        week.hidden = wasHidden ? week.hidden.filter(item => item !== id) : [...week.hidden, id];
+    });
+    closeBasePop();
+    toast(wasHidden ? `«${event.title}» vuelve esta semana` : `«${event.title}» quitada solo esta semana`, 'Deshacer', undo);
+    baseNodes.get(id)?.focus({ preventScroll: true });
+}
+
+// Cambiarla solo esta semana: la original se quita esa semana y se edita una copia
+function changeBaseThisWeek(id) {
+    const event = findBase(id);
+    if (!event || weekDoc().events.length >= MAX_WEEK_EVENTS) return;
+    const copyId = uid();
+    commit(() => {
+        const week = weekDoc(true);
+        week.events.push({ ...event, id: copyId });
+        if (!week.hidden.includes(id)) week.hidden.push(id);
+    });
+    closeBasePop();
+    const node = nodes.get(copyId);
+    if (node) openEditor({ id: copyId, anchor: node });
+}
+
+function editInTemplate(id) {
+    closeBasePop();
+    setMode('template');
+    const node = nodes.get(id);
+    if (node) openEditor({ id, anchor: node });
+}
+
+function openBasePop(id, anchor) {
+    const event = findBase(id);
+    if (!event) return;
+    closeMenu();
+    const pop = $('basepop');
+    const off = weekDoc().hidden.includes(id);
+    basePopId = id;
+    $('basepop-title').textContent = event.title;
+    $('basepop-meta').textContent = `${DAYS[event.day]} · ${fmt(event.start)} – ${fmt(event.end)}${event.place ? ` · ${event.place}` : ''}`;
+    $('basepop-state').textContent = off ? 'Quitada esta semana' : 'De la semana tipo';
+    pop.querySelector('[data-base="toggle"]').textContent = off ? 'Volver a ponerla esta semana' : 'Quitar solo esta semana';
+    pop.querySelector('[data-base="change"]').hidden = off;
+    pop.classList.remove('is-closing');
+    pop.hidden = false;
+
+    if (mobile.matches) {
+        pop.style.left = '';
+        pop.style.top = '';
+    } else {
+        const rect = anchor.getBoundingClientRect();
+        const box = pop.getBoundingClientRect();
+        const left = rect.right + 12 + box.width <= innerWidth - 12 ? rect.right + 12 : Math.max(12, rect.left - 12 - box.width);
+        pop.style.left = `${Math.round(left)}px`;
+        pop.style.top = `${Math.round(clamp(rect.top - 8, 12, innerHeight - box.height - 12))}px`;
+    }
+    anchor.classList.add('is-selected');
+    pop.querySelector('button').focus({ preventScroll: true });
+}
+
+function closeBasePop({ focus = false } = {}) {
+    const pop = $('basepop');
+    if (pop.hidden) return;
+    const node = baseNodes.get(basePopId);
+    node?.classList.remove('is-selected');
+    if (focus) node?.focus({ preventScroll: true });
+    basePopId = null;
+    if (reducedMotion.matches) {
+        pop.hidden = true;
+        return;
+    }
+    pop.classList.add('is-closing');
+    setTimeout(() => {
+        pop.hidden = true;
+        pop.classList.remove('is-closing');
+    }, 140);
+}
 
 // ---------------------------------------------------------------- editor
 
@@ -913,6 +1219,7 @@ function openEditor({ id = null, draft = null, ghost = null, anchor = null }) {
     $('ev-notes').value = data.notes;
     form.querySelectorAll('.swatch').forEach(swatch => { swatch.checked = swatch.value === data.color; });
     $('ev-delete').hidden = !event;
+    $('ev-days-label').textContent = inWeek() ? 'Solo esta semana, el' : 'Se repite cada';
     $('ev-error').hidden = true;
     $('ev-save').textContent = event ? 'Guardar' : 'Añadir';
     syncDayChips();
@@ -1036,9 +1343,9 @@ function saveEditor() {
             remaining = days.filter(d => d !== day);
         }
         for (const day of remaining) {
-            if (state.schedule.events.length >= MAX_EVENTS) break;
+            if (editableEvents().length >= editableLimit()) break;
             const event = { id: uid(), day, ...fields };
-            state.schedule.events.push(event);
+            editableEvents(true).push(event);
             added.push(event.id);
         }
         // Si la actividad cae fuera de la franja visible, la franja se amplía.
@@ -1073,9 +1380,9 @@ function deleteEvent(id) {
     const event = findEvent(id);
     if (!event) return;
     commit(() => {
-        state.schedule.events = state.schedule.events.filter(item => item.id !== id);
+        setEditableEvents(editableEvents().filter(item => item.id !== id));
     });
-    toast(`«${event.title}» eliminada`, 'Deshacer', undo);
+    toast(`«${event.title}» eliminada${inWeek() ? ' de esta semana' : ''}`, 'Deshacer', undo);
 }
 
 function closeEditor() {
@@ -1095,7 +1402,7 @@ function closeEditor() {
         requestAnimationFrame(() => node?.focus({ preventScroll: true }));
     }
     editing = null;
-    $('empty').hidden = state.schedule.events.length > 0;
+    $('empty').hidden = inWeek() || state.schedule.events.length > 0;
     if (reducedMotion.matches) finish();
     else {
         editor.classList.add('is-closing');
@@ -1165,6 +1472,12 @@ async function menuAction(action) {
     } else if (action === 'import') {
         $('import-file').click();
     } else if (action === 'clear') {
+        if (inWeek()) {
+            if (!state.schedule.weeks[state.week]) return;
+            commit(() => { delete state.schedule.weeks[state.week]; });
+            toast('Esta semana vuelve a ser como la semana tipo', 'Deshacer', undo);
+            return;
+        }
         if (!state.schedule.events.length) return;
         commit(() => { state.schedule.events = []; });
         toast('Horario vaciado', 'Deshacer', undo);
@@ -1283,17 +1596,19 @@ function targetEventId() {
 }
 
 function copyEvent(cut = false) {
-    const event = findEvent(targetEventId());
+    const targetId = targetEventId();
+    const editable = findEvent(targetId);
+    const event = editable || (inWeek() ? findBase(targetId) : null);
     if (!event) return false;
     const { id, ...data } = event;
     clipboard = data;
-    if (cut) {
+    if (cut && editable) {
         commit(() => {
-            state.schedule.events = state.schedule.events.filter(item => item.id !== id);
+            setEditableEvents(editableEvents().filter(item => item.id !== id));
         });
         toast(`«${event.title}» cortada · Ctrl+V para pegarla`, 'Deshacer', undo);
     } else {
-        nodes.get(id)?.classList.add('is-flash');
+        (nodes.get(id) || baseNodes.get(id))?.classList.add('is-flash');
         toast(`«${event.title}» copiada · Ctrl+V para pegarla`);
     }
     return true;
@@ -1302,7 +1617,7 @@ function copyEvent(cut = false) {
 // Pega donde está el puntero; si no está sobre el horario, el día siguiente a la misma hora.
 function pasteEvent() {
     if (!clipboard) return false;
-    if (state.schedule.events.length >= MAX_EVENTS) {
+    if (editableEvents().length >= editableLimit()) {
         toast('No caben más actividades.');
         return true;
     }
@@ -1321,7 +1636,7 @@ function pasteEvent() {
     start = clamp(start, rangeStart, Math.max(rangeStart, rangeEnd - length));
     const pasted = { ...clipboard, id: uid(), day, start, end: Math.min(1440, start + length) };
 
-    commit(() => state.schedule.events.push(pasted));
+    commit(() => editableEvents(true).push(pasted));
     if (state.view === 'day' && day !== state.day) setDay(day);
     const node = nodes.get(pasted.id);
     if (node) {
@@ -1348,12 +1663,20 @@ function bind() {
         // Teclado (Intro/Espacio sobre una actividad): el ratón ya abre el editor en pointerup.
         const node = event.target.closest('.ev');
         if (node && event.detail === 0 && !node.classList.contains('is-ghost')) {
-            openEditor({ id: node.dataset.id, anchor: node });
+            if (node.classList.contains('is-base')) openBasePop(node.dataset.id, node);
+            else openEditor({ id: node.dataset.id, anchor: node });
         }
     });
 
     grid.addEventListener('keydown', event => {
         const node = event.target.closest('.ev');
+        if (node?.classList.contains('is-base')) {
+            if (event.key === 'Delete' || event.key === 'Backspace') {
+                event.preventDefault();
+                toggleBaseHidden(node.dataset.id);
+            }
+            return;
+        }
         if (node && !event.metaKey && !event.ctrlKey && !event.altKey && moveWithKeys(event, node)) {
             event.preventDefault();
         }
@@ -1361,6 +1684,26 @@ function bind() {
 
     document.querySelectorAll('.seg-item').forEach(item => {
         item.addEventListener('click', () => setView(item.dataset.view));
+    });
+
+    // Semana tipo / cambios de la semana
+    document.querySelectorAll('.mode-item').forEach(item => {
+        item.addEventListener('click', () => setMode(item.dataset.mode, item.dataset.mode === 'week' && state.mode !== 'week' ? currentWeek() : state.week));
+    });
+    $('week-prev').addEventListener('click', () => setMode('week', shiftWeek(state.week, -1)));
+    $('week-next').addEventListener('click', () => setMode('week', shiftWeek(state.week, 1)));
+    $('week-today').addEventListener('click', () => setMode('week', currentWeek()));
+
+    $('basepop').addEventListener('click', event => {
+        const action = event.target.closest('[data-base]')?.dataset.base;
+        if (!action || !basePopId) return;
+        if (action === 'toggle') toggleBaseHidden(basePopId);
+        else if (action === 'change') changeBaseThisWeek(basePopId);
+        else if (action === 'template') editInTemplate(basePopId);
+        else closeBasePop({ focus: true });
+    });
+    document.addEventListener('pointerdown', event => {
+        if (!$('basepop').hidden && !$('basepop').contains(event.target) && !event.target.closest('.ev.is-base')) closeBasePop();
     });
     document.querySelector('.seg').addEventListener('keydown', event => {
         if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
@@ -1484,6 +1827,10 @@ function bind() {
     // Atajos globales
     document.addEventListener('keydown', event => {
         syncCopyKey(event);
+        if (event.key === 'Escape' && !$('basepop').hidden) {
+            closeBasePop({ focus: true });
+            return;
+        }
         if (event.key === 'Escape' && !menu.hidden) {
             closeMenu({ focus: true });
             return;

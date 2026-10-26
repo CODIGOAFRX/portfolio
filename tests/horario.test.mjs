@@ -115,3 +115,25 @@ test('the visitor IP comes from the first x-forwarded-for address', async () => 
     assert.equal(clientIp({ headers: { 'x-real-ip': '2001:DB8::1' } }), '2001:db8::1');
     assert.equal(clientIp({ headers: { 'x-forwarded-for': '<script>' } }), '');
 });
+
+test('weekly changes are kept per Monday and cleaned before saving', async () => {
+    const { normalizeSchedule } = await import('../lib/horario-schedule.js');
+    const schedule = normalizeSchedule({
+        events: [{ id: 'clase', title: 'Clase', day: 0, start: 540, end: 600 }],
+        weeks: {
+            '2026-10-26': {
+                events: [{ id: 'extra', title: 'Examen', day: 2, start: 600, end: 660, color: 'red' }],
+                hidden: ['clase', 'clase', '<b>']
+            },
+            '2026-10-27': { events: [{ id: 'x', title: 'No es lunes', day: 0, start: 60, end: 120 }] },
+            '2026-02-30': { hidden: ['clase'] },
+            '2026-11-02': { events: [], hidden: [] },
+            'cualquiera': { hidden: ['clase'] }
+        }
+    });
+
+    assert.deepEqual(Object.keys(schedule.weeks), ['2026-10-26']);
+    assert.deepEqual(schedule.weeks['2026-10-26'].hidden, ['clase', 'b']);
+    assert.equal(schedule.weeks['2026-10-26'].events[0].title, 'Examen');
+    assert.deepEqual(normalizeSchedule({}).weeks, {});
+});
