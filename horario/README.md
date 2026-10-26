@@ -8,7 +8,7 @@ Cualquiera puede crear su cuenta y tener su propio horario; un administrador ve 
 
 - **Cuentas abiertas.** En `/horario/login` hay dos pestañas, *Entrar* y *Crear cuenta*. Cada cuenta tiene su horario (en D1, `u:<id>`), y el original del propietario sigue en `main`. Contraseñas con scrypt; como mucho 5 cuentas nuevas por IP y día.
 - **Administrador.** El usuario `admin` (contraseña en `HORARIO_ADMIN_PASSWORD`) entra a `/horario/admin`: lista de cuentas con alta, último acceso, IP y horario; borrar una cuenta (con su horario) y bloquear o desbloquear IPs. Una IP bloqueada no puede entrar, crear cuentas ni leer o guardar horarios. No deja bloquear la IP propia.
-- **Semana tipo y cambios de la semana.** La semana tipo se repite siempre. En *Cambios de la semana* (con flechas para ir a otras semanas) lo fijo sale en gris y lo que añades va en color, encima, solo para esa semana. Una actividad gris se puede quitar, cambiar o arrastrar a otro hueco solo esa semana; la siguiente vuelve a ser la semana tipo.
+- **Semana tipo y cambios de la semana.** La semana tipo se repite siempre. En *Cambios de la semana* (con flechas para ir a otras semanas) lo fijo sale en gris y lo que añades va en color, encima, solo para esa semana. Lo gris es solo fondo: no se toca, y pulsar o arrastrar encima crea una actividad de esa semana. La siguiente vuelve a ser la semana tipo.
 - **Arrastrar para todo.** Arrastrar sobre un día crea una actividad, arrastrar una actividad la mueve y su borde inferior la alarga. Con Ctrl (o Alt/Cmd) pulsado, arrastrar la duplica.
 - **Editor flotante** con título, días, hora, lugar, notas y color. En móvil sale como hoja inferior.
 - **Semana y día.** En móvil se ve la semana completa o un día, y se pasa de un día a otro deslizando.

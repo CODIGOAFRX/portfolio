@@ -2200,10 +2200,9 @@ body[data-mode="week"] .board {
 .ev.is-base {
     --bg-ev: #efefed;
     --fg-ev: #7d7d7d;
-    --hover: rgba(0, 0, 0, 0.04);
     z-index: 0;
     box-shadow: inset 0 0 0 1px #e2e2df;
-    cursor: pointer;
+    pointer-events: none;
 }
 
 .ev.is-base[data-color] {
@@ -2213,18 +2212,6 @@ body[data-mode="week"] .board {
 
 .ev.is-base .ev-resize {
     display: none;
-}
-
-.ev.is-base.is-off {
-    --bg-ev: transparent;
-    --fg-ev: #b0b0b0;
-    background-image: repeating-linear-gradient(135deg, transparent 0 6px, #ececea 6px 7px);
-    box-shadow: inset 0 0 0 1px #dedede;
-}
-
-.ev.is-base.is-off .ev-title {
-    text-decoration: line-through;
-    text-decoration-thickness: 1px;
 }
 
 /* Lo de esta semana, encima y algo desplazado para que asome lo gris de debajo */
@@ -2242,64 +2229,6 @@ body[data-mode="week"] .board {
 .ev.is-week.is-dragging,
 .ev.is-week.is-resizing {
     z-index: 6;
-}
-
-/* Popover de una actividad gris */
-.basepop {
-    position: fixed;
-    z-index: 30;
-    width: 300px;
-    padding: 18px 20px 14px;
-    border: 1px solid var(--ink);
-    background: var(--bg);
-    box-shadow: var(--float);
-    animation: pop-in 0.2s var(--ease);
-}
-
-.basepop[hidden] {
-    display: none;
-}
-
-.basepop.is-closing {
-    animation: pop-out 0.14s var(--ease-in) forwards;
-}
-
-.basepop-title {
-    margin: 0.5rem 0 0.2rem;
-    font-size: 1.35rem;
-    font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: -0.04em;
-}
-
-.basepop-meta {
-    margin: 0 0 1rem;
-    color: var(--muted);
-    font-size: 0.85rem;
-    font-variant-numeric: tabular-nums;
-}
-
-.basepop-actions {
-    display: grid;
-    gap: 8px;
-}
-
-.basepop-actions .btn-quiet {
-    justify-self: start;
-}
-
-.basepop-foot {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid var(--line);
-}
-
-.basepop-foot .btn {
-    height: 30px;
-    color: var(--muted);
-    font-size: 0.82rem;
 }
 
 @media (max-width: 759px) {
@@ -2337,26 +2266,6 @@ body[data-mode="week"] .board {
 
     .grid[data-view="week"] .ev.is-week[data-color="paper"] {
         box-shadow: inset 0 0 0 1px var(--ink), 0 0 0 1px var(--bg);
-    }
-
-    .basepop {
-        left: 0 !important;
-        right: 0;
-        top: auto !important;
-        bottom: 0;
-        width: 100%;
-        padding: 18px 18px max(16px, env(safe-area-inset-bottom));
-        border: 0;
-        border-top: 1px solid var(--ink);
-        animation: sheet-in 0.3s var(--ease);
-    }
-
-    .basepop.is-closing {
-        animation: sheet-out 0.2s var(--ease-in) forwards;
-    }
-
-    .basepop-actions .btn {
-        height: 44px;
     }
 }
 

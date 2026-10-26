@@ -4,8 +4,8 @@
 // flechas mueven, Supr borra, Ctrl+C/X/V copia, corta y pega, Ctrl+Z deshace.
 //
 // Dos capas: la «semana tipo» (events), que se repite, y los «cambios de la semana» (weeks[lunes]):
-// en ese modo lo fijo sale en gris, lo nuevo va en color encima, y una actividad gris se puede
-// quitar, cambiar o mover solo esa semana sin tocar la plantilla.
+// en ese modo lo fijo es solo un fondo gris que no se toca; pulsar o arrastrar encima crea
+// actividades de esa semana, que van en color por encima.
 
 const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const SHORT = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
@@ -256,7 +256,6 @@ function setEditableEvents(list) {
 
 const editableLimit = () => (inWeek() ? MAX_WEEK_EVENTS : MAX_EVENTS);
 const findEvent = id => editableEvents().find(event => event.id === id);
-const findBase = id => state.schedule.events.find(event => event.id === id);
 
 // Semanas vacías o de hace más de dos meses no se guardan
 function pruneWeeks() {
@@ -474,7 +473,6 @@ function applyMode() {
 
 function setMode(mode, week = state.week) {
     if (mode === state.mode && week === state.week) return;
-    closeBasePop();
     state.mode = mode;
     state.week = week;
     prefs.mode = mode;
@@ -552,7 +550,6 @@ function render() {
     const week = inWeek() ? weekDoc() : null;
     const events = editableEvents();
     const base = week ? state.schedule.events : [];
-    const hidden = new Set(week?.hidden || []);
     const alive = new Set();
     const aliveBase = new Set();
     const totals = Array(7).fill(0);
@@ -567,25 +564,23 @@ function render() {
     };
 
     for (let day = 0; day < 7; day += 1) {
-        // Capa gris: la semana tipo, por debajo de los cambios de esta semana
+        // Fondo gris: la semana tipo, que en este modo no se toca. No recibe el puntero, así que
+        // pulsar o arrastrar encima crea actividades de esta semana como en un hueco libre.
         const dayBase = base.filter(event => event.day === day);
         const basePlaced = layoutDay(dayBase);
         for (const event of dayBase) {
-            const off = hidden.has(event.id);
-            if (!off) {
-                totals[day] += event.end - event.start;
-                counts[day] += 1;
-            }
+            totals[day] += event.end - event.start;
+            counts[day] += 1;
             aliveBase.add(event.id);
             let node = baseNodes.get(event.id);
             if (!node) {
                 node = createEventNode(event.id);
                 node.classList.add('is-base');
+                node.tabIndex = -1;
                 baseNodes.set(event.id, node);
                 enter(node);
             }
-            node.classList.toggle('is-off', off);
-            placeNode(node, event, basePlaced.get(event.id), off ? ', semana tipo, quitada esta semana' : ', semana tipo');
+            placeNode(node, event, basePlaced.get(event.id), ', semana tipo');
         }
 
         const dayEvents = events.filter(event => event.day === day);
@@ -615,13 +610,9 @@ function render() {
 
     const total = totals.reduce((sum, value) => sum + value, 0);
     if (week) {
-        const changes = [
-            events.length ? `${events.length} ${events.length === 1 ? 'añadida' : 'añadidas'}` : '',
-            hidden.size ? `${hidden.size} ${hidden.size === 1 ? 'quitada' : 'quitadas'}` : ''
-        ].filter(Boolean).join(' · ');
-        $('summary').textContent = changes
-            ? `${changes} solo esta semana · ${duration(total)} en total`
-            : 'Lo fijo sale en gris. Lo que añadas aquí solo vale esta semana.';
+        $('summary').textContent = events.length
+            ? `${events.length} ${events.length === 1 ? 'añadida' : 'añadidas'} solo esta semana · ${duration(total)} en total`
+            : 'Lo fijo sale en gris, de fondo. Lo que añadas encima solo vale esta semana.';
     } else {
         $('summary').textContent = events.length
             ? `${events.length} ${events.length === 1 ? 'actividad' : 'actividades'} · ${duration(total)} a la semana`
@@ -814,20 +805,7 @@ function onPointerDown(event) {
         day
     };
 
-    if (node?.classList.contains('is-base')) {
-        const target = findBase(node.dataset.id);
-        if (!target) return;
-        gesture = {
-            ...base,
-            kind: 'base',
-            node,
-            id: target.id,
-            before: snapshot(),
-            original: { ...target },
-            grab: minuteAt(col, event.clientY) - target.start,
-            copy: wantsCopy(event)
-        };
-    } else if (node) {
+    if (node) {
         const target = findEvent(node.dataset.id);
         if (!target) return;
         gesture = {
@@ -855,10 +833,6 @@ function onPointerDown(event) {
 function activate(g) {
     if (gesture !== g || g.active) return;
     g.active = true;
-    if (g.kind === 'base' && !materializeBase(g)) {
-        cancelGesture();
-        return;
-    }
     if (g.kind === 'create') {
         g.ghost = createEventNode('ghost');
         g.ghost.classList.add('is-ghost');
@@ -878,35 +852,6 @@ function activate(g) {
     autoScroll();
 }
 
-// Arrastrar una actividad gris la mueve solo esta semana: se crea su copia en los cambios de la
-// semana (que es lo que se arrastra) y la original se quita esa semana. Con Ctrl, la original se
-// queda y la copia es un extra.
-function materializeBase(g) {
-    if (weekDoc().events.length >= MAX_WEEK_EVENTS) return false;
-    const copyId = uid();
-    weekDoc(true).events.push({ ...g.original, id: copyId });
-    g.fromBase = g.original.id;
-    g.kind = 'move';
-    g.id = copyId;
-    g.original = { ...g.original, id: copyId };
-    g.node = null;
-    setBaseHidden(g, !g.copy);
-    render();
-    g.node = nodes.get(copyId);
-    if (!g.node) return false;
-    g.node.classList.toggle('is-copying', Boolean(g.copy));
-    return true;
-}
-
-function setBaseHidden(g, hide) {
-    const week = weekDoc(true);
-    week.hidden = week.hidden.filter(id => id !== g.fromBase);
-    if (hide) week.hidden.push(g.fromBase);
-    g.copy = !hide;
-    g.node?.classList.toggle('is-copying', !hide);
-    document.body.style.cursor = hide ? 'grabbing' : 'copy';
-}
-
 function wantsCopy(event) {
     return event.ctrlKey || event.metaKey || event.altKey;
 }
@@ -915,13 +860,6 @@ function wantsCopy(event) {
 // actividad original. Soltar Ctrl a mitad de gesto lo convierte otra vez en un movimiento normal.
 function setCopying(g, copy) {
     if (!g || g.kind !== 'move' || !g.active) return;
-    if (g.fromBase) {
-        if (copy !== g.copy) {
-            setBaseHidden(g, !copy);
-            render();
-        }
-        return;
-    }
     g.copy = copy;
     const hasClone = Boolean(g.cloneId);
     if (copy && !hasClone) {
@@ -1051,14 +989,13 @@ function onPointerUp(event) {
 
     g.node.classList.remove('is-dragging', 'is-resizing');
     if (!g.active) {
-        if (g.kind === 'base') openBasePop(g.id, g.node);
-        else openEditor({ id: g.id, anchor: g.node });
+        openEditor({ id: g.id, anchor: g.node });
         return;
     }
     g.node.classList.remove('is-copying');
     const event2 = findEvent(g.id);
     const moved = event2 && (event2.start !== g.original.start || event2.end !== g.original.end || event2.day !== g.original.day);
-    if ((g.cloneId || g.fromBase) && !moved) {
+    if (g.cloneId && !moved) {
         state.schedule = g.before;
         render();
         return;
@@ -1066,11 +1003,7 @@ function onPointerUp(event) {
     if (moved) {
         pushHistory(g.before);
         changed();
-        if (g.fromBase) {
-            g.node.classList.add('is-flash');
-            const what = g.copy ? 'copiada' : 'movida';
-            toast(`«${event2.title}» ${what} solo esta semana: ${DAYS[event2.day].toLowerCase()} a las ${fmt(event2.start)}`, 'Deshacer', undo);
-        } else if (g.cloneId) {
+        if (g.cloneId) {
             g.node.classList.add('is-flash');
             toast(`«${event2.title}» duplicada en ${DAYS[event2.day].toLowerCase()} a las ${fmt(event2.start)}`, 'Deshacer', undo);
         }
@@ -1099,92 +1032,6 @@ function cancelGesture() {
 wrap.addEventListener('touchmove', event => {
     if (gesture?.active) event.preventDefault();
 }, { passive: false });
-
-// ---------------------------------------------------------------- actividades grises
-
-let basePopId = null;
-
-function toggleBaseHidden(id) {
-    const event = findBase(id);
-    if (!event) return;
-    const wasHidden = weekDoc().hidden.includes(id);
-    commit(() => {
-        const week = weekDoc(true);
-        week.hidden = wasHidden ? week.hidden.filter(item => item !== id) : [...week.hidden, id];
-    });
-    closeBasePop();
-    toast(wasHidden ? `«${event.title}» vuelve esta semana` : `«${event.title}» quitada solo esta semana`, 'Deshacer', undo);
-    baseNodes.get(id)?.focus({ preventScroll: true });
-}
-
-// Cambiarla solo esta semana: la original se quita esa semana y se edita una copia
-function changeBaseThisWeek(id) {
-    const event = findBase(id);
-    if (!event || weekDoc().events.length >= MAX_WEEK_EVENTS) return;
-    const copyId = uid();
-    commit(() => {
-        const week = weekDoc(true);
-        week.events.push({ ...event, id: copyId });
-        if (!week.hidden.includes(id)) week.hidden.push(id);
-    });
-    closeBasePop();
-    const node = nodes.get(copyId);
-    if (node) openEditor({ id: copyId, anchor: node });
-}
-
-function editInTemplate(id) {
-    closeBasePop();
-    setMode('template');
-    const node = nodes.get(id);
-    if (node) openEditor({ id, anchor: node });
-}
-
-function openBasePop(id, anchor) {
-    const event = findBase(id);
-    if (!event) return;
-    closeMenu();
-    const pop = $('basepop');
-    const off = weekDoc().hidden.includes(id);
-    basePopId = id;
-    $('basepop-title').textContent = event.title;
-    $('basepop-meta').textContent = `${DAYS[event.day]} · ${fmt(event.start)} – ${fmt(event.end)}${event.place ? ` · ${event.place}` : ''}`;
-    $('basepop-state').textContent = off ? 'Quitada esta semana' : 'De la semana tipo';
-    pop.querySelector('[data-base="toggle"]').textContent = off ? 'Volver a ponerla esta semana' : 'Quitar solo esta semana';
-    pop.querySelector('[data-base="change"]').hidden = off;
-    pop.classList.remove('is-closing');
-    pop.hidden = false;
-
-    if (mobile.matches) {
-        pop.style.left = '';
-        pop.style.top = '';
-    } else {
-        const rect = anchor.getBoundingClientRect();
-        const box = pop.getBoundingClientRect();
-        const left = rect.right + 12 + box.width <= innerWidth - 12 ? rect.right + 12 : Math.max(12, rect.left - 12 - box.width);
-        pop.style.left = `${Math.round(left)}px`;
-        pop.style.top = `${Math.round(clamp(rect.top - 8, 12, innerHeight - box.height - 12))}px`;
-    }
-    anchor.classList.add('is-selected');
-    pop.querySelector('button').focus({ preventScroll: true });
-}
-
-function closeBasePop({ focus = false } = {}) {
-    const pop = $('basepop');
-    if (pop.hidden) return;
-    const node = baseNodes.get(basePopId);
-    node?.classList.remove('is-selected');
-    if (focus) node?.focus({ preventScroll: true });
-    basePopId = null;
-    if (reducedMotion.matches) {
-        pop.hidden = true;
-        return;
-    }
-    pop.classList.add('is-closing');
-    setTimeout(() => {
-        pop.hidden = true;
-        pop.classList.remove('is-closing');
-    }, 140);
-}
 
 // ---------------------------------------------------------------- editor
 
@@ -1596,19 +1443,17 @@ function targetEventId() {
 }
 
 function copyEvent(cut = false) {
-    const targetId = targetEventId();
-    const editable = findEvent(targetId);
-    const event = editable || (inWeek() ? findBase(targetId) : null);
+    const event = findEvent(targetEventId());
     if (!event) return false;
     const { id, ...data } = event;
     clipboard = data;
-    if (cut && editable) {
+    if (cut) {
         commit(() => {
             setEditableEvents(editableEvents().filter(item => item.id !== id));
         });
         toast(`«${event.title}» cortada · Ctrl+V para pegarla`, 'Deshacer', undo);
     } else {
-        (nodes.get(id) || baseNodes.get(id))?.classList.add('is-flash');
+        nodes.get(id)?.classList.add('is-flash');
         toast(`«${event.title}» copiada · Ctrl+V para pegarla`);
     }
     return true;
@@ -1663,20 +1508,12 @@ function bind() {
         // Teclado (Intro/Espacio sobre una actividad): el ratón ya abre el editor en pointerup.
         const node = event.target.closest('.ev');
         if (node && event.detail === 0 && !node.classList.contains('is-ghost')) {
-            if (node.classList.contains('is-base')) openBasePop(node.dataset.id, node);
-            else openEditor({ id: node.dataset.id, anchor: node });
+            openEditor({ id: node.dataset.id, anchor: node });
         }
     });
 
     grid.addEventListener('keydown', event => {
         const node = event.target.closest('.ev');
-        if (node?.classList.contains('is-base')) {
-            if (event.key === 'Delete' || event.key === 'Backspace') {
-                event.preventDefault();
-                toggleBaseHidden(node.dataset.id);
-            }
-            return;
-        }
         if (node && !event.metaKey && !event.ctrlKey && !event.altKey && moveWithKeys(event, node)) {
             event.preventDefault();
         }
@@ -1693,25 +1530,6 @@ function bind() {
     $('week-prev').addEventListener('click', () => setMode('week', shiftWeek(state.week, -1)));
     $('week-next').addEventListener('click', () => setMode('week', shiftWeek(state.week, 1)));
     $('week-today').addEventListener('click', () => setMode('week', currentWeek()));
-
-    $('basepop').addEventListener('click', event => {
-        const action = event.target.closest('[data-base]')?.dataset.base;
-        if (!action || !basePopId) return;
-        if (action === 'toggle') toggleBaseHidden(basePopId);
-        else if (action === 'change') changeBaseThisWeek(basePopId);
-        else if (action === 'template') editInTemplate(basePopId);
-        else closeBasePop({ focus: true });
-    });
-    document.addEventListener('pointerdown', event => {
-        if (!$('basepop').hidden && !$('basepop').contains(event.target) && !event.target.closest('.ev.is-base')) closeBasePop();
-    });
-    document.querySelector('.seg').addEventListener('keydown', event => {
-        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-            const view = state.view === 'week' ? 'day' : 'week';
-            setView(view);
-            document.querySelector(`.seg-item[data-view="${view}"]`).focus();
-        }
-    });
 
     $('daybar').addEventListener('click', event => {
         const button = event.target.closest('button[data-day]');
@@ -1819,7 +1637,7 @@ function bind() {
         hover = col ? {
             day: Number(col.dataset.day),
             minute: minuteAt(col, event.clientY),
-            id: event.target.closest('.ev:not(.is-ghost)')?.dataset.id || null
+            id: event.target.closest('.ev:not(.is-ghost):not(.is-base)')?.dataset.id || null
         } : null;
     });
     grid.addEventListener('pointerleave', () => { hover = null; });
@@ -1827,10 +1645,6 @@ function bind() {
     // Atajos globales
     document.addEventListener('keydown', event => {
         syncCopyKey(event);
-        if (event.key === 'Escape' && !$('basepop').hidden) {
-            closeBasePop({ focus: true });
-            return;
-        }
         if (event.key === 'Escape' && !menu.hidden) {
             closeMenu({ focus: true });
             return;
