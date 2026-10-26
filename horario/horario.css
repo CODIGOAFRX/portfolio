@@ -2283,76 +2283,6 @@ body[data-mode="week"] .board {
    Hecho y registro
    ===================================================================== */
 
-.ev-check {
-    position: absolute;
-    top: 3px;
-    right: 3px;
-    z-index: 1;
-    display: none;
-    place-items: center;
-    width: 10px;
-    height: 10px;
-    border: 1px solid currentColor;
-    border-radius: 2px;
-    color: inherit;
-    opacity: 0.85;
-    cursor: pointer;
-    pointer-events: auto;
-    transition: background-color 0.18s var(--ease), opacity 0.18s var(--ease), transform 0.16s var(--ease);
-}
-
-/* Zona de toque más grande que la casilla */
-.ev-check::before {
-    content: "";
-    position: absolute;
-    inset: -7px;
-}
-
-.ev-check svg {
-    width: 8px;
-    height: 8px;
-    stroke: var(--bg-ev);
-    stroke-width: 3;
-    opacity: 0;
-    transform: scale(0.6);
-    transition: opacity 0.18s var(--ease), transform 0.2s var(--ease);
-}
-
-.ev-check:hover {
-    opacity: 1;
-}
-
-.ev-check:active {
-    transform: scale(0.88);
-}
-
-body[data-mode="week"] .ev:not(.is-ghost) .ev-check {
-    display: grid;
-}
-
-body[data-mode="week"] .ev:not(.is-ghost) .ev-title {
-    padding-right: 12px;
-}
-
-/* En las tareas cortas, la casilla centrada en vertical para que no asome por abajo */
-.ev.is-compact .ev-check {
-    top: calc(50% - 5px);
-}
-
-.ev.is-done .ev-check {
-    background: currentColor;
-    opacity: 1;
-}
-
-.ev.is-done .ev-check svg {
-    opacity: 1;
-    transform: none;
-}
-
-.ev.is-base .ev-check svg {
-    stroke: #efefed;
-}
-
 .ev.is-done {
     opacity: 0.55;
 }
@@ -2530,26 +2460,6 @@ body[data-mode="week"] .ev:not(.is-ghost) .ev-title {
 @keyframes fade-out { to { opacity: 0; } }
 
 @media (max-width: 759px) {
-    .ev-check {
-        top: 2px;
-        right: 2px;
-        width: 8px;
-        height: 8px;
-    }
-
-    .ev-check svg {
-        width: 7px;
-        height: 7px;
-    }
-
-    .ev.is-compact .ev-check {
-        top: 2px;
-    }
-
-    body[data-mode="week"] .grid[data-view="week"] .ev:not(.is-ghost) .ev-title {
-        padding-right: 8px;
-    }
-
     .log-button span {
         display: none;
     }
@@ -2579,9 +2489,30 @@ body[data-mode="week"] .ev:not(.is-ghost) .ev-title {
 }
 
 @media print {
-    .ev-check,
     .log,
     .log-button {
         display: none !important;
+    }
+}
+
+/* Tareas cortas: la letra baja con la altura de la caja (--fs y --fs-m los calcula app.js) */
+.ev.is-tiny .ev-title {
+    font-size: var(--fs, 12.5px);
+    line-height: 1.1;
+}
+
+.ev.is-tiny {
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+@media (max-width: 759px) {
+    .grid[data-view="week"] .ev.is-tiny .ev-title {
+        font-size: var(--fs-m, 10px);
+        line-height: 1.05;
+    }
+
+    .grid[data-view="week"] .ev.is-tiny {
+        padding-top: 1px;
     }
 }

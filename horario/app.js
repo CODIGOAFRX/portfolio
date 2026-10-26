@@ -5,8 +5,8 @@
 //
 // Dos capas: la «semana tipo» (events), que se repite, y los «cambios de la semana» (weeks[lunes]):
 // en ese modo lo fijo es solo un fondo gris que no se toca; pulsar o arrastrar encima crea
-// actividades de esa semana, que van en color por encima. En ese modo cada actividad tiene una
-// casilla para darla por hecha (esa semana), y el registro resume lo hecho semana a semana.
+// actividades de esa semana, que van en color por encima. En ese modo, doble clic (o doble toque)
+// sobre una actividad la da por hecha esa semana, y el registro resume lo hecho semana a semana.
 
 const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const SHORT = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
@@ -543,6 +543,9 @@ function placeNode(node, event, slot, label) {
     // Líneas de título que caben: con la hora debajo (escritorio, 48 px/h) o solas en las
     // columnas estrechas del móvil (46 px/h, título de 10 px).
     node.style.setProperty('--lines', clamp(Math.floor((length / 60 * 48 - (withTime ? 24 : 8)) / 16), 1, 4));
+    // En las tareas cortas la letra baja con la altura para que el título no se salga
+    node.style.setProperty('--fs', `${clamp(length / 60 * 48 - 7, 8.5, 12.5).toFixed(1)}px`);
+    node.style.setProperty('--fs-m', `${clamp(length / 60 * 46 - 6, 7.5, 10).toFixed(1)}px`);
     node.style.setProperty('--lines-m', clamp(Math.floor((length / 60 * 46 - 5) / 11.5), 1, 8));
 
     node.querySelector('.ev-title').textContent = event.title;
@@ -639,9 +642,6 @@ function render() {
 
 function markDone(node, isDone) {
     node.classList.toggle('is-done', isDone);
-    const check = node.querySelector('.ev-check');
-    check.setAttribute('aria-checked', String(isDone));
-    check.title = isDone ? 'Hecha esta semana · pulsa para desmarcar' : 'Marcar como hecha esta semana';
 }
 
 function createEventNode(id) {
@@ -649,8 +649,7 @@ function createEventNode(id) {
     node.type = 'button';
     node.className = 'ev';
     node.dataset.id = id;
-    node.innerHTML = '<span class="ev-title"></span><span class="ev-meta"></span><span class="ev-resize" aria-hidden="true"></span>'
-        + `<span class="ev-check" role="checkbox" aria-checked="false" aria-label="Hecha esta semana">${svg('<path d="M5 10.5 8.5 14 15 6.5"/>')}</span>`;
+    node.innerHTML = '<span class="ev-title"></span><span class="ev-meta"></span><span class="ev-resize" aria-hidden="true"></span>';
     node.addEventListener('animationend', () => node.classList.remove('is-entering', 'is-flash'));
     return node;
 }
@@ -811,13 +810,9 @@ function scrollToMinute(minutes, behavior = 'auto') {
 // ---------------------------------------------------------------- gestos
 
 function onPointerDown(event) {
+    // Un toque pendiente de doble toque se resuelve ya si el siguiente cae en otro sitio
+    if (pendingTap && Math.hypot(event.clientX - pendingTap.x, event.clientY - pendingTap.y) >= 30) flushTap();
     if (event.button !== 0 || editing) return;
-    const check = event.target.closest('.ev-check');
-    if (check && inWeek()) {
-        event.preventDefault();
-        toggleDone(check.closest('.ev').dataset.id);
-        return;
-    }
     const col = event.target.closest('.col');
     if (!col) return;
     const node = event.target.closest('.ev');
@@ -1000,25 +995,20 @@ function onPointerUp(event) {
     if (g.kind === 'create') {
         if (g.active) {
             openEditor({ draft: { day: g.day, start: g.from, end: g.to }, ghost: g.ghost });
-        } else {
-            const { start: rangeStart, end: rangeEnd } = range();
-            const from = clamp(Math.floor(minuteAt(g.col, g.y) / 30) * 30, rangeStart, rangeEnd - 60);
-            g.active = true;
-            g.ghost = createEventNode('ghost');
-            g.ghost.classList.add('is-ghost');
-            g.ghost.querySelector('.ev-title').textContent = 'Nueva actividad';
-            g.ghost.style.setProperty('--l', 0);
-            g.ghost.style.setProperty('--w', 100);
-            g.col.append(g.ghost);
-            updateGhost(g, from, Math.min(rangeEnd, from + 60));
-            openEditor({ draft: { day: g.day, start: g.from, end: g.to }, ghost: g.ghost });
+            return;
         }
+        // Un toque sobre lo gris puede ser el primero de un doble toque (darla por hecha)
+        const under = inWeek() ? baseAt(g.x, g.y) : null;
+        if (under) queueTap(`b:${under}`, g, () => tapCreate(g), () => toggleDone(under));
+        else tapCreate(g);
         return;
     }
 
     g.node.classList.remove('is-dragging', 'is-resizing');
     if (!g.active) {
-        openEditor({ id: g.id, anchor: g.node });
+        const open = () => openEditor({ id: g.id, anchor: g.node });
+        if (inWeek()) queueTap(`e:${g.id}`, g, open, () => toggleDone(g.id));
+        else open();
         return;
     }
     g.node.classList.remove('is-copying');
@@ -1037,6 +1027,62 @@ function onPointerUp(event) {
             toast(`«${event2.title}» duplicada en ${DAYS[event2.day].toLowerCase()} a las ${fmt(event2.start)}`, 'Deshacer', undo);
         }
     }
+}
+
+// Toque suelto en un hueco (o sobre lo gris): tarea nueva de una hora y editor abierto
+function tapCreate(g) {
+    const { start: rangeStart, end: rangeEnd } = range();
+    const from = clamp(Math.floor(minuteAt(g.col, g.y) / 30) * 30, rangeStart, rangeEnd - 60);
+    g.active = true;
+    g.ghost = createEventNode('ghost');
+    g.ghost.classList.add('is-ghost');
+    g.ghost.querySelector('.ev-title').textContent = 'Nueva actividad';
+    g.ghost.style.setProperty('--l', 0);
+    g.ghost.style.setProperty('--w', 100);
+    g.col.append(g.ghost);
+    updateGhost(g, from, Math.min(rangeEnd, from + 60));
+    openEditor({ draft: { day: g.day, start: g.from, end: g.to }, ghost: g.ghost });
+}
+
+// La actividad gris que hay bajo un punto (no reciben el puntero, así que se busca por posición)
+function baseAt(x, y) {
+    for (const [id, node] of baseNodes) {
+        if (node.hidden || node.classList.contains('is-leaving')) continue;
+        const rect = node.getBoundingClientRect();
+        if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) return id;
+    }
+    return null;
+}
+
+// Doble clic o doble toque: el primer toque espera un momento por si llega el segundo. Si llega
+// sobre lo mismo, se da por hecha; si no, se hace lo de un toque normal.
+const DOUBLE_TAP_MS = 280;
+let pendingTap = null;
+
+function queueTap(key, g, single, double) {
+    const now = performance.now();
+    if (pendingTap && pendingTap.key === key && now - pendingTap.time < DOUBLE_TAP_MS
+        && Math.hypot(g.x - pendingTap.x, g.y - pendingTap.y) < 30) {
+        clearTimeout(pendingTap.timer);
+        pendingTap = null;
+        double();
+        return;
+    }
+    flushTap();
+    const tap = { key, time: now, x: g.x, y: g.y, single };
+    tap.timer = setTimeout(() => {
+        if (pendingTap === tap) pendingTap = null;
+        single();
+    }, DOUBLE_TAP_MS);
+    pendingTap = tap;
+}
+
+function flushTap() {
+    if (!pendingTap) return;
+    const tap = pendingTap;
+    pendingTap = null;
+    clearTimeout(tap.timer);
+    tap.single();
 }
 
 function onPointerCancel() {
@@ -1648,6 +1694,7 @@ function pasteEvent() {
 
 function bind() {
     grid.addEventListener('pointerdown', onPointerDown);
+    grid.addEventListener('dblclick', event => event.preventDefault());
 
     grid.addEventListener('click', event => {
         const head = event.target.closest('.col-head');
