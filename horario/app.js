@@ -536,11 +536,13 @@ function placeNode(node, event, slot, label) {
     node.style.setProperty('--lane', slot.lane);
 
     const length = event.end - event.start;
+    // La hora solo va debajo del título, y solo si cabe (unos 50 min); si no, solo el título
+    const withTime = length >= 50;
     node.classList.toggle('is-compact', length < 45);
-    node.classList.toggle('is-tiny', length <= 20);
+    node.classList.toggle('is-tiny', !withTime);
     // Líneas de título que caben: con la hora debajo (escritorio, 48 px/h) o solas en las
     // columnas estrechas del móvil (46 px/h, título de 10 px).
-    node.style.setProperty('--lines', clamp(Math.floor((length / 60 * 48 - 24) / 16), 1, 4));
+    node.style.setProperty('--lines', clamp(Math.floor((length / 60 * 48 - (withTime ? 24 : 8)) / 16), 1, 4));
     node.style.setProperty('--lines-m', clamp(Math.floor((length / 60 * 46 - 5) / 11.5), 1, 8));
 
     node.querySelector('.ev-title').textContent = event.title;
