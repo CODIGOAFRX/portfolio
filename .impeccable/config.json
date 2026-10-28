@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font",
+        "value": "bodoni moda",
+        "createdAt": "2026-10-28T12:34:45.438Z",
+        "reason": "Claude: bloque destacado de Herbario con la tipografía de su propia web, igual que Catábasis usa IM Fell"
+      }
+    ]
+  }
+}

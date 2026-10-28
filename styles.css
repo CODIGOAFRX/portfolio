@@ -3167,6 +3167,175 @@ html.has-intro .hero.cue-hidden .scroll-cue {
     }
 }
 
+/* ------------------------------------------------------------------
+   Herbario del año: el papel, la Bodoni y la savia de su propia web
+   (/proyecto/herbario, servida por su Worker). Las plantas brotan en
+   tinta y les llega el color con el scroll.
+   ------------------------------------------------------------------ */
+@font-face {
+    font-family: 'Bodoni Moda';
+    src: url('media/herbario/bodoni-moda.woff2') format('woff2');
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Bodoni Moda';
+    src: url('media/herbario/bodoni-moda-italica.woff2') format('woff2');
+    font-weight: 400 700;
+    font-style: italic;
+    font-display: swap;
+}
+
+.herbario-destacado {
+    --herbario-bodoni: 'Bodoni Moda', 'Didot', var(--font-heading);
+    --herbario-tinta: #1f241d;
+    --herbario-savia: #3b6231;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: clamp(5rem, 12vh, 9rem);
+    padding: clamp(2.2rem, 6vw, 6rem);
+    color: var(--herbario-tinta);
+    /* el papel del año, de enero a octubre */
+    background: linear-gradient(180deg, #e9ebe7 0%, #ebeedb 35%, #f0ead2 65%, #eadcc2 100%);
+}
+
+.herbario-destacado .herbario-index {
+    color: var(--herbario-savia);
+    margin-bottom: 1.5rem;
+}
+
+.herbario-titulo {
+    font-family: var(--herbario-bodoni);
+    font-size: clamp(3.6rem, 10vw, 10.5rem);
+    font-weight: 400;
+    line-height: 0.88;
+    letter-spacing: -0.025em;
+    color: var(--herbario-tinta);
+}
+
+.herbario-sub {
+    max-width: 26ch;
+    margin-top: clamp(1.4rem, 3vh, 2.2rem);
+    font-family: var(--herbario-bodoni);
+    font-size: clamp(1.4rem, 2.4vw, 2.2rem);
+    font-style: italic;
+    line-height: 1.2;
+    color: #4d5247;
+}
+
+.herbario-ano {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(1rem, 3vw, 3rem);
+    align-items: end;
+    margin: clamp(3rem, 7vh, 5rem) 0 0;
+    padding: 0;
+}
+
+.herbario-planta figure {
+    display: grid;
+    margin: 0;
+}
+
+.herbario-planta img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: clamp(200px, 28vw, 420px);
+    object-fit: contain;
+    object-position: 50% 100%;
+}
+
+.herbario-planta figcaption {
+    margin-top: 1rem;
+    font-family: var(--herbario-bodoni);
+    font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+    line-height: 1.15;
+}
+
+.herbario-mes,
+.herbario-latin {
+    display: block;
+}
+
+.herbario-mes {
+    margin-bottom: 0.35rem;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+.herbario-latin {
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--herbario-savia);
+}
+
+.herbario-pie {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.5rem 4rem;
+    align-items: end;
+    margin-top: clamp(3.5rem, 9vh, 7rem);
+}
+
+.herbario-pie p {
+    max-width: 50ch;
+    color: #4d5247;
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.herbario-links a {
+    color: var(--herbario-tinta);
+}
+
+.herbario-links a:first-child {
+    border-bottom-color: var(--herbario-savia);
+}
+
+/* Brotan con el scroll: avanzan y retroceden con él, como en la web */
+@supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+        .herbario-planta img {
+            animation: herbario-brota linear both;
+            animation-timeline: view();
+            animation-range: entry 10% cover 45%;
+        }
+
+        .herbario-planta:nth-child(2) img { animation-range: entry 18% cover 50%; }
+        .herbario-planta:nth-child(3) img { animation-range: entry 26% cover 55%; }
+        .herbario-planta:nth-child(4) img { animation-range: entry 34% cover 60%; }
+        .herbario-planta:nth-child(5) img { animation-range: entry 42% cover 65%; }
+
+        @keyframes herbario-brota {
+            from { clip-path: inset(100% -10% 0 -10%); filter: grayscale(1) contrast(1.3); }
+            60% { clip-path: inset(0 -10% 0 -10%); filter: grayscale(1) contrast(1.3); }
+            to { clip-path: inset(0 -10% 0 -10%); filter: none; }
+        }
+    }
+}
+
+@media (max-width: 900px) {
+    .herbario-ano {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .herbario-planta:nth-child(5) {
+        display: none;
+    }
+
+    .herbario-pie {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* ---------- Láminas de dominio público (Public Domain Image Archive) ----------
    Grabados antiguos en blanco y negro, con su pie, como en Catábasis. Sobre papel blanco se
    imprimen con multiply; la de la transición va invertida, en trazo blanco sobre negro. */
