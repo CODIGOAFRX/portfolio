@@ -28,7 +28,7 @@
     <meta name="twitter:description"
         content="Desarrollo de principio a fin. Productos web en producción y automatización con Java, Python y TypeScript.">
     <meta name="twitter:image" content="https://www.pedrogomez.dev/og.png">
-    <link rel="stylesheet" href="styles.css?v=20261028-herbario">
+    <link rel="stylesheet" href="styles.css?v=20261102-boveda-giro">
     <script src="intro-boot.js?v=20261020-corte"></script>
 </head>
 
@@ -477,6 +477,9 @@
                             </div>
                         </article>
 
+                        <!-- Catábasis y el Herbario hablan del mundo vivo: en escritorio van uno junto a otro,
+                             a media página; en móvil, uno debajo de otro. -->
+                        <div class="mundos">
                         <!-- Catábasis: bestiario con el papel y la tinta de su web, servido por su propio Worker
                              en /proyecto/catabasis. El fondo baja del papel al abismo, como la web, y las láminas
                              van sin papel (versión alfa) para no depender de mix-blend-mode. -->
@@ -577,6 +580,43 @@
                                     <a href="https://github.com/CODIGOAFRX/herbario" target="_blank" rel="noopener noreferrer">Ver código</a>
                                 </div>
                             </div>
+                        </article>
+                        </div>
+
+                        <!-- Bóveda: el cielo de cualquier noche, en la cianotipia de su web (/proyecto/boveda, servida por
+                             su propio Worker). La lámina sale del motor de la app en dos capas: el aro graduado queda fijo
+                             y el cielo gira alrededor de la Polar con el scroll, que es lo que en la app hace pasar las horas.
+                             Sin soporte o con movimiento reducido, la lámina queda quieta. -->
+                        <article id="boveda" class="boveda-destacado" aria-labelledby="boveda-title">
+                            <div class="boveda-texto">
+                                <div class="boveda-cabeza hidden-element">
+                                    <p class="case-index boveda-index">Proyecto visual / Atlas celeste</p>
+                                    <h3 id="boveda-title" class="boveda-titulo">Bóveda</h3>
+                                    <p class="boveda-sub">El cielo de cualquier noche entre 1800 y 2050, calculado estrella a estrella y grabado como en un atlas de 1690.</p>
+                                </div>
+                                <ol class="boveda-astros" aria-label="Lo que había sobre Granada el 15 de enero de 2027 a las 22:00">
+                                    <li><span class="boveda-altura">+44°</span><span class="boveda-donde">al oeste</span>Cuarto creciente</li>
+                                    <li><span class="boveda-altura">+38°</span><span class="boveda-donde">al norte</span>Estrella Polar</li>
+                                    <li><span class="boveda-altura">+27°</span><span class="boveda-donde">al oeste</span>Saturno</li>
+                                    <li><span class="boveda-altura">+27°</span><span class="boveda-donde">al sudeste</span>Sirio</li>
+                                    <li><span class="boveda-altura">+15°</span><span class="boveda-donde">al este</span>Júpiter</li>
+                                </ol>
+                                <div class="boveda-pie hidden-element">
+                                    <p>5.044 estrellas, siete planetas, la Luna y el Sol calculados en el navegador con un motor astronómico propio, sin librerías y comprobado con 23 pruebas contra los ejemplos de Jean Meeus. Se arrastra para mover las horas y cada cielo se graba como lámina para imprimir.</p>
+                                    <div class="case-links boveda-links">
+                                        <a href="/proyecto/boveda/">Ver el cielo de esta noche</a>
+                                        <a href="/proyecto/boveda/#calculo">Cómo se calcula</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <figure class="boveda-lamina">
+                                <div class="boveda-disco">
+                                    <img class="boveda-cielo" src="/media/boveda/boveda-cielo.webp" width="2020" height="2020" loading="lazy" decoding="async" alt="">
+                                </div>
+                                <img class="boveda-aro" src="/media/boveda/boveda-aro.webp" width="1200" height="1200" loading="lazy" decoding="async"
+                                    alt="Planisferio grabado en blanco sobre azul: el cielo de Granada el 15 de enero de 2027 a las 22:00, con Orión, Tauro y Géminis en lo alto, la media Luna al oeste y la Vía Láctea en trama">
+                                <figcaption><span class="lamina-num">Lámina calculada</span>El cielo sobre Granada el 15 de enero de 2027, a las 22:00. Al bajar por la página pasan las horas y el cielo gira alrededor de la Polar.</figcaption>
+                            </figure>
                         </article>
                     </div>
                 </div>
@@ -717,7 +757,7 @@
 
     <script src="script.js?v=20261020-ornamentos"></script>
     <script src="net.js?v=20261020-laminas2" defer></script>
-    <script src="scenes.js?v=20261020-corte" defer></script>
+    <script src="scenes.js?v=20261102-boveda-giro" defer></script>
     <script src="intro.js?v=20261020-corte" defer></script>
 </body>
 

@@ -658,11 +658,37 @@
     }
 
     // ---------- bucle común ----------
+    // Bóveda: el cielo de la lámina gira alrededor de la Polar mientras la lámina cruza la pantalla,
+    // como en la app, donde girar el cielo es mover las horas. El portal mueve su contenido con
+    // transform, así que hace falta la posición real en pantalla: una animación de scroll de CSS
+    // no la ve.
+    function bovedaScene(figure) {
+        const sky = figure.querySelector('.boveda-cielo');
+        let last = Infinity;
+        return {
+            measure() {},
+            update() {
+                const r = figure.getBoundingClientRect();
+                const vh = window.innerHeight;
+                const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
+                // Visto desde abajo, el cielo boreal gira en sentido antihorario: al bajar, pasan las horas.
+                const deg = 22 - 44 * p;
+                if (Math.abs(deg - last) > 0.01) {
+                    sky.style.transform = `rotate(${deg.toFixed(2)}deg)`;
+                    last = deg;
+                }
+                return false;
+            },
+        };
+    }
+
     const scenes = [];
     const timeline = document.getElementById('timeline');
     const production = document.getElementById('production');
     const stack = document.getElementById('stack');
-    [timeline && timelineScene(timeline), production && portalScene(production), stack && orbitScene(stack)]
+    const boveda = document.querySelector('.boveda-lamina');
+    [timeline && timelineScene(timeline), production && portalScene(production), stack && orbitScene(stack),
+        boveda && bovedaScene(boveda)]
         .forEach(s => s && scenes.push(s));
     if (!scenes.length) return;
 
