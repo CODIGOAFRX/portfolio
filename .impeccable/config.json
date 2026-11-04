@@ -8,6 +8,12 @@
         "value": "bodoni moda",
         "createdAt": "2026-10-28T12:34:45.438Z",
         "reason": "Claude: bloque destacado de Herbario con la tipografía de su propia web, igual que Catábasis usa IM Fell"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "switzer",
+        "createdAt": "2026-11-04T08:11:09.468Z",
+        "reason": "Claude: bloque destacado de Comedia con la tipografía de su propia web, igual que Herbario usa Bodoni y Catábasis IM Fell"
       }
     ]
   }

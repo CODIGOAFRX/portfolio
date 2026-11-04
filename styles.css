@@ -3598,6 +3598,201 @@ html.has-intro .hero.cue-hidden .scroll-cue {
     }
 }
 
+/* ------------------------------------------------------------------
+   Comedia: el papel de Caetani, la Switzer y los campos de color de su
+   propia web (/proyecto/comedia, servida por su Worker). La Tierra gira
+   media vuelta con el scroll y las tres partes suben, una por campo.
+   ------------------------------------------------------------------ */
+@font-face {
+    font-family: 'Switzer';
+    src: url('media/comedia/switzer-600.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+.comedia-destacado {
+    --comedia-arena: #f1e3b5;
+    --comedia-negro: #0e0b0a;
+    --comedia-bermellon: #a8291b;
+    --comedia-zafiro: #1d3c8c;
+    --comedia-oro: #e2ae35;
+    --comedia-clara: #f1f1ee;
+    position: relative;
+    /* clip y no hidden: hidden lo convierte en contenedor de scroll y la línea de tiempo view() no avanzaría */
+    overflow: clip;
+    margin-bottom: clamp(5rem, 12vh, 9rem);
+    padding: clamp(2.2rem, 6vw, 6rem);
+    background: var(--comedia-arena);
+    color: var(--comedia-negro);
+}
+
+.comedia-cabeza {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+}
+
+.comedia-destacado .comedia-index {
+    color: var(--comedia-bermellon);
+    margin-bottom: 1.5rem;
+}
+
+.comedia-titulo {
+    font-family: 'Switzer', var(--font-body);
+    font-size: clamp(4rem, 11vw, 11.5rem);
+    font-weight: 600;
+    line-height: 0.86;
+    letter-spacing: -0.05em;
+    color: var(--comedia-negro);
+}
+
+.comedia-sub {
+    max-width: 24ch;
+    margin-top: clamp(1.4rem, 3vh, 2.2rem);
+    font-family: 'Switzer', var(--font-body);
+    font-size: clamp(1.35rem, 2.2vw, 2rem);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+}
+
+.comedia-giro {
+    margin: 0;
+    justify-self: end;
+    width: min(100%, 520px);
+}
+
+.comedia-giro img {
+    display: block;
+    width: 100%;
+    height: auto;
+    clip-path: circle(44% at 50% 55%);
+}
+
+.comedia-giro figcaption {
+    max-width: 40ch;
+    margin: 0.8rem auto 0;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    text-align: center;
+    color: #4a4335;
+}
+
+.comedia-canticas {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: clamp(3rem, 7vh, 5rem) calc(-1 * clamp(2.2rem, 6vw, 6rem)) 0;
+    padding: 0;
+}
+
+.comedia-cantica {
+    padding: clamp(1.4rem, 3vw, 2.6rem);
+}
+
+.comedia-cantica figure {
+    display: grid;
+    gap: 1.2rem;
+    margin: 0;
+}
+
+.comedia-cantica img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+.comedia-cantica figcaption {
+    font-size: 1rem;
+    line-height: 1.45;
+}
+
+.comedia-parte {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-family: 'Switzer', var(--font-body);
+    font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.035em;
+}
+
+.comedia-cantica--infierno { background: var(--comedia-negro); color: var(--comedia-clara); }
+.comedia-cantica--purgatorio { background: var(--comedia-zafiro); color: var(--comedia-clara); }
+.comedia-cantica--paraiso { background: var(--comedia-oro); color: var(--comedia-negro); }
+
+.comedia-pie {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.5rem 4rem;
+    align-items: end;
+    margin-top: clamp(3.5rem, 9vh, 7rem);
+}
+
+.comedia-pie p {
+    max-width: 56ch;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #3a3428;
+}
+
+.comedia-links a {
+    color: var(--comedia-negro);
+}
+
+.comedia-links a:first-child {
+    border-bottom-color: var(--comedia-bermellon);
+}
+
+/* La Tierra da media vuelta y las tres partes suben con el scroll: avanzan y retroceden con él */
+@supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+        .comedia-giro img {
+            animation: comedia-vuelta linear both;
+            animation-timeline: view();
+            animation-range: entry 30% cover 55%;
+        }
+
+        .comedia-cantica figure {
+            animation: comedia-sube linear both;
+            animation-timeline: view();
+            animation-range: entry 5% cover 35%;
+        }
+
+        .comedia-cantica:nth-child(2) figure { animation-range: entry 15% cover 42%; }
+        .comedia-cantica:nth-child(3) figure { animation-range: entry 25% cover 50%; }
+
+        @keyframes comedia-vuelta {
+            from { transform: rotate(180deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        @keyframes comedia-sube {
+            from { clip-path: inset(100% 0 0 0); transform: translateY(2.5rem); }
+            to { clip-path: inset(0); transform: none; }
+        }
+    }
+}
+
+@media (max-width: 900px) {
+    .comedia-cabeza,
+    .comedia-pie {
+        grid-template-columns: 1fr;
+    }
+
+    .comedia-giro {
+        justify-self: center;
+    }
+
+    .comedia-canticas {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* ---------- Láminas de dominio público (Public Domain Image Archive) ----------
    Grabados antiguos en blanco y negro, con su pie, como en Catábasis. Sobre papel blanco se
    imprimen con multiply; la de la transición va invertida, en trazo blanco sobre negro. */
