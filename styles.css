@@ -3793,6 +3793,572 @@ html.has-intro .hero.cue-hidden .scroll-cue {
     }
 }
 
+/* ------------------------------------------------------------------
+   Ornamentos: el papel, la Fell y el bermellón de su propia web
+   (/proyecto/ornamentos, servida por su Worker). Las capitulares se
+   pintan como máscara CSS, como se usan desde la web; el florón de
+   torno gira con el scroll (scenes.js).
+   ------------------------------------------------------------------ */
+.ornamentos-destacado {
+    --orn-fell: 'IM Fell English', var(--font-heading);
+    --orn-papel: #f3eee3;
+    --orn-tinta: #1d1b17;
+    --orn-suave: #5e594f;
+    --orn-bermellon: #a8322a;
+    --orn-filete: rgba(29, 27, 23, 0.16);
+    --relleno: clamp(2.2rem, 6vw, 6rem);
+    position: relative;
+    overflow: clip;
+    margin-bottom: clamp(5rem, 12vh, 9rem);
+    padding: var(--relleno);
+    background: var(--orn-papel);
+    color: var(--orn-tinta);
+}
+
+.ornamentos-destacado .ornamentos-index {
+    color: var(--orn-bermellon);
+    margin-bottom: 1.5rem;
+}
+
+.ornamentos-letra {
+    display: inline-block;
+    background-color: currentColor;
+    -webkit-mask: var(--letra) center / contain no-repeat;
+    mask: var(--letra) center / contain no-repeat;
+}
+
+.ornamentos-letra--o { --letra: url('media/ornamentos/barroco-O.svg'); aspect-ratio: 410 / 348; }
+.ornamentos-letra--a { --letra: url('media/ornamentos/romanico-A.svg'); aspect-ratio: 290 / 284; }
+.ornamentos-letra--b { --letra: url('media/ornamentos/gotico-B.svg'); aspect-ratio: 446 / 448; }
+.ornamentos-letra--c { --letra: url('media/ornamentos/veneciano-C.svg'); aspect-ratio: 358 / 362; }
+.ornamentos-letra--d { --letra: url('media/ornamentos/rustico-D.svg'); aspect-ratio: 418 / 336; }
+
+.ornamentos-titulo {
+    font-family: var(--orn-fell);
+    font-size: clamp(4rem, 10vw, 10.5rem);
+    font-weight: 400;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    color: var(--orn-tinta);
+}
+
+/* La O es una capitular barroca en bermellón, como en la cabecera de la web */
+.ornamentos-titulo .ornamentos-letra--o {
+    height: 1.12em;
+    margin-right: 0.02em;
+    vertical-align: -0.2em;
+    color: var(--orn-bermellon);
+}
+
+.ornamentos-sub {
+    max-width: 26ch;
+    margin-top: clamp(1.4rem, 3vh, 2.2rem);
+    font-family: var(--orn-fell);
+    font-size: clamp(1.35rem, 2.2vw, 2rem);
+    font-style: italic;
+    line-height: 1.18;
+    color: var(--orn-suave);
+}
+
+.ornamentos-alfabetos {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1rem, 3vw, 2.5rem);
+    align-items: end;
+    margin: clamp(2.5rem, 6vh, 4rem) 0 0;
+    padding: clamp(1.5rem, 3vh, 2rem) 0 0;
+    border-top: 1px solid var(--orn-filete);
+}
+
+.ornamentos-alfabetos li {
+    display: grid;
+    gap: 0.3rem;
+    font-family: var(--orn-fell);
+    font-size: clamp(1.05rem, 1.4vw, 1.3rem);
+    line-height: 1.15;
+}
+
+.ornamentos-alfabetos .ornamentos-letra {
+    height: clamp(64px, 7vw, 112px);
+    margin-bottom: 0.7rem;
+    color: var(--orn-tinta);
+}
+
+.ornamentos-alfabetos li:nth-child(2) .ornamentos-letra {
+    color: var(--orn-bermellon);
+}
+
+.ornamentos-siglo {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+.ornamentos-floron {
+    display: grid;
+    justify-items: center;
+    gap: 0.9rem;
+    margin: clamp(2.5rem, 6vh, 4rem) 0 0;
+}
+
+.ornamentos-floron-forma {
+    display: block;
+    width: clamp(150px, 15vw, 220px);
+    aspect-ratio: 1;
+    background-color: var(--orn-bermellon);
+    -webkit-mask: url('media/ornamentos/floron.webp') center / contain no-repeat;
+    mask: url('media/ornamentos/floron.webp') center / contain no-repeat;
+    transform: rotate(var(--giro, 0deg));
+}
+
+.ornamentos-floron figcaption {
+    max-width: 40ch;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--orn-suave);
+}
+
+.ornamentos-pie,
+.palimpsesto-pie,
+.sphaera-pie {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.5rem 4rem;
+    align-items: end;
+    margin-top: clamp(3.5rem, 9vh, 7rem);
+}
+
+.ornamentos-pie p {
+    max-width: 50ch;
+    color: var(--orn-suave);
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.ornamentos-links a { color: var(--orn-tinta); }
+.ornamentos-links a:first-child { border-bottom-color: var(--orn-bermellon); }
+
+/* ------------------------------------------------------------------
+   Palimpsesto: el papel y la Fell de su propia web (/proyecto/
+   palimpsesto, servida por su Worker). Granada en 1956 y hoy, con la
+   cortina que en la app se arrastra y aquí se mueve con el scroll.
+   ------------------------------------------------------------------ */
+.palimpsesto-destacado {
+    --pal-fell: 'IM Fell English', var(--font-heading);
+    --pal-papel: #f3eee3;
+    --pal-tinta: #1d1b17;
+    --pal-suave: #5e594f;
+    --pal-rojo: #c8372d;
+    --relleno: clamp(2.2rem, 6vw, 6rem);
+    position: relative;
+    overflow: clip;
+    margin-bottom: clamp(5rem, 12vh, 9rem);
+    padding: var(--relleno);
+    background: linear-gradient(180deg, #ece5d6 0%, var(--pal-papel) 55%);
+    color: var(--pal-tinta);
+}
+
+.palimpsesto-destacado .palimpsesto-index {
+    color: var(--pal-rojo);
+    margin-bottom: 1.5rem;
+}
+
+.palimpsesto-titulo {
+    font-family: var(--pal-fell);
+    font-size: clamp(4rem, 10vw, 10.5rem);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 0.88;
+    letter-spacing: -0.02em;
+    color: var(--pal-tinta);
+}
+
+.palimpsesto-sub {
+    max-width: 24ch;
+    margin-top: clamp(1.4rem, 3vh, 2.2rem);
+    font-family: var(--pal-fell);
+    font-size: clamp(1.35rem, 2.2vw, 2rem);
+    font-style: italic;
+    line-height: 1.18;
+    color: var(--pal-suave);
+}
+
+/* El mapa sale de borde a borde de la tarjeta */
+.palimpsesto-cortina {
+    margin: clamp(2.5rem, 6vh, 4rem) calc(-1 * var(--relleno)) 0;
+}
+
+.palimpsesto-mapas {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 5 / 3;
+    background: #2a2824;
+}
+
+.palimpsesto-mapas img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.palimpsesto-mapas .palimpsesto-antes {
+    clip-path: inset(0 calc(100% - var(--corte, 50%)) 0 0);
+}
+
+.palimpsesto-linea {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--corte, 50%);
+    width: 2px;
+    margin-left: -1px;
+    background: var(--pal-papel);
+    box-shadow: 0 0 0 1px rgba(29, 27, 23, 0.3);
+}
+
+.palimpsesto-linea::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--pal-rojo);
+    border-radius: 50%;
+    background: var(--pal-papel);
+    translate: -50% -50%;
+}
+
+.palimpsesto-linea span {
+    position: absolute;
+    top: 0.9rem;
+    padding: 0.35rem 0.55rem;
+    background: rgba(29, 27, 23, 0.78);
+    color: var(--pal-papel);
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.palimpsesto-linea span:first-child { right: 0.8rem; }
+.palimpsesto-linea span:last-child { left: 0.8rem; }
+
+.palimpsesto-cortina figcaption {
+    max-width: 60ch;
+    margin: 0.9rem var(--relleno) 0;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--pal-suave);
+}
+
+.palimpsesto-pie p {
+    max-width: 50ch;
+    color: var(--pal-suave);
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.palimpsesto-links a { color: var(--pal-tinta); }
+.palimpsesto-links a:first-child { border-bottom-color: var(--pal-rojo); }
+
+/* ------------------------------------------------------------------
+   Sphaera: el negro, la Jost y el único rojo de su propia web
+   (/proyecto/sphaera, servida por su Worker). Como en su portada, el
+   brazo del compás da la vuelta con el scroll y dentro se abre la luz
+   de Fludd (scenes.js).
+   ------------------------------------------------------------------ */
+@font-face {
+    font-family: 'Jost';
+    src: url('media/sphaera/jost.woff2') format('woff2');
+    font-weight: 300 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+.sphaera-destacado {
+    --sph-jost: 'Jost', 'Futura', 'Century Gothic', var(--font-body);
+    --sph-tinta: #0f0f0e;
+    --sph-luz: #ebe8e1;
+    --sph-luz-2: #c9c5bc;
+    --sph-gris: #8f8b83;
+    --sph-rojo: #e8553a;
+    --sph-hilo: rgba(235, 232, 225, 0.16);
+    --relleno: clamp(2.2rem, 6vw, 6rem);
+    position: relative;
+    overflow: clip;
+    margin-bottom: clamp(5rem, 12vh, 9rem);
+    padding: var(--relleno);
+    background: var(--sph-tinta);
+    color: var(--sph-luz);
+}
+
+.sphaera-destacado ::selection {
+    background: var(--sph-rojo);
+    color: var(--sph-tinta);
+}
+
+.sphaera-destacado .sphaera-index {
+    color: var(--sph-rojo);
+    margin-bottom: 1.5rem;
+}
+
+.sphaera-titulo {
+    margin-left: -0.04em;
+    font-family: var(--sph-jost);
+    font-size: clamp(4rem, 10vw, 10.5rem);
+    font-weight: 300;
+    line-height: 0.86;
+    letter-spacing: -0.045em;
+    color: var(--sph-luz);
+}
+
+.sphaera-sub {
+    max-width: 24ch;
+    margin-top: clamp(1.4rem, 3vh, 2.2rem);
+    font-family: var(--sph-jost);
+    font-size: clamp(1.35rem, 2.2vw, 2rem);
+    font-weight: 400;
+    line-height: 1.25;
+    color: var(--sph-luz-2);
+}
+
+.sphaera-compas {
+    display: grid;
+    gap: 1rem;
+    width: min(100%, 440px);
+    margin: clamp(2rem, 5vh, 3.5rem) auto 0;
+}
+
+.sphaera-disco {
+    position: relative;
+    aspect-ratio: 1;
+}
+
+.sphaera-disco img {
+    position: absolute;
+    inset: 5.5%;
+    width: 89%;
+    height: 89%;
+    object-fit: cover;
+    border-radius: 50%;
+    clip-path: circle(var(--abre, 50%) at 50% 50%);
+    transform: scale(var(--pz, 1));
+}
+
+.sphaera-disco svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.sphaera-traza {
+    fill: none;
+    stroke: var(--sph-rojo);
+    stroke-width: 1.5;
+    stroke-dasharray: 1;
+    stroke-dashoffset: var(--traza, 0);
+    vector-effect: non-scaling-stroke;
+}
+
+.sphaera-brazo {
+    stroke: var(--sph-rojo);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+    opacity: var(--brazo, 0);
+    transform: rotate(var(--giro, 0deg));
+}
+
+.sphaera-centro { fill: var(--sph-rojo); }
+
+.sphaera-compas figcaption {
+    max-width: 44ch;
+    margin: 0 auto;
+    font-family: var(--sph-jost);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--sph-luz-2);
+}
+
+.sphaera-discos {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2.4vw, 2rem);
+    margin: clamp(2.5rem, 6vh, 4rem) 0 0;
+    padding: clamp(1.5rem, 3vh, 2rem) 0 0;
+    border-top: 1px solid var(--sph-hilo);
+}
+
+.sphaera-discos li {
+    display: grid;
+    gap: 0.2rem;
+    font-family: var(--sph-jost);
+    font-size: 0.82rem;
+    line-height: 1.3;
+    text-align: center;
+    color: var(--sph-gris);
+}
+
+.sphaera-discos img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    margin-bottom: 0.8rem;
+    object-fit: cover;
+    border-radius: 50%;
+    -webkit-mask-image: radial-gradient(circle closest-side, #000 86%, transparent 100%);
+    mask-image: radial-gradient(circle closest-side, #000 86%, transparent 100%);
+}
+
+.sphaera-cap {
+    color: var(--sph-luz);
+    font-size: 1rem;
+}
+
+.sphaera-pie p {
+    max-width: 50ch;
+    font-family: var(--sph-jost);
+    color: var(--sph-luz-2);
+    font-size: 1.05rem;
+    line-height: 1.65;
+}
+
+.sphaera-links a { color: var(--sph-luz); }
+.sphaera-links a:first-child { border-bottom-color: var(--sph-rojo); }
+.sphaera-links a:hover { color: var(--sph-rojo); }
+
+@media (max-width: 900px) {
+    .ornamentos-pie,
+    .palimpsesto-pie,
+    .sphaera-pie {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .ornamentos-titulo {
+        font-size: clamp(2.6rem, 12vw, 4rem);
+    }
+
+    .ornamentos-alfabetos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        row-gap: 2rem;
+    }
+}
+
+/* ------------------------------------------------------------------
+   Las parejas siguientes (Comedia y Bóveda, Ornamentos y Palimpsesto)
+   y el proyecto nuevo, en las mismas medias páginas que Catábasis y el
+   Herbario. Si una fila tiene un solo proyecto, se centra; el próximo
+   ocupará su derecha.
+   ------------------------------------------------------------------ */
+@media (min-width: 1100px) {
+    .mundos > article {
+        --relleno: clamp(2rem, 3.4vw, 3.6rem);
+    }
+
+    .mundos > article:only-child {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: calc((100% - clamp(1rem, 1.6vw, 1.75rem)) / 2);
+    }
+
+    .mundos :is(.comedia-titulo, .boveda-titulo, .ornamentos-titulo, .palimpsesto-titulo, .sphaera-titulo) {
+        font-size: clamp(3.4rem, 5.6vw, 6rem);
+    }
+
+    .mundos :is(.comedia-sub, .boveda-sub, .ornamentos-sub, .palimpsesto-sub, .sphaera-sub) {
+        font-size: clamp(1.2rem, 1.45vw, 1.55rem);
+    }
+
+    .mundos :is(.comedia-pie, .boveda-pie, .ornamentos-pie, .palimpsesto-pie, .sphaera-pie) {
+        grid-template-columns: 1fr;
+        gap: 1.4rem;
+        margin-top: auto;
+        padding-top: clamp(2.5rem, 5vh, 4rem);
+    }
+
+    .mundos :is(.comedia-pie, .boveda-pie, .ornamentos-pie, .palimpsesto-pie, .sphaera-pie) p {
+        font-size: 0.98rem;
+    }
+
+    /* Comedia a media página: la Tierra bajo el título y las tres partes en sus tres campos */
+    .mundos .comedia-cabeza {
+        grid-template-columns: 1fr;
+        gap: clamp(1.5rem, 3vh, 2.2rem);
+    }
+
+    .mundos .comedia-giro {
+        justify-self: center;
+        width: min(70%, 360px);
+    }
+
+    .mundos .comedia-giro figcaption {
+        font-size: 0.8rem;
+    }
+
+    .mundos .comedia-canticas {
+        margin: clamp(2rem, 4vh, 3rem) calc(-1 * var(--relleno)) 0;
+    }
+
+    .mundos .comedia-cantica {
+        padding: 1.1rem;
+    }
+
+    .mundos .comedia-cantica figcaption {
+        font-size: 0.85rem;
+    }
+
+    .mundos .comedia-parte {
+        font-size: 1.45rem;
+    }
+
+    /* Bóveda a media página: título, la lámina, los astros más altos y el pie, en una columna */
+    .mundos .boveda-texto {
+        display: contents;
+    }
+
+    .mundos .boveda-cabeza { order: 1; }
+    .mundos .boveda-lamina { order: 2; max-width: 430px; margin-top: clamp(1.5rem, 3vh, 2.5rem); }
+    .mundos .boveda-astros { order: 3; }
+    .mundos .boveda-pie { order: 4; }
+
+    .mundos .boveda-astros li:nth-child(n + 4) {
+        display: none;
+    }
+
+    .mundos .boveda-astros li {
+        font-size: 1.1rem;
+    }
+
+    .mundos .ornamentos-alfabetos .ornamentos-letra {
+        height: clamp(56px, 5vw, 84px);
+    }
+
+    .mundos .ornamentos-floron-forma {
+        width: clamp(140px, 12vw, 190px);
+    }
+
+    .mundos .sphaera-compas {
+        width: min(100%, 380px);
+    }
+}
+
 /* ---------- Láminas de dominio público (Public Domain Image Archive) ----------
    Grabados antiguos en blanco y negro, con su pie, como en Catábasis. Sobre papel blanco se
    imprimen con multiply; la de la transición va invertida, en trazo blanco sobre negro. */

@@ -28,7 +28,7 @@
     <meta name="twitter:description"
         content="Desarrollo de principio a fin. Productos web en producción y automatización con Java, Python y TypeScript.">
     <meta name="twitter:image" content="https://www.pedrogomez.dev/og.png">
-    <link rel="stylesheet" href="styles.css?v=20261104-comedia">
+    <link rel="stylesheet" href="styles.css?v=20261105-sphaera-2">
     <script src="intro-boot.js?v=20261020-corte"></script>
 </head>
 
@@ -583,42 +583,9 @@
                         </article>
                         </div>
 
-                        <!-- Bóveda: el cielo de cualquier noche, en la cianotipia de su web (/proyecto/boveda, servida por
-                             su propio Worker). La lámina sale del motor de la app en dos capas: el aro graduado queda fijo
-                             y el cielo gira alrededor de la Polar con el scroll, que es lo que en la app hace pasar las horas.
-                             Sin soporte o con movimiento reducido, la lámina queda quieta. -->
-                        <article id="boveda" class="boveda-destacado" aria-labelledby="boveda-title">
-                            <div class="boveda-texto">
-                                <div class="boveda-cabeza hidden-element">
-                                    <p class="case-index boveda-index">Proyecto visual / Atlas celeste</p>
-                                    <h3 id="boveda-title" class="boveda-titulo">Bóveda</h3>
-                                    <p class="boveda-sub">El cielo de cualquier noche entre 1800 y 2050, calculado estrella a estrella y grabado como en un atlas de 1690.</p>
-                                </div>
-                                <ol class="boveda-astros" aria-label="Lo que había sobre Granada el 15 de enero de 2027 a las 22:00">
-                                    <li><span class="boveda-altura">+44°</span><span class="boveda-donde">al oeste</span>Cuarto creciente</li>
-                                    <li><span class="boveda-altura">+38°</span><span class="boveda-donde">al norte</span>Estrella Polar</li>
-                                    <li><span class="boveda-altura">+27°</span><span class="boveda-donde">al oeste</span>Saturno</li>
-                                    <li><span class="boveda-altura">+27°</span><span class="boveda-donde">al sudeste</span>Sirio</li>
-                                    <li><span class="boveda-altura">+15°</span><span class="boveda-donde">al este</span>Júpiter</li>
-                                </ol>
-                                <div class="boveda-pie hidden-element">
-                                    <p>5.044 estrellas, siete planetas, la Luna y el Sol calculados en el navegador con un motor astronómico propio, sin librerías y comprobado con 23 pruebas contra los ejemplos de Jean Meeus. Se arrastra para mover las horas y cada cielo se graba como lámina para imprimir.</p>
-                                    <div class="case-links boveda-links">
-                                        <a href="/proyecto/boveda/">Ver el cielo de esta noche</a>
-                                        <a href="/proyecto/boveda/#calculo">Cómo se calcula</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <figure class="boveda-lamina">
-                                <div class="boveda-disco">
-                                    <img class="boveda-cielo" src="/media/boveda/boveda-cielo.webp" width="2020" height="2020" loading="lazy" decoding="async" alt="">
-                                </div>
-                                <img class="boveda-aro" src="/media/boveda/boveda-aro.webp" width="1200" height="1200" loading="lazy" decoding="async"
-                                    alt="Planisferio grabado en blanco sobre azul: el cielo de Granada el 15 de enero de 2027 a las 22:00, con Orión, Tauro y Géminis en lo alto, la media Luna al oeste y la Vía Láctea en trama">
-                                <figcaption><span class="lamina-num">Lámina calculada</span>El cielo sobre Granada el 15 de enero de 2027, a las 22:00. Al bajar por la página pasan las horas y el cielo gira alrededor de la Polar.</figcaption>
-                            </figure>
-                        </article>
-
+                        <!-- Comedia y Bóveda, una junto a otra en escritorio: un poema y un cielo, cada uno con la
+                             tipografía y los colores de su web. En móvil, una debajo de otra. -->
+                        <div class="mundos mundos--cielos">
                         <!-- Comedia: el papel de Caetani, la Switzer y los campos de color de su web (/proyecto/comedia,
                              servida por su propio Worker). El centro de la Tierra gira media vuelta con el scroll, como
                              Dante en la cadera de Lucifer; sin soporte o con movimiento reducido, ya derecho. -->
@@ -663,6 +630,139 @@
                                 </div>
                             </div>
                         </article>
+
+                        <!-- Bóveda: el cielo de cualquier noche, en la cianotipia de su web (/proyecto/boveda, servida por
+                             su propio Worker). La lámina sale del motor de la app en dos capas: el aro graduado queda fijo
+                             y el cielo gira alrededor de la Polar con el scroll, que es lo que en la app hace pasar las horas.
+                             Sin soporte o con movimiento reducido, la lámina queda quieta. -->
+                        <article id="boveda" class="boveda-destacado" aria-labelledby="boveda-title">
+                            <div class="boveda-texto">
+                                <div class="boveda-cabeza hidden-element">
+                                    <p class="case-index boveda-index">Proyecto visual / Atlas celeste</p>
+                                    <h3 id="boveda-title" class="boveda-titulo">Bóveda</h3>
+                                    <p class="boveda-sub">El cielo de cualquier noche entre 1800 y 2050, calculado estrella a estrella y grabado como en un atlas de 1690.</p>
+                                </div>
+                                <ol class="boveda-astros" aria-label="Lo que había sobre Granada el 15 de enero de 2027 a las 22:00">
+                                    <li><span class="boveda-altura">+44°</span><span class="boveda-donde">al oeste</span>Cuarto creciente</li>
+                                    <li><span class="boveda-altura">+38°</span><span class="boveda-donde">al norte</span>Estrella Polar</li>
+                                    <li><span class="boveda-altura">+27°</span><span class="boveda-donde">al oeste</span>Saturno</li>
+                                    <li><span class="boveda-altura">+27°</span><span class="boveda-donde">al sudeste</span>Sirio</li>
+                                    <li><span class="boveda-altura">+15°</span><span class="boveda-donde">al este</span>Júpiter</li>
+                                </ol>
+                                <div class="boveda-pie hidden-element">
+                                    <p>5.044 estrellas, siete planetas, la Luna y el Sol calculados en el navegador con un motor astronómico propio, sin librerías y comprobado con 23 pruebas contra los ejemplos de Jean Meeus. Se arrastra para mover las horas y cada cielo se graba como lámina para imprimir.</p>
+                                    <div class="case-links boveda-links">
+                                        <a href="/proyecto/boveda/">Ver el cielo de esta noche</a>
+                                        <a href="/proyecto/boveda/#calculo">Cómo se calcula</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <figure class="boveda-lamina">
+                                <div class="boveda-disco">
+                                    <img class="boveda-cielo" src="/media/boveda/boveda-cielo.webp" width="2020" height="2020" loading="lazy" decoding="async" alt="">
+                                </div>
+                                <img class="boveda-aro" src="/media/boveda/boveda-aro.webp" width="1200" height="1200" loading="lazy" decoding="async"
+                                    alt="Planisferio grabado en blanco sobre azul: el cielo de Granada el 15 de enero de 2027 a las 22:00, con Orión, Tauro y Géminis en lo alto, la media Luna al oeste y la Vía Láctea en trama">
+                                <figcaption><span class="lamina-num">Lámina calculada</span>El cielo sobre Granada el 15 de enero de 2027, a las 22:00. Al bajar por la página pasan las horas y el cielo gira alrededor de la Polar.</figcaption>
+                            </figure>
+                        </article>
+                        </div>
+
+                        <!-- Ornamentos y Palimpsesto: dos herramientas que rescatan papel antiguo, una tipográfica y
+                             otra cartográfica. -->
+                        <div class="mundos mundos--oficios">
+                        <!-- Ornamentos: el papel, la Fell y el bermellón de su web (/proyecto/ornamentos, servida por su
+                             Worker). Las capitulares se pintan como máscara CSS, que es como se usan desde la web, y el
+                             florón de torno gira con el scroll; sin soporte o con movimiento reducido, quieto. -->
+                        <article id="ornamentos" class="ornamentos-destacado" aria-labelledby="ornamentos-title">
+                            <div class="ornamentos-cabeza hidden-element">
+                                <p class="case-index ornamentos-index">Recurso para la web / Capitulares y florones</p>
+                                <h3 id="ornamentos-title" class="ornamentos-titulo" aria-label="Ornamentos"><span class="ornamentos-letra ornamentos-letra--o" aria-hidden="true"></span><span aria-hidden="true">rnamentos</span></h3>
+                                <p class="ornamentos-sub">Capitulares de cinco alfabetos, del siglo XI al XIX, y florones de torno de 1869, listos para cualquier web con una línea de CSS.</p>
+                            </div>
+                            <ol class="ornamentos-alfabetos" aria-label="Una capitular de cada alfabeto">
+                                <li><span class="ornamentos-letra ornamentos-letra--a" aria-hidden="true"></span><span class="ornamentos-siglo">Siglo XI</span>Románico alemán</li>
+                                <li><span class="ornamentos-letra ornamentos-letra--b" aria-hidden="true"></span><span class="ornamentos-siglo">Siglo XIV</span>Gótico alemán</li>
+                                <li><span class="ornamentos-letra ornamentos-letra--c" aria-hidden="true"></span><span class="ornamentos-siglo">Siglo XVI</span>Veneciano</li>
+                                <li><span class="ornamentos-letra ornamentos-letra--d" aria-hidden="true"></span><span class="ornamentos-siglo">Siglo XIX</span>Rústico</li>
+                            </ol>
+                            <figure class="ornamentos-floron">
+                                <span class="ornamentos-floron-forma" aria-hidden="true"></span>
+                                <figcaption>Florón de torno de Edward J. Woolsey, 1869, usado como máscara: toma el color que se le dé.</figcaption>
+                            </figure>
+                            <div class="ornamentos-pie hidden-element">
+                                <p>120 letras del Alphabet-album de Silvestre (París, 1843), recortadas y vectorizadas, y 23 florones fotografiados en 1869. Se escribe un párrafo y la primera letra se vuelve capitular, con su HTML y su CSS para copiar.</p>
+                                <div class="case-links ornamentos-links">
+                                    <a href="/proyecto/ornamentos/">Abrir Ornamentos</a>
+                                    <a href="/proyecto/ornamentos/#catalogo">Ver el catálogo</a>
+                                    <a href="https://github.com/CODIGOAFRX/ornamentos" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Palimpsesto: el papel y la Fell de su web (/proyecto/palimpsesto, servida por su Worker). La
+                             cortina entre 1956 y hoy se mueve con el scroll (scenes.js), como la que se arrastra en la app;
+                             sin soporte o con movimiento reducido, a la mitad. -->
+                        <article id="palimpsesto" class="palimpsesto-destacado" aria-labelledby="palimpsesto-title">
+                            <div class="palimpsesto-cabeza hidden-element">
+                                <p class="case-index palimpsesto-index">Mapa interactivo / Granada en dos épocas</p>
+                                <h3 id="palimpsesto-title" class="palimpsesto-titulo">Palimpsesto</h3>
+                                <p class="palimpsesto-sub">La misma ciudad en dos épocas, una encima de otra, con una cortina que se arrastra.</p>
+                            </div>
+                            <figure class="palimpsesto-cortina">
+                                <div class="palimpsesto-mapas">
+                                    <img src="/media/palimpsesto/granada-hoy.webp" width="1200" height="720" loading="lazy" decoding="async" alt="El centro de Granada hoy, en ortofoto: la ciudad llega hasta la ronda y la Alhambra asoma entre el verde">
+                                    <img class="palimpsesto-antes" src="/media/palimpsesto/granada-1956.webp" width="1200" height="720" loading="lazy" decoding="async" alt="El mismo trozo de Granada en 1956, en blanco y negro: donde hoy hay manzanas, al oeste, había huertas">
+                                    <span class="palimpsesto-linea" aria-hidden="true"><span>1956</span><span>Hoy</span></span>
+                                </div>
+                                <figcaption>El centro de Granada en el vuelo americano de 1956 y en la ortofoto de hoy. Al bajar, la cortina pasa de una época a otra. © Instituto Geográfico Nacional.</figcaption>
+                            </figure>
+                            <div class="palimpsesto-pie hidden-element">
+                                <p>Siete capas del Instituto Geográfico Nacional, de las planimetrías de 1870 a la ortofoto de hoy, con cortina, lupa y fundido. Un Worker convierte cada tesela en su petición al IGN y la guarda en caché; funciona en toda España.</p>
+                                <div class="case-links palimpsesto-links">
+                                    <a href="/proyecto/palimpsesto/">Abrir Palimpsesto</a>
+                                    <a href="https://github.com/CODIGOAFRX/palimpsesto" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
+                        </div>
+
+                        <!-- Lo más nuevo, solo y centrado; el siguiente proyecto se pone a su derecha. -->
+                        <div class="mundos mundos--nuevo">
+                        <!-- Sphaera: el negro, la Jost y el rojo de su web (/proyecto/sphaera, servida por su Worker). Como
+                             en su portada, el brazo del compás da la vuelta con el scroll y dentro se abre la luz de Fludd
+                             (scenes.js); sin soporte o con movimiento reducido, el círculo ya cerrado. -->
+                        <article id="sphaera" class="sphaera-destacado" aria-labelledby="sphaera-title">
+                            <div class="sphaera-cabeza hidden-element">
+                                <p class="case-index sphaera-index">Proyecto visual / Geometría del círculo</p>
+                                <h3 id="sphaera-title" class="sphaera-titulo">Sphaera</h3>
+                                <p class="sphaera-sub">El círculo y la esfera, del compás de Euclides a la pompa de jabón, en láminas antiguas.</p>
+                            </div>
+                            <figure class="sphaera-compas">
+                                <div class="sphaera-disco">
+                                    <img src="/media/sphaera/luz.webp" width="780" height="780" loading="lazy" decoding="async" alt="Grabado redondo: un disco de rayos claros que se abre desde un centro negro, rodeado de oscuridad">
+                                    <svg viewBox="-500 -500 1000 1000" aria-hidden="true" focusable="false">
+                                        <circle class="sphaera-traza" r="440" pathLength="1" transform="rotate(-90)"/>
+                                        <line class="sphaera-brazo" x1="0" y1="0" x2="0" y2="-440"/>
+                                        <circle class="sphaera-centro" r="7"/>
+                                    </svg>
+                                </div>
+                                <figcaption>La luz brota de la oscuridad. Robert Fludd, 1617. Al bajar, el compás da la vuelta y la lámina se abre, como en la portada de la web.</figcaption>
+                            </figure>
+                            <ol class="sphaera-discos" aria-label="Tres capítulos de la web">
+                                <li><img src="/media/sphaera/torno.webp" width="640" height="640" loading="lazy" decoding="async" alt="Estrella de seis puntas dentro de un anillo de espirales, torneada y fotografiada en 1869"><span class="sphaera-cap">Círculos sobre círculos</span>Woolsey, 1869</li>
+                                <li><img src="/media/sphaera/diatomea.webp" width="900" height="900" loading="lazy" decoding="async" alt="Una diatomea redonda con anillos y rayos, al microscopio"><span class="sphaera-cap">Lo pequeño también</span>Filbri, 1887</li>
+                                <li><img src="/media/sphaera/eclipse.webp" width="900" height="900" loading="lazy" decoding="async" alt="Eclipse total de Sol: un disco negro rodeado de la corona"><span class="sphaera-cap">Dos discos iguales</span>Trouvelot, 1878</li>
+                            </ol>
+                            <div class="sphaera-pie hidden-element">
+                                <p>58 láminas de dominio público, del siglo XII a 1909, y figuras que se calculan con el scroll: π entre polígonos, las órbitas de Ptolomeo a Kepler y el eclipse con el porcentaje tapado.</p>
+                                <div class="case-links sphaera-links">
+                                    <a href="/proyecto/sphaera/">Empezar por el centro</a>
+                                    <a href="https://github.com/CODIGOAFRX/sphaera" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
+                        </div>
                     </div>
                 </div>
                 <div class="portal-spacer" aria-hidden="true"></div>
@@ -800,9 +900,9 @@
             <a href="https://pdimagearchive.org/images/22f79abf-41bf-448e-b8df-30fb02ccba5a/" target="_blank" rel="noopener noreferrer">palomas mensajeras, 1884</a>.</p>
     </footer>
 
-    <script src="script.js?v=20261020-ornamentos"></script>
+    <script src="script.js?v=20261105-sphaera"></script>
     <script src="net.js?v=20261020-laminas2" defer></script>
-    <script src="scenes.js?v=20261102-boveda-giro" defer></script>
+    <script src="scenes.js?v=20261105-sphaera" defer></script>
     <script src="intro.js?v=20261020-corte" defer></script>
 </body>
 

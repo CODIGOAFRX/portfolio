@@ -204,30 +204,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectsContainer = document.getElementById('github-projects');
     const projects = [
         {
-            name: 'Ornamentos',
-            status: 'Recurso para la web · Nuevo',
-            description: 'Capitulares de cinco alfabetos, del siglo XI al XIX, y florones de torno de 1869, vectorizados y listos para usar en cualquier web con una línea de CSS.',
-            goal: 'Rescatar ornamentos tipográficos de libros de dominio público y convertirlos en un recurso que se pueda usar hoy: en SVG, del color que se quiera y sin pedir permiso.',
-            tech: 'Python (NumPy, Pillow, potrace) para recortar y vectorizar; JavaScript sin frameworks, máscaras CSS, Cloudflare Workers y node:test.',
-            features: 'Recorte automático de 120 letras con perfiles de tinta, limpieza de fragmentos vecinos, vectorizado bicolor, florones como máscara CSS, compositor con código para copiar y catálogo descargable.',
-            result: 'Publicado en pedrogomez.dev/proyecto/ornamentos con el Alphabet-album de Silvestre (1843) y los dibujos de torno de Woolsey (1869). Los archivos se sirven con CORS para usarlos desde cualquier dominio.',
-            href: '/proyecto/ornamentos/',
-            linkLabel: 'Abrir Ornamentos',
-            codeHref: 'https://github.com/CODIGOAFRX/ornamentos'
-        },
-        {
-            name: 'Palimpsesto',
-            status: 'Mapa interactivo · Nuevo',
-            description: 'Granada en dos épocas, una encima de otra: planimetrías de 1870, el vuelo americano de 1956 y la ciudad de hoy, con una cortina que se arrastra.',
-            goal: 'Ver qué había debajo de la ciudad de hoy comparando capas históricas abiertas del Instituto Geográfico Nacional.',
-            tech: 'JavaScript, MapLibre GL JS, Cloudflare Workers con caché, servicios WMS y WMTS del IGN y node:test.',
-            features: 'Cortina, lupa y fundido; siete capas de 1870 a hoy; lugares de Granada con notas; vista compartible por URL; funciona en toda España.',
-            result: 'Publicado en pedrogomez.dev/proyecto/palimpsesto. Un Worker convierte cada tesela en su petición al IGN, la valida y la guarda en la caché de Cloudflare: la segunda carga es instantánea.',
-            href: '/proyecto/palimpsesto/',
-            linkLabel: 'Abrir Palimpsesto',
-            codeHref: 'https://github.com/CODIGOAFRX/palimpsesto'
-        },
-        {
             name: 'Horario',
             status: 'Herramienta abierta · En uso',
             description: 'Horario semanal de lunes a domingo por horas, que se edita arrastrando y se lleva en el móvil como una app. Cualquiera puede crear su cuenta y usarlo.',

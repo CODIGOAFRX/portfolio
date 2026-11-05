@@ -682,13 +682,79 @@
         };
     }
 
+    // Avance de un elemento que cruza la pantalla: 0 cuando asoma por abajo, 1 cuando se va por arriba
+    const crossing = el => {
+        const r = el.getBoundingClientRect();
+        const vh = window.innerHeight;
+        return Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
+    };
+    const settle = x => 1 - (1 - Math.min(1, Math.max(0, x))) ** 4;
+
+    // Palimpsesto: la cortina pasa de 1956 a hoy mientras el mapa cruza la pantalla, como la que se
+    // arrastra en la app
+    function cortinaScene(maps) {
+        let last = -1;
+        return {
+            measure() {},
+            update() {
+                const cut = 86 - 72 * smooth(0.15, 0.75, crossing(maps));
+                if (Math.abs(cut - last) > 0.05) {
+                    maps.style.setProperty('--corte', `${cut.toFixed(2)}%`);
+                    last = cut;
+                }
+                return false;
+            },
+        };
+    }
+
+    // Sphaera: como en su portada, el brazo del compás da la vuelta dejando el círculo y dentro se abre
+    // la luz de Fludd; al seguir bajando, todo se queda abierto
+    function compasScene(disc) {
+        let last = -1;
+        return {
+            measure() {},
+            update() {
+                const p = crossing(disc);
+                if (Math.abs(p - last) < 0.0005) return false;
+                last = p;
+                const turn = smooth(0.08, 0.42, p);
+                const open = settle((p - 0.44) / 0.2);
+                disc.style.setProperty('--giro', `${(360 * turn).toFixed(2)}deg`);
+                disc.style.setProperty('--traza', (1 - turn).toFixed(4));
+                disc.style.setProperty('--brazo', (smooth(0, 0.08, p) * (1 - smooth(0.42, 0.48, p))).toFixed(3));
+                disc.style.setProperty('--abre', `${(50 * open).toFixed(2)}%`);
+                disc.style.setProperty('--pz', (1.2 - 0.2 * open).toFixed(4));
+                return false;
+            },
+        };
+    }
+
+    // Ornamentos: el florón de torno gira con el scroll, como en el torno que lo hizo
+    function floronScene(shape) {
+        let last = Infinity;
+        return {
+            measure() {},
+            update() {
+                const deg = (crossing(shape) - 0.5) * 140;
+                if (Math.abs(deg - last) > 0.05) {
+                    shape.style.setProperty('--giro', `${deg.toFixed(2)}deg`);
+                    last = deg;
+                }
+                return false;
+            },
+        };
+    }
+
     const scenes = [];
     const timeline = document.getElementById('timeline');
     const production = document.getElementById('production');
     const stack = document.getElementById('stack');
     const boveda = document.querySelector('.boveda-lamina');
+    const maps = document.querySelector('.palimpsesto-mapas');
+    const disc = document.querySelector('.sphaera-disco');
+    const floron = document.querySelector('.ornamentos-floron-forma');
     [timeline && timelineScene(timeline), production && portalScene(production), stack && orbitScene(stack),
-        boveda && bovedaScene(boveda)]
+        boveda && bovedaScene(boveda), maps && cortinaScene(maps), disc && compasScene(disc), floron && floronScene(floron)]
         .forEach(s => s && scenes.push(s));
     if (!scenes.length) return;
 
