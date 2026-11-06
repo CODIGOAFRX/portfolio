@@ -3926,7 +3926,8 @@ html.has-intro .hero.cue-hidden .scroll-cue {
 
 .ornamentos-pie,
 .palimpsesto-pie,
-.sphaera-pie {
+.sphaera-pie,
+.diseccion-pie {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 1.5rem 4rem;
@@ -4242,10 +4243,172 @@ html.has-intro .hero.cue-hidden .scroll-cue {
 .sphaera-links a:first-child { border-bottom-color: var(--sph-rojo); }
 .sphaera-links a:hover { color: var(--sph-rojo); }
 
+/* ------------------------------------------------------------------
+   Disección: el negro, la Bodoni y el rojo de sangre de su propia web
+   (/proyecto/diseccion, servida por su Worker). Como en su primer acto,
+   el cuerpo de hacia 1430 pierde una capa tras otra con el scroll y un
+   bisturí marca el corte (scenes.js). Sin él, se queda en hueso.
+   ------------------------------------------------------------------ */
+@font-face {
+    font-family: 'Bodoni Moda';
+    src: url('media/diseccion/bodoni.woff2') format('woff2');
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+.diseccion-destacado {
+    --dis-bodoni: 'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif;
+    --dis-negro: #0b0908;
+    --dis-hueso: #e6ddcd;
+    --dis-hueso-2: #c4bbad;
+    --dis-ceniza: #9a9286;
+    --dis-sangre: #c3141b;
+    --dis-viva: #ec4a45;
+    --dis-hilo: rgba(230, 221, 205, 0.14);
+    --relleno: clamp(2.2rem, 6vw, 6rem);
+    position: relative;
+    overflow: clip;
+    margin-bottom: clamp(5rem, 12vh, 9rem);
+    padding: var(--relleno);
+    background: radial-gradient(120% 70% at 50% 38%, #171210 0%, var(--dis-negro) 62%);
+    color: var(--dis-hueso);
+}
+
+.diseccion-destacado ::selection {
+    background: var(--dis-sangre);
+    color: #fff;
+}
+
+.diseccion-destacado .diseccion-index {
+    color: var(--dis-viva);
+    margin-bottom: 1.5rem;
+}
+
+.diseccion-titulo {
+    margin-left: -0.03em;
+    font-family: var(--dis-bodoni);
+    font-size: clamp(4rem, 10vw, 10.5rem);
+    font-weight: 400;
+    line-height: 0.86;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+    color: var(--dis-hueso);
+}
+
+.diseccion-sub {
+    max-width: 24ch;
+    margin-top: clamp(1.4rem, 3vh, 2.2rem);
+    font-family: var(--dis-bodoni);
+    font-size: clamp(1.35rem, 2.2vw, 2rem);
+    font-style: italic;
+    line-height: 1.3;
+    color: var(--dis-hueso-2);
+}
+
+.diseccion-cuerpo {
+    display: grid;
+    gap: 1rem;
+    width: min(100%, 300px);
+    margin: clamp(2rem, 5vh, 3.5rem) auto 0;
+}
+
+.diseccion-capas {
+    position: relative;
+    aspect-ratio: 520 / 776;
+    -webkit-mask-image: radial-gradient(ellipse 62% 58% at 50% 50%, #000 62%, transparent 100%);
+    mask-image: radial-gradient(ellipse 62% 58% at 50% 50%, #000 62%, transparent 100%);
+}
+
+.diseccion-capas img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: sepia(0.2) contrast(1.1) brightness(0.86);
+    /* Cada capa se destapa de arriba abajo: --r va de 0 (tapada) a 1 (entera). Sin scroll, todas a la vista */
+    clip-path: inset(0 0 calc((1 - var(--r, 1)) * 100%) 0);
+}
+
+.diseccion-capas img:first-child { clip-path: none; }
+
+.diseccion-bisturi {
+    position: absolute;
+    left: -8%;
+    right: -8%;
+    top: calc(var(--corte, 0) * 100%);
+    height: 2px;
+    opacity: var(--cortando, 0);
+    background: linear-gradient(90deg, transparent, var(--dis-sangre) 14%, #ff4a3d 50%, var(--dis-sangre) 86%, transparent);
+    box-shadow: 0 0 14px 2px rgba(195, 20, 27, 0.65);
+}
+
+.diseccion-cuerpo figcaption,
+.diseccion-pie p {
+    text-wrap: pretty;
+}
+
+.diseccion-cuerpo figcaption {
+    max-width: 44ch;
+    margin: 0 auto;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--dis-hueso-2);
+}
+
+.diseccion-actos {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2.4vw, 2rem);
+    margin: clamp(2.5rem, 6vh, 4rem) 0 0;
+    padding: clamp(1.5rem, 3vh, 2rem) 0 0;
+    border-top: 1px solid var(--dis-hilo);
+}
+
+.diseccion-actos li {
+    display: grid;
+    gap: 0.2rem;
+    font-size: 0.82rem;
+    line-height: 1.3;
+    color: var(--dis-ceniza);
+}
+
+.diseccion-actos img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 4;
+    margin-bottom: 0.8rem;
+    object-fit: cover;
+    filter: sepia(0.2) contrast(1.08) brightness(0.82);
+}
+
+.diseccion-acto {
+    font-family: var(--dis-bodoni);
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--dis-hueso);
+}
+
+.diseccion-pie p {
+    max-width: 50ch;
+    color: var(--dis-hueso-2);
+    font-size: 1.05rem;
+    line-height: 1.65;
+}
+
+.diseccion-links a { color: var(--dis-hueso); }
+.diseccion-links a:first-child { border-bottom-color: var(--dis-viva); }
+.diseccion-links a:hover { color: var(--dis-viva); }
+
 @media (max-width: 900px) {
     .ornamentos-pie,
     .palimpsesto-pie,
-    .sphaera-pie {
+    .sphaera-pie,
+    .diseccion-pie {
         grid-template-columns: 1fr;
     }
 }
@@ -4253,6 +4416,11 @@ html.has-intro .hero.cue-hidden .scroll-cue {
 @media (max-width: 600px) {
     .ornamentos-titulo {
         font-size: clamp(2.6rem, 12vw, 4rem);
+    }
+
+    /* En mayúsculas, la Bodoni es más ancha que los demás títulos */
+    .diseccion-titulo {
+        font-size: clamp(2.4rem, 12vw, 4rem);
     }
 
     .ornamentos-alfabetos {
@@ -4278,22 +4446,22 @@ html.has-intro .hero.cue-hidden .scroll-cue {
         width: calc((100% - clamp(1rem, 1.6vw, 1.75rem)) / 2);
     }
 
-    .mundos :is(.comedia-titulo, .boveda-titulo, .ornamentos-titulo, .palimpsesto-titulo, .sphaera-titulo) {
+    .mundos :is(.comedia-titulo, .boveda-titulo, .ornamentos-titulo, .palimpsesto-titulo, .sphaera-titulo, .diseccion-titulo) {
         font-size: clamp(3.4rem, 5.6vw, 6rem);
     }
 
-    .mundos :is(.comedia-sub, .boveda-sub, .ornamentos-sub, .palimpsesto-sub, .sphaera-sub) {
+    .mundos :is(.comedia-sub, .boveda-sub, .ornamentos-sub, .palimpsesto-sub, .sphaera-sub, .diseccion-sub) {
         font-size: clamp(1.2rem, 1.45vw, 1.55rem);
     }
 
-    .mundos :is(.comedia-pie, .boveda-pie, .ornamentos-pie, .palimpsesto-pie, .sphaera-pie) {
+    .mundos :is(.comedia-pie, .boveda-pie, .ornamentos-pie, .palimpsesto-pie, .sphaera-pie, .diseccion-pie) {
         grid-template-columns: 1fr;
         gap: 1.4rem;
         margin-top: auto;
         padding-top: clamp(2.5rem, 5vh, 4rem);
     }
 
-    .mundos :is(.comedia-pie, .boveda-pie, .ornamentos-pie, .palimpsesto-pie, .sphaera-pie) p {
+    .mundos :is(.comedia-pie, .boveda-pie, .ornamentos-pie, .palimpsesto-pie, .sphaera-pie, .diseccion-pie) p {
         font-size: 0.98rem;
     }
 
@@ -4356,6 +4524,10 @@ html.has-intro .hero.cue-hidden .scroll-cue {
 
     .mundos .sphaera-compas {
         width: min(100%, 380px);
+    }
+
+    .mundos .diseccion-cuerpo {
+        width: min(100%, 260px);
     }
 }
 

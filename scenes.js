@@ -729,6 +729,33 @@
         };
     }
 
+    // Disección: como en el primer acto de su web, el cuerpo pierde la piel, las venas, el músculo y las
+    // vísceras mientras cruza la pantalla; un bisturí marca la línea del corte que está en marcha
+    function capasScene(stackEl) {
+        const layers = [...stackEl.querySelectorAll('img')].slice(1);
+        const blade = stackEl.querySelector('.diseccion-bisturi');
+        let last = -1;
+        return {
+            measure() {},
+            update() {
+                const p = crossing(stackEl);
+                if (Math.abs(p - last) < 0.0005) return false;
+                last = p;
+                // Cuatro cortes entre el 20 % y el 70 % del cruce: la figura entera se ve abrirse
+                const start = 0.2, span = 0.125;
+                let cut = 0, cutting = 0;
+                layers.forEach((img, i) => {
+                    const r = clamp((p - start - i * span) / (span * 0.85));
+                    img.style.setProperty('--r', r.toFixed(4));
+                    if (r > 0 && r < 1) { cut = r; cutting = 1; }
+                });
+                blade.style.setProperty('--corte', cut.toFixed(4));
+                blade.style.setProperty('--cortando', cutting);
+                return false;
+            },
+        };
+    }
+
     // Ornamentos: el florón de torno gira con el scroll, como en el torno que lo hizo
     function floronScene(shape) {
         let last = Infinity;
@@ -753,8 +780,10 @@
     const maps = document.querySelector('.palimpsesto-mapas');
     const disc = document.querySelector('.sphaera-disco');
     const floron = document.querySelector('.ornamentos-floron-forma');
+    const capas = document.querySelector('.diseccion-capas');
     [timeline && timelineScene(timeline), production && portalScene(production), stack && orbitScene(stack),
-        boveda && bovedaScene(boveda), maps && cortinaScene(maps), disc && compasScene(disc), floron && floronScene(floron)]
+        boveda && bovedaScene(boveda), maps && cortinaScene(maps), disc && compasScene(disc), floron && floronScene(floron),
+        capas && capasScene(capas)]
         .forEach(s => s && scenes.push(s));
     if (!scenes.length) return;
 

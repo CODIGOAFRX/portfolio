@@ -28,7 +28,7 @@
     <meta name="twitter:description"
         content="Desarrollo de principio a fin. Productos web en producción y automatización con Java, Python y TypeScript.">
     <meta name="twitter:image" content="https://www.pedrogomez.dev/og.png">
-    <link rel="stylesheet" href="styles.css?v=20261105-sphaera-2">
+    <link rel="stylesheet" href="styles.css?v=20261106-diseccion-2">
     <script src="intro-boot.js?v=20261020-corte"></script>
 </head>
 
@@ -727,7 +727,7 @@
                         </article>
                         </div>
 
-                        <!-- Lo más nuevo, solo y centrado; el siguiente proyecto se pone a su derecha. -->
+                        <!-- Lo más nuevo: Sphaera y Disección, láminas antiguas a la luz y a oscuras. -->
                         <div class="mundos mundos--nuevo">
                         <!-- Sphaera: el negro, la Jost y el rojo de su web (/proyecto/sphaera, servida por su Worker). Como
                              en su portada, el brazo del compás da la vuelta con el scroll y dentro se abre la luz de Fludd
@@ -759,6 +759,40 @@
                                 <div class="case-links sphaera-links">
                                     <a href="/proyecto/sphaera/">Empezar por el centro</a>
                                     <a href="https://github.com/CODIGOAFRX/sphaera" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Disección: el negro, la Bodoni y el rojo de sangre de su web (/proyecto/diseccion, servida por su
+                             Worker). Como en su primer acto, el mismo cuerpo de hacia 1430 se abre capa a capa con el
+                             scroll y un bisturí marca el corte (scenes.js); sin soporte o con movimiento reducido, en hueso. -->
+                        <article id="diseccion" class="diseccion-destacado" aria-labelledby="diseccion-title">
+                            <div class="diseccion-cabeza hidden-element">
+                                <p class="case-index diseccion-index">Proyecto visual / Láminas médicas</p>
+                                <h3 id="diseccion-title" class="diseccion-titulo">Disección</h3>
+                                <p class="diseccion-sub">Lección pública de anatomía en nueve cortes, con láminas médicas reales de 1425 a 1926.</p>
+                            </div>
+                            <figure class="diseccion-cuerpo">
+                                <div class="diseccion-capas">
+                                    <img src="/media/diseccion/piel.webp" width="520" height="776" loading="lazy" decoding="async" alt="Figura medieval de un hombre desnudo, de frente, pintada sobre pergamino entre texto en latín">
+                                    <img src="/media/diseccion/venas.webp" width="520" height="776" loading="lazy" decoding="async" alt="">
+                                    <img src="/media/diseccion/musculo.webp" width="520" height="776" loading="lazy" decoding="async" alt="">
+                                    <img src="/media/diseccion/visceras.webp" width="520" height="776" loading="lazy" decoding="async" alt="">
+                                    <img src="/media/diseccion/hueso.webp" width="520" height="776" loading="lazy" decoding="async" alt="La misma figura reducida al esqueleto, con la columna y las costillas a la vista">
+                                    <span class="diseccion-bisturi" aria-hidden="true"></span>
+                                </div>
+                                <figcaption>El mismo cuerpo, dibujado cinco veces hacia 1430 en el rollo del cirujano John of Arderne. Al bajar pierde la piel, las venas, el músculo y las vísceras, como en el primer acto de la web.</figcaption>
+                            </figure>
+                            <ol class="diseccion-actos" aria-label="Tres actos de la web">
+                                <li><img src="/media/diseccion/angel.webp" width="420" height="560" loading="lazy" decoding="async" alt="Espalda de una mujer con la piel abierta y doblada como dos alas, en mezzotinta de color"><span class="diseccion-acto">La carne</span>Gautier d’Agoty, 1746</li>
+                                <li><img src="/media/diseccion/visceras-mascagni.webp" width="420" height="560" loading="lazy" decoding="async" alt="Torso abierto en color con el corazón, los pulmones, el hígado y los intestinos"><span class="diseccion-acto">Las vísceras</span>Mascagni, 1823</li>
+                                <li><img src="/media/diseccion/catacumbas.webp" width="420" height="560" loading="lazy" decoding="async" alt="Pasillo subterráneo con las paredes hechas de calaveras y huesos apilados"><span class="diseccion-acto">El osario</span>Nadar, 1861</li>
+                            </ol>
+                            <div class="diseccion-pie hidden-element">
+                                <p>58 láminas de dominio público, del rollo de un cirujano medieval a la res de Soutine. Todo se abre con el scroll: la piel se corta capa a capa, gotea sangre sobre los hombres heridos, una linterna alumbra las catacumbas de París y unas constantes vitales cuentan las horas post mórtem. Contiene imágenes médicas explícitas.</p>
+                                <div class="case-links diseccion-links">
+                                    <a href="/proyecto/diseccion/">Entrar en la lección</a>
+                                    <a href="https://github.com/CODIGOAFRX/diseccion" target="_blank" rel="noopener noreferrer">Ver código</a>
                                 </div>
                             </div>
                         </article>
@@ -902,7 +936,7 @@
 
     <script src="script.js?v=20261105-sphaera"></script>
     <script src="net.js?v=20261020-laminas2" defer></script>
-    <script src="scenes.js?v=20261105-sphaera" defer></script>
+    <script src="scenes.js?v=20261106-diseccion" defer></script>
     <script src="intro.js?v=20261020-corte" defer></script>
 </body>
 
