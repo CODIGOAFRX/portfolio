@@ -4761,88 +4761,169 @@ html.has-intro .hero.cue-hidden .scroll-cue {
     }
 }
 
-/* ——— AFR · Claude Skills: el papel, la Fraunces y el rojo de su web (/proyecto/skills). */
+/* ——— AFR · Claude Skills: la carátula de su web (/proyecto/skills). Negro de J-card, etiqueta lila a rotulador,
+   bandas naranja, amarillo y verde agua, y las dos caras con sus pistas. */
 @font-face {
-    font-family: 'Fraunces';
-    src: url('media/skills/fraunces.woff2') format('woff2');
-    font-weight: 100 900;
-    font-style: normal;
+    font-family: 'Permanent Marker';
+    src: url('media/skills/permanent-marker.woff2') format('woff2');
+    font-weight: 400;
     font-display: swap;
 }
 
 @font-face {
-    font-family: 'Fraunces';
-    src: url('media/skills/fraunces-italic.woff2') format('woff2');
+    font-family: 'Archivo Cinta';
+    src: url('media/skills/archivo-wdth.woff2') format('woff2');
     font-weight: 100 900;
-    font-style: italic;
+    font-stretch: 62% 125%;
     font-display: swap;
 }
 
 .skills-destacado {
-    --sk-papel: #f3efe6;
-    --sk-tinta: #16140f;
-    --sk-tinta-2: #57524a;
-    --sk-linea: #d6cfc0;
-    --sk-rojo: #d8452b;
+    --sk-negro: #121314;
+    --sk-negro-2: #1b1c1f;
+    --sk-blanco: #ecebef;
+    --sk-gris: #a9a7b2;
+    --sk-papel: #ece8f4;
+    --sk-boli: #2a3b8f;
+    --sk-naranja: #ff5a1f;
+    --sk-amarillo: #ffc21a;
+    --sk-agua: #2bb3a6;
     position: relative;
     overflow: clip;
     display: grid;
-    gap: clamp(2rem, 4vw, 3.5rem);
+    gap: clamp(1.25rem, 2.5vw, 2rem);
     margin-bottom: clamp(5rem, 12vh, 9rem);
-    padding: clamp(2.2rem, 6vw, 6rem);
+    padding: clamp(1.25rem, 4vw, 3.5rem);
+    border-radius: 10px;
+    background: var(--sk-negro);
+    color: var(--sk-blanco);
+    font-family: 'Archivo Cinta', var(--font-body, system-ui), sans-serif;
+}
+
+.skills-destacado ::selection { background: var(--sk-amarillo); color: var(--sk-negro); }
+
+.skills-casete {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: clamp(1rem, 3vw, 2.5rem);
+    padding: clamp(1.1rem, 2.6vw, 2rem) clamp(1.1rem, 3vw, 2.25rem) 0;
+    border-radius: 10px;
     background: var(--sk-papel);
-    color: var(--sk-tinta);
+    color: #19172a;
 }
 
-@media (min-width: 1000px) {
-    .skills-destacado { grid-template-columns: 6fr 5fr; align-items: end; }
-    .skills-pie { grid-column: 1 / -1; display: grid; grid-template-columns: 6fr 5fr; gap: clamp(2rem, 4vw, 3.5rem); align-items: end; }
-}
-
-.skills-destacado ::selection { background: var(--sk-rojo); color: #fff; }
-.skills-destacado .skills-index { color: var(--sk-rojo); margin-bottom: 1.5rem; }
+.skills-etiqueta { display: grid; align-content: start; gap: 0.6rem; padding-bottom: 1rem; min-width: 0; }
+.skills-destacado .skills-index { color: #545068; margin: 0; }
 
 .skills-titulo {
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: clamp(3.4rem, 8vw, 8rem);
-    font-weight: 560;
-    line-height: 0.9;
-    letter-spacing: -0.045em;
-    color: var(--sk-tinta);
-}
-
-.skills-titulo em { font-style: italic; color: var(--sk-rojo); }
-
-.skills-sub {
-    max-width: 32ch;
-    margin-top: 1.5rem;
-    font-size: clamp(1.05rem, 1.4vw, 1.25rem);
-    color: var(--sk-tinta-2);
-}
-
-.skills-lista {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
     margin: 0;
-    padding: 0;
-    list-style: none;
+    font-family: 'Permanent Marker', cursive;
+    font-size: clamp(2.4rem, 6vw, 5.4rem);
+    font-weight: 400;
+    line-height: 1;
+    color: var(--sk-boli);
+    rotate: -1.2deg;
+    transform-origin: left;
+    text-wrap: balance;
 }
 
-.skills-lista li {
-    padding: 0.45rem 0.8rem;
-    border: 1px solid var(--sk-linea);
-    border-radius: 999px;
-    font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
-    font-size: 0.85rem;
-    color: var(--sk-tinta);
-    background: #fbf9f4;
+.skills-sub { max-width: 34em; margin: 0; font-size: clamp(1rem, 1.3vw, 1.15rem); font-weight: 500; color: #2d2a40; }
+
+.skills-ventana {
+    position: relative;
+    z-index: 1;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 40px;
+    background: #19172a;
+    box-shadow: inset 0 2px 8px #000;
 }
 
-.skills-lista .skills-mas { border-style: dashed; color: var(--sk-tinta-2); background: transparent; }
+.skills-ventana svg { width: clamp(52px, 7vw, 92px); animation: skills-bobina 9s linear infinite; }
+.skills-ventana span { width: clamp(22px, 4vw, 56px); height: 18px; background: #3c281c; border-radius: 3px; box-shadow: inset 0 0 0 4px #19172a; }
+@keyframes skills-bobina { to { rotate: 360deg; } }
 
-.skills-pie p { max-width: 60ch; color: var(--sk-tinta-2); }
-.skills-pie .skills-links { margin-top: 1.5rem; }
-@media (min-width: 1000px) { .skills-pie .skills-links { margin-top: 0; justify-content: flex-end; } }
-.skills-links a { color: var(--sk-tinta); }
-.skills-links a:hover { color: var(--sk-rojo); }
+.skills-bandas { grid-column: 1 / -1; display: grid; margin: 0.4rem -6% -0.6rem; rotate: -3deg; transform-origin: 30% 50%; }
+.skills-bandas i { display: block; height: clamp(12px, 1.6vw, 20px); }
+.skills-bandas i:nth-child(1) { background: var(--sk-naranja); }
+.skills-bandas i:nth-child(2) { background: var(--sk-amarillo); }
+.skills-bandas i:nth-child(3) { background: var(--sk-agua); }
+
+.skills-caras { display: grid; gap: clamp(0.75rem, 2vw, 1.25rem); }
+@media (min-width: 900px) { .skills-caras { grid-template-columns: 1.4fr 1fr; } }
+
+.skills-cara { position: relative; overflow: hidden; display: block; min-height: 0; padding: clamp(1rem, 2vw, 1.5rem); border-radius: 10px; background: var(--sk-negro-2); }
+.skills-cara::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    right: -46px;
+    width: 150px;
+    height: 24px;
+    rotate: 45deg;
+    background: linear-gradient(var(--sk-naranja) 0 33%, var(--sk-amarillo) 0 66%, var(--sk-agua) 0);
+}
+
+.skills-cara h4 {
+    margin: 0 0 0.75rem;
+    font-family: 'Archivo Cinta', sans-serif;
+    letter-spacing: -0.01em;
+    color: var(--sk-blanco);
+    padding-right: 2.5rem;
+    font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+    font-weight: 800;
+    font-stretch: 118%;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.skills-cara h4 span { color: var(--sk-amarillo); }
+.skills-cara ol { margin: 0; padding: 0; list-style: none; columns: 2 180px; column-gap: 1.5rem; }
+.skills-cara li { display: flex; gap: 0.6rem; padding: 0.3rem 0; border-bottom: 1px dashed #ffffff1c; break-inside: avoid; font-size: 0.95rem; font-weight: 500; }
+.skills-cara li b { font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace; font-size: 0.8rem; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--sk-gris); }
+
+.skills-pie { display: grid; gap: 1.25rem; }
+@media (min-width: 1000px) { .skills-pie { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2.5rem; } }
+.skills-pie p { max-width: 62ch; margin: 0; color: var(--sk-gris); }
+.skills-links { align-items: center; }
+.skills-links a { color: var(--sk-blanco); }
+.skills-links a:hover { color: var(--sk-amarillo); }
+
+.skills-links .skills-rec {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1.1rem 0.7rem 0.9rem;
+    border: 0;
+    border-radius: 6px;
+    background: var(--sk-naranja);
+    color: #1a0d05;
+    font-weight: 800;
+    font-stretch: 112%;
+    white-space: nowrap;
+    box-shadow: 0 3px 0 #a3360f, 0 6px 14px -6px #000;
+    transition: transform 0.08s, box-shadow 0.08s, background 0.2s;
+}
+
+.skills-links .skills-rec:hover { background: #ff7140; color: #1a0d05; }
+.skills-links .skills-rec:active { transform: translateY(3px); box-shadow: 0 0 0 #a3360f, 0 2px 6px -4px #000; }
+.skills-rec span { width: 11px; height: 11px; border-radius: 50%; background: #e5322d; box-shadow: 0 0 8px #e5322d; }
+.skills-destacado :focus-visible { outline: 2px solid var(--sk-amarillo); outline-offset: 3px; }
+
+@media (max-width: 699px) {
+    .skills-casete { grid-template-columns: 1fr; }
+    .skills-ventana { position: absolute; top: 1rem; right: 1rem; padding: 0.4rem 0.6rem; }
+    .skills-ventana svg { width: 34px; }
+    .skills-ventana span { width: 14px; height: 10px; box-shadow: inset 0 0 0 3px #19172a; }
+    .skills-etiqueta { padding-right: 5.5rem; }
+    .skills-titulo { font-size: 2.1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .skills-ventana svg { animation: none; }
+    .skills-links .skills-rec { transition: none; }
+}

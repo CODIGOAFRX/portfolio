@@ -28,7 +28,7 @@
     <meta name="twitter:description"
         content="Desarrollo de principio a fin. Productos web en producción y automatización con Java, Python y TypeScript.">
     <meta name="twitter:image" content="https://www.pedrogomez.dev/og.png">
-    <link rel="stylesheet" href="styles.css?v=20261107-skills">
+    <link rel="stylesheet" href="styles.css?v=20261107-cinta">
     <script src="intro-boot.js?v=20261020-corte"></script>
 </head>
 
@@ -800,34 +800,55 @@
 
                         </div>
 
-                        <!-- AFR · Claude Skills: el estante de skills que uso con Claude Code (/proyecto/skills, servido por
-                             su Worker), con su papel, su Fraunces y su rojo. Cierra el portal sin escena de scroll. -->
+                        <!-- AFR · Claude Skills: la cinta de skills que uso con Claude Code (/proyecto/skills, servida por su
+                             Worker), con la carátula de su web: negro de J-card, etiqueta lila a rotulador, bandas en diagonal
+                             y las dos caras con sus pistas. Cierra el portal sin escena de scroll. -->
                         <article id="skills" class="skills-destacado" aria-labelledby="skills-title">
-                            <div class="skills-cabeza hidden-element">
-                                <p class="case-index skills-index">Herramientas / Claude Code</p>
-                                <h3 id="skills-title" class="skills-titulo">El estante<br>de <em>skills</em></h3>
-                                <p class="skills-sub">Las skills y herramientas que uso con Claude Code, cada una con su demo, su autor y el comando para instalarla.</p>
+                            <div class="skills-casete hidden-element">
+                                <div class="skills-etiqueta">
+                                    <p class="case-index skills-index">Herramientas / Claude Code</p>
+                                    <h3 id="skills-title" class="skills-titulo">AFR · Claude Skills</h3>
+                                    <p class="skills-sub">La cinta de skills que uso con Claude Code: dos caras, 38 pistas y una demo por skill.</p>
+                                </div>
+                                <div class="skills-ventana" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#5a3a28"/><circle cx="50" cy="50" r="17" fill="#ece8f4"/><path d="M50 36v-6M50 64v6M36 50h-6M64 50h6M40 40l-4-4M60 60l4 4M60 40l4-4M40 60l-4 4" stroke="#19172a" stroke-width="5" stroke-linecap="round"/></svg><span></span><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#5a3a28"/><circle cx="50" cy="50" r="17" fill="#ece8f4"/><path d="M50 36v-6M50 64v6M36 50h-6M64 50h6M40 40l-4-4M60 60l4 4M60 40l4-4M40 60l-4 4" stroke="#19172a" stroke-width="5" stroke-linecap="round"/></svg></div>
+                                <div class="skills-bandas" aria-hidden="true"><i></i><i></i><i></i></div>
                             </div>
-                            <ul class="skills-lista" aria-label="Algunas de las skills del estante">
-                                <li>design-taste-frontend</li>
-                                <li>gpt-taste</li>
-                                <li>ui-ux-pro-max</li>
-                                <li>Impeccable</li>
-                                <li>playwright-cli</li>
-                                <li>web-design-guidelines</li>
-                                <li>SkillUI</li>
-                                <li>Awesome Design MD</li>
-                                <li>untangle-codebase</li>
-                                <li>n8n MCP</li>
-                                <li>Subagentes de VoltAgent</li>
-                                <li>scroll-world</li>
-                                <li>LightRAG</li>
-                                <li class="skills-mas">y 26 más</li>
-                            </ul>
+                            <div class="skills-caras">
+                                <div class="skills-cara" role="group" aria-label="Cara A, pack web">
+                                    <h4><span>Cara A</span> Pack web</h4>
+                                    <ol>
+                                        <li><b>01</b>design-taste-frontend</li>
+                                        <li><b>02</b>gpt-taste</li>
+                                        <li><b>14</b>scroll-world</li>
+                                        <li><b>15</b>ui-ux-pro-max</li>
+                                        <li><b>22</b>Impeccable</li>
+                                        <li><b>23</b>Awesome Design MD</li>
+                                        <li><b>24</b>SkillUI</li>
+                                        <li><b>25</b>web-design-guidelines</li>
+                                        <li><b>26</b>playwright-cli</li>
+                                        <li><b>27</b>find-skills</li>
+                                        <li><b>28</b>untangle-codebase</li>
+                                        <li><b>34</b>Subagentes de VoltAgent</li>
+                                        <li><b>37</b>Claude Mem</li>
+                                    </ol>
+                                </div>
+                                <div class="skills-cara" role="group" aria-label="Cara B, pack backend">
+                                    <h4><span>Cara B</span> Pack backend</h4>
+                                    <ol>
+                                        <li><b>26</b>playwright-cli</li>
+                                        <li><b>27</b>find-skills</li>
+                                        <li><b>28</b>untangle-codebase</li>
+                                        <li><b>34</b>Subagentes de VoltAgent</li>
+                                        <li><b>35</b>n8n MCP</li>
+                                        <li><b>37</b>Claude Mem</li>
+                                        <li><b>38</b>LightRAG</li>
+                                    </ol>
+                                </div>
+                            </div>
                             <div class="skills-pie hidden-element">
-                                <p>38 skills con buscador, filtros y packs listos para copiar en Claude Code, cada una con una demo hecha a su manera: cartas apiladas con GSAP para la de scroll, un bento plano para la minimalista o un análisis real del diseño de la propia página para SkillUI. Lo mantengo para tenerlas a mano y para que mis compañeros cojan las que quieran.</p>
+                                <p>Cada cara es un pack: pulsas REC, se copia un prompt y Claude Code te deja el proyecto listo. Cada pista trae su autor, su estado y su demo, que suena en una pletina como una cinta. Lo mantengo para tenerlas a mano y para que cualquiera coja las que quiera.</p>
                                 <div class="case-links skills-links">
-                                    <a href="/proyecto/skills/">Abrir el estante</a>
+                                    <a class="skills-rec" href="/proyecto/skills/"><span aria-hidden="true"></span>Poner la cinta</a>
                                     <a href="https://github.com/CODIGOAFRX/AFR-Claude-Skills" target="_blank" rel="noopener noreferrer">Ver código</a>
                                 </div>
                             </div>
