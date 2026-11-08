@@ -756,6 +756,50 @@
         };
     }
 
+    // Trazado: como en sus láminas, el compás pincha en A y traza dos arcos, luego en B otros dos, y la
+    // regla une los cortes con la mediatriz en rojo. El compás se dibuja con la aguja en el centro y la
+    // mina sobre el arco que está trazando
+    function mediatrizScene(fig) {
+        const svg = fig.querySelector('svg');
+        const patas = [...svg.querySelectorAll('.trazado-pata')];
+        const charnela = svg.querySelector('.trazado-charnela');
+        const R = 320, L = 260, G = Math.PI / 180;
+        const arcos = [[[250, 400], -58.62, -18.62], [[250, 400], 58.62, 18.62], [[750, 400], -121.38, -161.38], [[750, 400], 121.38, 161.38]];
+        const tramos = arcos.map((_, k) => [0.16 + k * 0.1, 0.24 + k * 0.1]);
+        const pata = (a, b, w0, w1) => {
+            const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1, nx = -dy / l, ny = dx / l;
+            const p = (q, w, s) => `${(q[0] + nx * w * s / 2).toFixed(1)} ${(q[1] + ny * w * s / 2).toFixed(1)}`;
+            return `M${p(a, w0, 1)}L${p(b, w1, 1)}L${p(b, w1, -1)}L${p(a, w0, -1)}Z`;
+        };
+        let last = -1;
+        return {
+            measure() {},
+            update() {
+                const p = crossing(fig);
+                if (Math.abs(p - last) < 0.0005) return false;
+                last = p;
+                let c = arcos[0][0], g = arcos[0][1];
+                tramos.forEach(([t0, t1], k) => {
+                    const q = clamp((p - t0) / (t1 - t0));
+                    fig.style.setProperty(`--a${k}`, q.toFixed(4));
+                    if (p >= t0) { c = arcos[k][0]; g = arcos[k][1] + (arcos[k][2] - arcos[k][1]) * q; }
+                });
+                fig.style.setProperty('--linea', smooth(0.58, 0.7, p).toFixed(4));
+                fig.style.setProperty('--compas', p > 0.1 && p < 0.56 ? 1 : 0);
+                const P = [c[0] + R * Math.cos(g * G), c[1] + R * Math.sin(g * G)];
+                const m = [(c[0] + P[0]) / 2, (c[1] + P[1]) / 2];
+                const h = Math.sqrt(L * L - (R / 2) ** 2);
+                const ux = (P[0] - c[0]) / R, uy = (P[1] - c[1]) / R;
+                const H = [m[0] + uy * h, m[1] - ux * h];
+                patas[0].setAttribute('d', pata(H, c, 16, 3));
+                patas[1].setAttribute('d', pata(H, P, 16, 5));
+                charnela.setAttribute('cx', H[0].toFixed(1));
+                charnela.setAttribute('cy', H[1].toFixed(1));
+                return false;
+            },
+        };
+    }
+
     // Ornamentos: el florón de torno gira con el scroll, como en el torno que lo hizo
     function floronScene(shape) {
         let last = Infinity;
@@ -781,9 +825,10 @@
     const disc = document.querySelector('.sphaera-disco');
     const floron = document.querySelector('.ornamentos-floron-forma');
     const capas = document.querySelector('.diseccion-capas');
+    const mediatriz = document.querySelector('.trazado-mediatriz');
     [timeline && timelineScene(timeline), production && portalScene(production), stack && orbitScene(stack),
         boveda && bovedaScene(boveda), maps && cortinaScene(maps), disc && compasScene(disc), floron && floronScene(floron),
-        capas && capasScene(capas)]
+        capas && capasScene(capas), mediatriz && mediatrizScene(mediatriz)]
         .forEach(s => s && scenes.push(s));
     if (!scenes.length) return;
 

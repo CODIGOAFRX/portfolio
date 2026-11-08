@@ -4496,11 +4496,259 @@ html.has-intro .hero.cue-hidden .scroll-cue {
 .diseccion-links a:first-child { border-bottom-color: var(--dis-viva); }
 .diseccion-links a:hover { color: var(--dis-viva); }
 
+/* ------------------------------------------------------------------
+   Trazado: el papel cuadriculado, la Barlow Condensed y el rojo de la
+   solución de su propia web (/proyecto/trazado, servida por su Worker).
+   Como en sus láminas, el compás traza los arcos de la mediatriz con el
+   scroll y la regla une los cortes (scenes.js). Sin él, ya trazada.
+   ------------------------------------------------------------------ */
+@font-face {
+    font-family: 'Barlow Condensed';
+    src: url('media/trazado/barlow-condensed.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Barlow Condensed';
+    src: url('media/trazado/barlow-condensed-300.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Barlow';
+    src: url('media/trazado/barlow.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+.trazado-destacado {
+    --tr-rotulo: 'Barlow Condensed', 'Arial Narrow', var(--font-body);
+    --tr-texto: 'Barlow', var(--font-body);
+    --tr-papel: #f1eee6;
+    --tr-grafito: #1f2125;
+    --tr-grafito-2: #45474d;
+    --tr-gris: #5c5d62;
+    --tr-rojo: #c2351b;
+    --tr-azul: #2554a3;
+    --tr-hilo: rgba(31, 33, 37, 0.16);
+    --relleno: clamp(2.2rem, 6vw, 6rem);
+    position: relative;
+    overflow: clip;
+    margin-bottom: clamp(5rem, 12vh, 9rem);
+    padding: var(--relleno);
+    background-color: var(--tr-papel);
+    background-image:
+        linear-gradient(rgba(37, 84, 163, 0.075) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37, 84, 163, 0.075) 1px, transparent 1px),
+        linear-gradient(rgba(37, 84, 163, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37, 84, 163, 0.04) 1px, transparent 1px);
+    background-size: 50px 50px, 50px 50px, 10px 10px, 10px 10px;
+    color: var(--tr-grafito);
+}
+
+/* El recuadro de la hoja, con sus marcas de centrado */
+.trazado-destacado::before {
+    content: '';
+    position: absolute;
+    inset: clamp(8px, 1.2vw, 14px);
+    border: 1.5px solid var(--tr-grafito);
+    pointer-events: none;
+}
+
+.trazado-destacado ::selection {
+    background: rgba(194, 53, 27, 0.18);
+    color: var(--tr-grafito);
+}
+
+.trazado-destacado .trazado-index {
+    color: var(--tr-rojo);
+    margin-bottom: 1.5rem;
+}
+
+.trazado-titulo {
+    margin-left: -0.04em;
+    font-family: var(--tr-rotulo);
+    font-size: clamp(4rem, 10vw, 10.5rem);
+    font-weight: 300;
+    line-height: 0.86;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--tr-grafito);
+}
+
+.trazado-sub {
+    max-width: 26ch;
+    margin-top: clamp(1.4rem, 3vh, 2.2rem);
+    font-family: var(--tr-texto);
+    font-size: clamp(1.3rem, 2.1vw, 1.9rem);
+    line-height: 1.28;
+    color: var(--tr-grafito-2);
+}
+
+.trazado-mediatriz {
+    display: grid;
+    gap: 1rem;
+    width: min(100%, 440px);
+    margin: clamp(2rem, 5vh, 3.5rem) auto 0;
+}
+
+.trazado-mediatriz svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.trazado-arco {
+    fill: none;
+    stroke: var(--tr-grafito);
+    stroke-opacity: 0.55;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-dasharray: 1 1;
+    stroke-dashoffset: calc(1 - var(--arco, 1));
+}
+
+.trazado-arco.a0 { --arco: var(--a0, 1); }
+.trazado-arco.a1 { --arco: var(--a1, 1); }
+.trazado-arco.a2 { --arco: var(--a2, 1); }
+.trazado-arco.a3 { --arco: var(--a3, 1); }
+
+.trazado-dato {
+    stroke: var(--tr-grafito);
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+
+.trazado-sol {
+    stroke: var(--tr-rojo);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 1 1;
+    stroke-dashoffset: calc(1 - var(--linea, 1));
+}
+
+.trazado-recto {
+    fill: none;
+    stroke: var(--tr-rojo);
+    stroke-width: 3;
+    opacity: var(--linea, 1);
+}
+
+.trazado-p { fill: var(--tr-grafito); }
+
+.trazado-mediatriz text {
+    font-family: var(--tr-rotulo);
+    font-size: 44px;
+    font-weight: 500;
+    fill: var(--tr-grafito);
+}
+
+.trazado-compas {
+    opacity: var(--compas, 0);
+    transition: opacity 0.3s;
+}
+
+.trazado-pata {
+    fill: #c9ccd0;
+    stroke: var(--tr-grafito);
+    stroke-width: 2;
+    stroke-linejoin: round;
+}
+
+.trazado-charnela {
+    fill: #9ea2a8;
+    stroke: var(--tr-grafito);
+    stroke-width: 2;
+}
+
+.trazado-mediatriz figcaption {
+    max-width: 44ch;
+    margin: 0 auto;
+    font-family: var(--tr-texto);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--tr-grafito-2);
+}
+
+.trazado-laminas {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2.4vw, 2rem);
+    margin: clamp(2.5rem, 6vh, 4rem) 0 0;
+    padding: clamp(1.5rem, 3vh, 2rem) 0 0;
+    border-top: 1.5px solid var(--tr-grafito);
+}
+
+.trazado-laminas li {
+    display: grid;
+    gap: 0.2rem;
+    align-content: start;
+    font-family: var(--tr-rotulo);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+    text-transform: uppercase;
+    color: var(--tr-gris);
+}
+
+.trazado-mini {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    margin-bottom: 0.8rem;
+    overflow: visible;
+}
+
+.trazado-mini .t { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.trazado-mini .dato { stroke: var(--tr-grafito); stroke-width: 7px; }
+.trazado-mini .aux { stroke: var(--tr-grafito); stroke-opacity: 0.5; stroke-width: 4px; }
+.trazado-mini .sol { stroke: var(--tr-rojo); stroke-width: 9px; }
+.trazado-mini .recto { fill: none; stroke: var(--tr-rojo); stroke-width: 5px; }
+.trazado-mini .cota path { fill: none; stroke: var(--tr-azul); stroke-width: 3px; }
+.trazado-mini .cota .flecha { fill: var(--tr-azul); stroke: none; }
+.trazado-mini .pr-l { stroke: var(--tr-azul); stroke-width: 4px; stroke-dasharray: 14 12; }
+.trazado-mini .pr-x { fill: var(--tr-azul); }
+.trazado-mini .p circle { fill: var(--tr-grafito); }
+.trazado-mini .p.sol circle { fill: var(--tr-rojo); r: 9px; }
+.trazado-mini :is(.cota text, .pr-t) { display: none; }
+.trazado-mini text { font-family: var(--tr-rotulo); font-weight: 500; font-size: 56px; fill: var(--tr-grafito); paint-order: stroke; stroke: var(--tr-papel); stroke-width: 8px; }
+.trazado-mini .p.aux text { font-size: 46px; fill: var(--tr-grafito-2); }
+.trazado-mini :is(.p.sol text, .rot.sol) { fill: var(--tr-rojo); }
+.trazado-mini .rot { font-style: italic; }
+
+.trazado-cap {
+    color: var(--tr-grafito);
+    font-size: 1.05rem;
+    font-weight: 500;
+}
+
+.trazado-pie p {
+    max-width: 50ch;
+    font-family: var(--tr-texto);
+    color: var(--tr-grafito-2);
+    font-size: 1.05rem;
+    line-height: 1.65;
+}
+
+.trazado-links a { color: var(--tr-grafito); }
+.trazado-links a:first-child { border-bottom-color: var(--tr-rojo); }
+.trazado-links a:hover { color: var(--tr-rojo); }
+
 @media (max-width: 900px) {
     .ornamentos-pie,
     .palimpsesto-pie,
     .sphaera-pie,
-    .diseccion-pie {
+    .diseccion-pie,
+    .trazado-pie {
         grid-template-columns: 1fr;
     }
 }
@@ -4538,22 +4786,22 @@ html.has-intro .hero.cue-hidden .scroll-cue {
         width: calc((100% - clamp(1rem, 1.6vw, 1.75rem)) / 2);
     }
 
-    .mundos :is(.comedia-titulo, .boveda-titulo, .ornamentos-titulo, .palimpsesto-titulo, .sphaera-titulo, .diseccion-titulo) {
+    .mundos :is(.comedia-titulo, .boveda-titulo, .ornamentos-titulo, .palimpsesto-titulo, .sphaera-titulo, .diseccion-titulo, .trazado-titulo) {
         font-size: clamp(3.4rem, 5.6vw, 6rem);
     }
 
-    .mundos :is(.comedia-sub, .boveda-sub, .ornamentos-sub, .palimpsesto-sub, .sphaera-sub, .diseccion-sub) {
+    .mundos :is(.comedia-sub, .boveda-sub, .ornamentos-sub, .palimpsesto-sub, .sphaera-sub, .diseccion-sub, .trazado-sub) {
         font-size: clamp(1.2rem, 1.45vw, 1.55rem);
     }
 
-    .mundos :is(.comedia-pie, .boveda-pie, .ornamentos-pie, .palimpsesto-pie, .sphaera-pie, .diseccion-pie) {
+    .mundos :is(.comedia-pie, .boveda-pie, .ornamentos-pie, .palimpsesto-pie, .sphaera-pie, .diseccion-pie, .trazado-pie) {
         grid-template-columns: 1fr;
         gap: 1.4rem;
         margin-top: auto;
         padding-top: clamp(2.5rem, 5vh, 4rem);
     }
 
-    .mundos :is(.comedia-pie, .boveda-pie, .ornamentos-pie, .palimpsesto-pie, .sphaera-pie, .diseccion-pie) p {
+    .mundos :is(.comedia-pie, .boveda-pie, .ornamentos-pie, .palimpsesto-pie, .sphaera-pie, .diseccion-pie, .trazado-pie) p {
         font-size: 0.98rem;
     }
 
@@ -4620,6 +4868,10 @@ html.has-intro .hero.cue-hidden .scroll-cue {
 
     .mundos .diseccion-cuerpo {
         width: min(100%, 260px);
+    }
+
+    .mundos .trazado-mediatriz {
+        width: min(100%, 380px);
     }
 }
 

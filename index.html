@@ -28,7 +28,7 @@
     <meta name="twitter:description"
         content="Desarrollo de principio a fin. Productos web en producción y automatización con Java, Python y TypeScript.">
     <meta name="twitter:image" content="https://www.pedrogomez.dev/og.png">
-    <link rel="stylesheet" href="styles.css?v=20261108-herbario">
+    <link rel="stylesheet" href="styles.css?v=20261108-trazado">
     <script src="intro-boot.js?v=20261020-corte"></script>
 </head>
 
@@ -801,6 +801,50 @@
 
                         </div>
 
+                        <!-- Trazado: el papel cuadriculado, la Barlow Condensed y el rojo de la solución de su web
+                             (/proyecto/trazado, servida por su Worker). Como en sus láminas, el compás traza los cuatro
+                             arcos de la mediatriz con el scroll y la regla une los cortes (scenes.js); sin soporte o con
+                             movimiento reducido, la figura ya trazada. Las tres figuras pequeñas salen de trazos.js. -->
+                        <div class="mundos">
+                        <article id="trazado" class="trazado-destacado" aria-labelledby="trazado-title">
+                            <div class="trazado-cabeza hidden-element">
+                                <p class="case-index trazado-index">Proyecto visual / Dibujo técnico</p>
+                                <h3 id="trazado-title" class="trazado-titulo">Trazado</h3>
+                                <p class="trazado-sub">Diez construcciones con regla y compás que se trazan con el scroll, con los instrumentos encima del papel.</p>
+                            </div>
+                            <figure class="trazado-mediatriz">
+                                <svg viewBox="150 60 700 680" aria-hidden="true" focusable="false">
+                                    <path class="trazado-arco a0" d="M416.6 126.8A320 320 0 0 1 553.2 297.8" pathLength="1"/>
+                                    <path class="trazado-arco a1" d="M553.2 502.2A320 320 0 0 1 416.6 673.2" pathLength="1"/>
+                                    <path class="trazado-arco a2" d="M446.8 297.8A320 320 0 0 1 583.4 126.8" pathLength="1"/>
+                                    <path class="trazado-arco a3" d="M583.4 673.2A320 320 0 0 1 446.8 502.2" pathLength="1"/>
+                                    <path class="trazado-dato" d="M250 400H750"/>
+                                    <path class="trazado-sol" d="M500 130V670" pathLength="1"/>
+                                    <path class="trazado-recto" d="M522 400V378H500"/>
+                                    <circle class="trazado-p" cx="250" cy="400" r="7"/><circle class="trazado-p" cx="750" cy="400" r="7"/>
+                                    <text x="206" y="412">A</text><text x="770" y="412">B</text>
+                                    <g class="trazado-compas">
+                                        <path class="trazado-pata"/><path class="trazado-pata"/>
+                                        <circle class="trazado-charnela" r="11"/>
+                                    </g>
+                                </svg>
+                                <figcaption>La mediatriz: cuatro arcos con el compás y una recta con la regla. Al bajar se traza paso a paso, como en cada lámina de la web.</figcaption>
+                            </figure>
+                            <ol class="trazado-laminas" aria-label="Tres láminas de la web">
+                                <li><svg class="trazado-mini" viewBox="-58.3 36 944.3 700" aria-hidden="true" focusable="false"><g class="trazos"><path class="t dato" d="M150 590L830 590" pathLength="1"/><path class="t aux" d="M150 590L745.5 203.3" pathLength="1"/><path class="t aux" d="M234.9 508A118 118 0 0 1 259.4 545.8" pathLength="1"/><path class="t aux" d="M333.8 443.8A118 118 0 0 1 358.4 481.5" pathLength="1"/><path class="t aux" d="M432.8 379.5A118 118 0 0 1 457.3 417.3" pathLength="1"/><path class="t aux" d="M531.8 315.2A118 118 0 0 1 556.3 353" pathLength="1"/><path class="t aux" d="M630.7 251A118 118 0 0 1 655.3 288.7" pathLength="1"/><path class="t aux" d="M644.8 268.7L830 590" pathLength="1"/><path class="t aux" d="M545.9 332.9L694 590" pathLength="1"/><path class="t aux" d="M446.9 397.2L558 590" pathLength="1"/><path class="t aux" d="M347.9 461.5L422 590" pathLength="1"/><path class="t aux" d="M249 525.7L286 590" pathLength="1"/></g><g class="marcas"><g class="cota"><path d="M150 598L150 660M286 598L286 660M150 650L286 650"/><path class="flecha" d="M150 650L166 645.5L166 654.5ZM286 650L270 654.5L270 645.5Z"/><text transform="translate(218 638) rotate(0)">27,2 mm</text></g><g class="cota"><path d="M286 598L286 660M422 598L422 660M286 650L422 650"/><path class="flecha" d="M286 650L302 645.5L302 654.5ZM422 650L406 654.5L406 645.5Z"/><text transform="translate(354 638) rotate(0)">27,2 mm</text></g><g class="cota"><path d="M422 598L422 660M558 598L558 660M422 650L558 650"/><path class="flecha" d="M422 650L438 645.5L438 654.5ZM558 650L542 654.5L542 645.5Z"/><text transform="translate(490 638) rotate(0)">27,2 mm</text></g><g class="cota"><path d="M558 598L558 660M694 598L694 660M558 650L694 650"/><path class="flecha" d="M558 650L574 645.5L574 654.5ZM694 650L678 654.5L678 645.5Z"/><text transform="translate(626 638) rotate(0)">27,2 mm</text></g><g class="cota"><path d="M694 598L694 660M830 598L830 660M694 650L830 650"/><path class="flecha" d="M694 650L710 645.5L710 654.5ZM830 650L814 654.5L814 645.5Z"/><text transform="translate(762 638) rotate(0)">27,2 mm</text></g></g><g class="rotulos"><g class="p dato"><circle cx="150" cy="590" r="5.5"/><text x="116" y="602">A</text></g><g class="p dato"><circle cx="830" cy="590" r="5.5"/><text x="844" y="602">B</text></g><g class="p aux"><circle cx="249" cy="525.7" r="5.5"/><text x="235" y="507.7">1</text></g><g class="p aux"><circle cx="347.9" cy="461.5" r="5.5"/><text x="333.9" y="443.5">2</text></g><g class="p aux"><circle cx="446.9" cy="397.2" r="5.5"/><text x="432.9" y="379.2">3</text></g><g class="p aux"><circle cx="545.9" cy="332.9" r="5.5"/><text x="531.9" y="314.9">4</text></g><g class="p aux"><circle cx="644.8" cy="268.7" r="5.5"/><text x="630.8" y="250.7">5</text></g><g class="p sol"><circle cx="830" cy="590" r="5.5"/></g><g class="p sol"><circle cx="694" cy="590" r="5.5"/></g><g class="p sol"><circle cx="558" cy="590" r="5.5"/></g><g class="p sol"><circle cx="422" cy="590" r="5.5"/></g><g class="p sol"><circle cx="286" cy="590" r="5.5"/></g></g></svg><span class="trazado-cap">Dividir un segmento</span>Tales, con escuadra y cartabón</li>
+                                <li><svg class="trazado-mini" viewBox="120.5 74 827.1 620.3" aria-hidden="true" focusable="false"><g class="trazos"><path class="t dato" d="M750 380A250 250 0 1 1 250 380A250 250 0 1 1 750 380" pathLength="1"/><path class="t aux" d="M250 380L750 380" pathLength="1"/><path class="t aux" d="M500 130L500 630" pathLength="1"/><path class="t aux" d="M595.9 239.6A170 170 0 0 1 647.7 295.9" pathLength="1"/><path class="t aux" d="M647.7 464.1A170 170 0 0 1 595.9 520.4" pathLength="1"/><path class="t aux" d="M602.3 295.9A170 170 0 0 1 654.1 239.6" pathLength="1"/><path class="t aux" d="M654.1 520.4A170 170 0 0 1 602.3 464.1" pathLength="1"/><path class="t aux" d="M625 244.8L625 515.2" pathLength="1"/><path class="t aux" d="M500 130A279.5 279.5 0 0 0 345.5 380" pathLength="1"/><path class="t aux" d="M500 130L345.5 380" pathLength="1"/><path class="t aux" d="M766.4 254.2A293.9 293.9 0 0 1 700.4 344.9" pathLength="1"/><path class="t aux" d="M701.9 594.4A293.9 293.9 0 0 1 595.3 559.8" pathLength="1"/><path class="t aux" d="M358.5 638.3A293.9 293.9 0 0 1 358.5 526.2" pathLength="1"/><path class="t aux" d="M210.6 325.2A293.9 293.9 0 0 1 317.2 290.6" pathLength="1"/><path class="t sol" d="M500 130L737.8 302.7" pathLength="1"/><path class="t sol" d="M737.8 302.7L646.9 582.3" pathLength="1"/><path class="t sol" d="M646.9 582.3L353.1 582.3" pathLength="1"/><path class="t sol" d="M353.1 582.3L262.2 302.7" pathLength="1"/><path class="t sol" d="M262.2 302.7L500 130" pathLength="1"/></g><g class="marcas"><g class="cota"><path d="M352.3 384.2L388 406.3M506.8 134.2L542.5 156.3M379.5 401L534 151"/><path class="flecha" d="M379.5 401L384.1 385.1L391.8 389.8ZM534 151L529.4 167L521.8 162.3Z"/><text transform="translate(446.6 269.7) rotate(-58.3)">58,8 mm</text></g><g class="cota"><path d="M745.4 305.2L827.2 331.8M654.6 584.7L736.3 611.3M817.7 328.7L726.8 608.2"/><path class="flecha" d="M817.7 328.7L817 345.3L808.4 342.5ZM726.8 608.2L727.5 591.6L736.1 594.4Z"/><text transform="translate(783.7 472.2) rotate(-72)">58,8 mm</text></g></g><g class="rotulos"><g class="p dato"><circle cx="500" cy="380" r="5.5"/><text x="466" y="412">O</text></g><g class="p dato"><circle cx="500" cy="130" r="5.5"/><text x="512" y="114">C</text></g><g class="p aux"><circle cx="625" cy="380" r="5.5"/><text x="635" y="410">M</text></g><g class="p aux"><circle cx="345.5" cy="380" r="5.5"/><text x="331.5" y="412">N</text></g></g></svg><span class="trazado-cap">Pentágono</span>Con el número de oro dentro</li>
+                                <li><svg class="trazado-mini" viewBox="92.4 39 869.3 652" aria-hidden="true" focusable="false"><g class="trazos"><path class="t dato" d="M178.4 487.5A175 175 0 1 1 481.6 312.5A175 175 0 1 1 178.4 487.5" pathLength="1"/><path class="t aux" d="M330 400L870 330" pathLength="1"/><path class="t aux" d="M525.4 124.7A337.6 337.6 0 0 1 614.3 217.9" pathLength="1"/><path class="t aux" d="M651.3 503.6A337.6 337.6 0 0 1 589.1 616.4" pathLength="1"/><path class="t aux" d="M548.7 226.4A337.6 337.6 0 0 1 610.9 113.6" pathLength="1"/><path class="t aux" d="M674.6 605.3A337.6 337.6 0 0 1 585.7 512.1" pathLength="1"/><path class="t aux" d="M574.3 167L625.7 563" pathLength="1"/><path class="t aux" d="M870 330A272.3 272.3 0 1 1 330 400A272.3 272.3 0 1 1 870 330" pathLength="1"/><path class="t sol" d="M870 330L207.6 196.9" pathLength="1"/><path class="t sol" d="M870 330L263.4 627.6" pathLength="1"/><path class="t aux" d="M330 400L364.5 228.4" pathLength="1"/><path class="t aux" d="M330 400L407.1 557.1" pathLength="1"/></g><g class="marcas"><path class="recto" d="M360.1 250L381.7 254.3L386 232.8"/><path class="recto" d="M397.4 537.4L417.1 527.7L426.8 547.4"/><g class="cota"><path d="M871.6 322.2L880.6 277.1M366 220.6L375.1 175.5M878.7 286.9L373.1 185.3"/><path class="flecha" d="M878.7 286.9L862.1 288.1L863.9 279.3ZM373.1 185.3L389.7 184L387.9 192.9Z"/><text transform="translate(623.5 247.8) rotate(11.4)">103,1 mm</text></g><g class="cota"><path d="M873.5 337.2L893.8 378.5M410.6 564.3L430.9 605.6M889.4 369.5L426.5 596.6"/><path class="flecha" d="M889.4 369.5L877 380.6L873 372.5ZM426.5 596.6L438.8 585.5L442.8 593.6Z"/><text transform="translate(663.2 493.8) rotate(-26.1)">103,1 mm</text></g></g><g class="rotulos"><g class="p dato"><circle cx="330" cy="400" r="5.5"/><text x="296" y="430">O</text></g><g class="p dato"><circle cx="870" cy="330" r="5.5"/><text x="884" y="316">P</text></g><g class="p aux"><circle cx="600" cy="365" r="5.5"/><text x="588" y="399">M</text></g><g class="p sol"><circle cx="364.5" cy="228.4" r="5.5"/><text x="354.5" y="208.4">T</text></g><g class="p sol"><circle cx="407.1" cy="557.1" r="5.5"/><text x="401.1" y="597.1">T'</text></g></g></svg><span class="trazado-cap">Tangentes</span>Desde un punto exterior</li>
+                            </ol>
+                            <div class="trazado-pie hidden-element">
+                                <p>Mediatriz, bisectriz, paralelas, Tales, triángulos, polígonos y tangentes. La geometría se calcula en el navegador, cada lámina termina con una comprobación medida y entre ellas van los grabados de Hirschvogel (1543) y las fortalezas de Errard (1600).</p>
+                                <div class="case-links trazado-links">
+                                    <a href="/proyecto/trazado/">Empezar a trazar</a>
+                                    <a href="https://github.com/CODIGOAFRX/trazado" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
+                        </div>
+
                         <!-- AFR · Claude Skills: la cinta de skills que uso con Claude Code (/proyecto/skills, servida por su
                              Worker), con la carátula de su web: negro de J-card, etiqueta lila a rotulador, bandas en diagonal
                              y las dos caras con sus pistas. Cierra el portal sin escena de scroll. -->
@@ -993,7 +1037,7 @@
 
     <script src="script.js?v=20261105-sphaera"></script>
     <script src="net.js?v=20261020-laminas2" defer></script>
-    <script src="scenes.js?v=20261106-diseccion" defer></script>
+    <script src="scenes.js?v=20261108-trazado" defer></script>
     <script src="intro.js?v=20261020-corte" defer></script>
 </body>
 
