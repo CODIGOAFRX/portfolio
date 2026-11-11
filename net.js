@@ -2,7 +2,7 @@
 // Las tecnologías de mi CV empiezan como la red de AFR-MIND, sobre su mismo negro, unidas
 // cuando aparecen juntas en las notas del CV con las que está entrenada. Con el scroll la red
 // gira, el fondo pasa al blanco de la trayectoria y cada nodo baja a la etapa en la que entró
-// en mi trabajo; al final todo cae sobre una sola línea, la de la sección siguiente.
+// en mi trabajo. Ahí se queda: la línea del tiempo aguanta un tramo y la página sigue.
 // Sólo depende de la posición del scroll. Sin JS la sección no existe; con movimiento
 // reducido se queda quieta en la línea del tiempo.
 (() => {
@@ -107,12 +107,10 @@
     });
 
     // ---------- tramos del recorrido ----------
-    const SPIN = [0, 0.32];       // la red gira con el scroll
-    const ORDER = [0.26, 0.58];   // los nodos van a su etapa (escalonado por etapa)
-    const LIGHT = [0.3, 0.5];     // el blanco de la trayectoria sube y tapa el negro de AFR-MIND
-    const AXIS = [0.4, 0.56];     // se traza la línea del tiempo
-    const DROP = [0.7, 0.86];     // los nodos caen sobre la línea
-    const FADE = [0.86, 0.96];    // sólo queda la línea
+    const SPIN = [0, 0.4];        // la red gira con el scroll
+    const ORDER = [0.32, 0.74];   // los nodos van a su etapa (escalonado por etapa)
+    const LIGHT = [0.38, 0.62];   // el blanco de la trayectoria sube y tapa el negro de AFR-MIND
+    const AXIS = [0.5, 0.7];      // se traza la línea del tiempo; desde 0,76 la escena se queda quieta
     const DARK = [10, 10, 10], LIGHTBG = [250, 250, 250];
     const INK_DARK = [241, 241, 239], INK_LIGHT = [17, 17, 17];
     const RED = [229, 50, 45];
@@ -151,28 +149,38 @@
             nodes.forEach(n => {
                 const st = stations[n.si];
                 n.ox = st.x + 6; n.oy = y - 26 - n.j * gap;
-                n.dx = st.x + 6 + n.j * Math.min(14, (st.colW - 40) / 10); n.dy = y;
             });
         } else {
-            const x = padX + 4, y0 = Math.max(H * 0.4, 330), y1 = H - Math.max(40, H * 0.05);
-            const blockH = (y1 - y0) / STATIONS.length;
-            axis = { x0: x, y0, x1: x, y1, horizontal: false };
-            stations = STATIONS.map((st, si) => ({ x, y: y0 + blockH * si, blockH }));
+            // El escenario mide 100lvh, pero con las barras del navegador a la vista se ve menos: la
+            // línea se reparte en la altura que de verdad se ve, entre el texto y el borde inferior
+            const visto = Math.min(H, window.innerHeight || H);
+            const pie = captions[1].offsetTop + captions[1].offsetHeight;
+            const x = padX + 4, y0 = pie + 30, y1 = visto - Math.max(22, visto * 0.035);
             const maxW = W - padX * 2 - 22;
-            nodes.forEach(n => {
-                // Las etiquetas de la etapa fluyen en líneas, debajo de su nombre
-                const st = stations[n.si];
-                const mates = nodes.filter(m => m.si === n.si);
-                let cx = 0, row = 0;
-                for (const m of mates) {
-                    const w = m.w + 22;
-                    if (cx + w > maxW && cx > 0) { cx = 0; row++; }
-                    if (m === n) break;
+            // Las etiquetas de cada etapa fluyen en líneas, debajo de su nombre
+            const filas = STATIONS.map((st, si) => {
+                let cx = 0, fila = 0;
+                nodes.filter(n => n.si === si).forEach(n => {
+                    const w = n.w + 22;
+                    if (cx + w > maxW && cx > 0) { cx = 0; fila++; }
+                    n.cx = cx; n.fila = fila;
                     cx += w;
-                }
-                n.ox = x + 18 + cx; n.oy = st.y + 44 + row * 21;
-                n.dx = x; n.dy = st.y + 8 + (n.j / Math.max(1, mates.length - 1)) * (st.blockH * 0.5);
+                });
+                return fila + 1;
             });
+            // Cada bloque mide lo que ocupan sus líneas; si no cabe todo, se aprieta sin llegar a pisarse
+            const total = filas.reduce((a, b) => a + b, 0), huecos = STATIONS.length - 1;
+            const k = Math.min(1, (y1 - y0) / (STATIONS.length * 44 + total * 21 + huecos * 16));
+            const cabeza = Math.max(35, 44 * k), fila = Math.max(15.5, 21 * k);
+            const hueco = Math.max(4, Math.min(16, (y1 - y0 - STATIONS.length * cabeza - total * fila) / huecos));
+            let y = y0;
+            stations = STATIONS.map((st, si) => {
+                const bloque = { x, y };
+                y += cabeza + filas[si] * fila + hueco;
+                return bloque;
+            });
+            axis = { x0: x, y0, x1: x, y1: Math.max(y1, y - hueco), horizontal: false };
+            nodes.forEach(n => { n.ox = x + 18 + n.cx; n.oy = stations[n.si].y + cabeza + n.fila * fila; });
         }
         L = { mobile, net, axis, stations, fontSize, padX };
         t = -1;
@@ -184,17 +192,14 @@
         section.classList.toggle('is-light', wipe > 0.5);
         const spin = ease(prog(p, ...SPIN)) * 0.9 - 0.25;
         const cs = Math.cos(spin), sn = Math.sin(spin);
-        const drop = ease(prog(p, ...DROP));
-        const fade = 1 - ease(prog(p, ...FADE));
         const { net, axis, stations } = L;
 
-        // Posición de cada nodo: red → columna de su etapa → sobre la línea
+        // Posición de cada nodo: de la red a la columna de su etapa
         nodes.forEach(n => {
             const x = n.nx * cs - n.ny * sn, y = n.nx * sn + n.ny * cs;
             const a = ORDER[0] + n.si * 0.045;
             n.k = ease(prog(p, a, a + (ORDER[1] - ORDER[0]) - 0.12));
-            const px = mix(net.cx + x * net.rx, n.ox, n.k), py = mix(net.cy + y * net.ry, n.oy, n.k);
-            n.x = mix(px, n.dx, drop); n.y = mix(py, n.dy, drop);
+            n.x = mix(net.cx + x * net.rx, n.ox, n.k); n.y = mix(net.cy + y * net.ry, n.oy, n.k);
         });
 
         // El blanco de la trayectoria sube desde abajo como un horizonte: por encima, la escena en
@@ -210,22 +215,20 @@
                 ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
             });
 
-            // Línea del tiempo, que se traza de principio a fin y al final ocupa todo el ancho
+            // Línea del tiempo, que se traza de principio a fin
             const axisK = ease(prog(p, ...AXIS));
             if (axisK > 0) {
-                const grow = ease(prog(p, DROP[1], FADE[1]));
                 ctx.strokeStyle = rgb(ink, 1);
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 if (axis.horizontal) {
-                    const x0 = mix(axis.x0, 0, grow), x1 = mix(axis.x1, W, grow);
-                    ctx.moveTo(x0, axis.y0); ctx.lineTo(mix(x0, x1, axisK), axis.y1);
+                    ctx.moveTo(axis.x0, axis.y0); ctx.lineTo(mix(axis.x0, axis.x1, axisK), axis.y1);
                 } else {
                     ctx.moveTo(axis.x0, axis.y0); ctx.lineTo(axis.x1, mix(axis.y0, axis.y1, axisK));
                 }
                 ctx.stroke();
                 // Etapas: marca, año y nombre; la última («Hoy») en rojo
-                const stK = ease(prog(p, AXIS[0] + 0.06, AXIS[1] + 0.04)) * fade;
+                const stK = ease(prog(p, AXIS[0] + 0.06, AXIS[1] + 0.04));
                 stations.forEach((st, si) => {
                     const S = STATIONS[si];
                     const k = clamp(stK * 1.6 - si * 0.15);
@@ -253,16 +256,11 @@
             ctx.textAlign = 'left';
             ctx.font = `${L.fontSize}px ${FONT}`;
             nodes.forEach(n => {
-                const r = mix(2 + Math.min(4, n.deg * 0.45), 2.5, n.k) * mix(1, 0.8, drop);
-                const dotA = fade;
-                if (dotA <= 0.01) return;
-                ctx.fillStyle = rgb(ink, dotA * mix(0.95, 0.85, n.k));
+                const r = mix(2 + Math.min(4, n.deg * 0.45), 2.5, n.k);
+                ctx.fillStyle = rgb(ink, mix(0.95, 0.85, n.k));
                 ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, Math.PI * 2); ctx.fill();
-                const labelA = (1 - ease(prog(p, DROP[0] - 0.02, DROP[0] + 0.08))) * mix(0.72, 0.9, n.k);
-                if (labelA > 0.01) {
-                    ctx.fillStyle = rgb(ink, labelA);
-                    ctx.fillText(n.label, n.x + 9, n.y + 0.5);
-                }
+                ctx.fillStyle = rgb(ink, mix(0.72, 0.9, n.k));
+                ctx.fillText(n.label, n.x + 9, n.y + 0.5);
             });
         };
         const edge = H * (1 - wipe);
@@ -286,14 +284,14 @@
         }
 
         // Textos: el primero con la red, el segundo con la línea del tiempo
-        const c1 = 1 - ease(prog(p, 0.2, 0.3));
-        const c2 = ease(prog(p, 0.46, 0.56)) * (1 - ease(prog(p, 0.84, 0.92)));
+        const c1 = 1 - ease(prog(p, 0.24, 0.36));
+        const c2 = ease(prog(p, 0.58, 0.7));
         captions[0].style.opacity = c1.toFixed(3);
         captions[0].style.transform = `translateY(${(-(1 - c1) * 12).toFixed(2)}px)`;
         captions[1].style.opacity = c2.toFixed(3);
         captions[1].style.transform = `translateY(${((1 - c2) * 12).toFixed(2)}px)`;
         if (plate) {
-            const k = 1 - ease(prog(p, 0.17, 0.27));
+            const k = 1 - ease(prog(p, 0.2, 0.32));
             plate.style.opacity = (k * 0.9).toFixed(3);
             plate.style.transform = `translateY(${(-p * 60).toFixed(2)}px)`;
         }
@@ -311,7 +309,7 @@
     };
     function tick() {
         frame = 0;
-        const p = reduce ? 0.62 : progress();
+        const p = reduce ? 1 : progress();
         if (t < 0) t = p;
         else t += (p - t) * 0.2;
         if (Math.abs(p - t) < 0.0004) t = p;
