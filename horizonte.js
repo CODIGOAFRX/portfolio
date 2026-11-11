@@ -22,8 +22,9 @@
     seccion.querySelectorAll('[data-hz]').forEach(el => { salidas[el.dataset.hz] = el; });
 
     // Resolución según lo que tarda de verdad la gráfica (unos 7 ms por fotograma, para que quepa en
-    // una pantalla de 60 Hz con margen); sin el anillo fino ni las estrellas, que ampliados salen punteados
-    const LIGERO = { escala: 0.55, pasos: 110, orden: 2, estrellas: 0, presupuesto: 7, suelo: 0.42, techo: Math.min(window.devicePixelRatio || 1, 1.25) };
+    // una pantalla de 60 Hz con margen); sin el anillo fino, que ampliado sale punteado, y sin la banda de la galaxia: cielo negro con
+    // estrellas que giran despacio alrededor del agujero, como en la portada de su web
+    const LIGERO = { escala: 0.55, pasos: 110, orden: 2, estrellas: 1, niebla: 0, giro: 0.035, presupuesto: 7, suelo: 0.42, techo: Math.min(window.devicePixelRatio || 1, 1.25) };
     const RETARDO = 0.16; // segundos que tarda la cámara en recorrer casi dos tercios de lo que le falta
     let escena = null, pedido = false, visible = false, frame = 0, ultimo = 0, reloj = 40, par = false, acumulado = 0, peor = 0;
     let camara = -1; // avance suavizado de la cámara, de 0 a 1; -1 hasta la primera medida
