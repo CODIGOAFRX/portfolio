@@ -17,3 +17,4 @@ transicion-intro/*.wav
 
 # Capturas sin comprimir de la página de PERA ERP (scripts/capture-pera.mjs)
 proyecto/pera-erp/media/raw/
+.vercel

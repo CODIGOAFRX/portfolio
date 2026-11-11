@@ -15,7 +15,8 @@ Cloudflare en `worker/`. Todo el texto de la web y de los comentarios va en espa
 |---|---|
 | `intro-boot.js` + `intro.js` | Intro «Corte transversal»: el nombre se abre y enseña las capas de una petición real de AFORO |
 | `net.js` | Transición entre AFR-MIND y la trayectoria: la red del CV se ordena en una línea del tiempo |
-| `scenes.js` | Trayectoria, portal de proyectos y órbitas del stack |
+| `scenes.js` | Trayectoria, portal de proyectos (el corte de la cabecera) y órbitas del stack |
+| `horizonte.js` | Pieza destacada Horizonte: carga el sombreador de su web (`/proyecto/horizonte/gl.js`, función `descenso`) y acerca la cámara con el scroll. Si cambia esa función en el repo de Horizonte, hay que revisarlo aquí |
 | `script.js` | Globo de fondo (`WireGlobe`), navegación y proyectos |
 
 Reglas: todas las escenas avanzan y retroceden con la posición del scroll (nada que se reproduzca solo),
