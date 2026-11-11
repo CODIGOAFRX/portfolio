@@ -28,7 +28,7 @@
     <meta name="twitter:description"
         content="Desarrollo de principio a fin. Productos web en producción y automatización con Java, Python y TypeScript.">
     <meta name="twitter:image" content="https://www.pedrogomez.dev/og.png">
-    <link rel="stylesheet" href="styles.css?v=20261108-trazado">
+    <link rel="stylesheet" href="styles.css?v=20261111-horizonte2">
     <script src="intro-boot.js?v=20261020-corte"></script>
 </head>
 
@@ -42,6 +42,7 @@
         </a>
         <div class="nav-links">
             <a href="#afr-mind">AFR-MIND</a>
+            <a href="#horizonte">Horizonte</a>
             <a href="#pera">PERA ERP</a>
             <a href="#about">Perfil</a>
             <a href="#timeline">Trayectoria</a>
@@ -237,10 +238,38 @@
             </div>
         </section>
 
+        <!-- Horizonte: pieza destacada. El agujero negro es el de su web, en vivo: horizonte.js carga
+             su sombreador (/proyecto/horizonte/gl.js, servido por su Worker) y acerca la cámara con el
+             scroll. Sin JS, sin WebGL o con movimiento reducido queda el texto sobre negro. -->
+        <section id="horizonte" class="horizonte" aria-labelledby="horizonte-title">
+            <div class="horizonte-plano">
+                <canvas class="horizonte-lienzo" role="img" aria-label="Agujero negro con su disco de acreción, dibujado en directo: la luz de la parte trasera del disco se curva y aparece por encima y por debajo de la sombra"></canvas>
+                <div class="horizonte-cabeza">
+                    <p class="case-index horizonte-index">Proyecto visual / Relatividad general</p>
+                    <h2 id="horizonte-title" class="horizonte-titulo">Horizonte</h2>
+                    <div class="horizonte-texto">
+                        <p class="horizonte-sub">Una caída hasta el borde de un agujero negro. No es un vídeo: cada píxel es un rayo de luz que tu navegador está calculando ahora mismo.</p>
+                        <div class="horizonte-pie">
+                            <p>Siete escenas ligadas al scroll sobre la gravedad: curvatura, planetas, relojes que se separan, luz que cae y un agujero de gusano. WebGL escrito a mano, sin librerías, y cada cifra sale de su fórmula.</p>
+                            <div class="case-links horizonte-links">
+                                <a href="/proyecto/horizonte/">Empezar la caída</a>
+                                <a href="https://github.com/CODIGOAFRX/horizonte" target="_blank" rel="noopener noreferrer">Ver código</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <dl class="horizonte-lecturas">
+                    <div><dt><i>r</i>, distancia al centro</dt><dd><span data-hz="r">22,00</span> radios</dd></div>
+                    <div><dt><i>dτ</i>/<i>dt</i>, ritmo del reloj</dt><dd data-hz="ritmo">0,977</dd></div>
+                    <div><dt>Velocidad de escape</dt><dd data-hz="escape">21,3 % de c</dd></div>
+                </dl>
+            </div>
+        </section>
+
         <!-- Production Case Studies -->
         <section id="production" class="production">
-            <!-- Portal: con scroll se hace zoom a la última «o» de «portfolio» y su interior se abre
-                 para entrar en los proyectos (scenes.js). Sin JS se ve como una sección normal. -->
+            <!-- Portal: con scroll una línea roja cruza el título y la cabecera se abre por ahí en dos
+                 hojas; debajo esperan los proyectos (scenes.js). Sin JS se ve como una sección normal. -->
             <div class="portal-scene">
                 <div class="portal-overlay">
                     <div class="portal-zoom">
@@ -1037,7 +1066,8 @@
 
     <script src="script.js?v=20261105-sphaera"></script>
     <script src="net.js?v=20261020-laminas2" defer></script>
-    <script src="scenes.js?v=20261108-trazado" defer></script>
+    <script src="scenes.js?v=20261111-corte2" defer></script>
+    <script src="horizonte.js?v=20261111-nitido" defer></script>
     <script src="intro.js?v=20261020-corte" defer></script>
 </body>
 

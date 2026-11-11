@@ -2,8 +2,8 @@
 //  - Trayectoria: Formación entra por la izquierda y Experiencia por la derecha hasta
 //    juntarse. En escritorio la sección se queda fija mientras ocurre y un buen tramo
 //    después, así la inercia del scroll no se la salta.
-//  - Proyectos: zoom a la última «o» de «portfolio»; su interior se abre y se entra en los
-//    proyectos. Al subir se sale de la «o».
+//  - Proyectos: una línea roja cruza el título de «En producción» y la cabecera se abre por
+//    ahí en dos hojas; debajo esperan los proyectos. Al subir, las hojas se cierran.
 //  - Tecnologías: amanece en el globo de la página y cada categoría es una órbita.
 // Sin JS o con movimiento reducido todo queda como una página normal.
 (() => {
@@ -67,257 +67,73 @@
         return { measure, update };
     }
 
-    // ---------- Portal de proyectos ----------
-    // Última «o» de «portfolio» en el título
-    function lastO(h2) {
-        const walker = document.createTreeWalker(h2, NodeFilter.SHOW_TEXT);
-        let found = null;
-        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-            const i = node.data.lastIndexOf('portfolio');
-            if (i >= 0) found = { node, index: i + 'portfolio'.length - 1 };
-        }
-        return found;
-    }
-
-    // Forma exacta del interior (contraforma) de la «o» en la fuente del título:
-    // se dibuja la letra en un canvas, se rellena el hueco desde el centro, se encoge un poco
-    // (para no morder el trazo al ampliarla) y se suaviza el borde.
-    function counterShape(h2) {
-        const cs = getComputedStyle(h2);
-        const fs = parseFloat(cs.fontSize);
-        const R = 4;
-        const pad = fs * 0.3, base = fs * 1.2;
-        const cv = document.createElement('canvas');
-        cv.width = Math.ceil(fs * 1.6 * R);
-        cv.height = Math.ceil(fs * 1.7 * R);
-        const g = cv.getContext('2d', { willReadFrequently: true });
-        g.scale(R, R);
-        g.font = `${cs.fontStyle} ${cs.fontWeight} ${fs}px ${cs.fontFamily}`;
-        g.textBaseline = 'alphabetic';
-        g.fillStyle = '#000';
-        g.fillText('o', pad, base);
-        const m = g.measureText('o');
-        const W = cv.width, H = cv.height;
-        const alpha = g.getImageData(0, 0, W, H).data;
-        const x0 = Math.max(0, Math.floor((pad - m.actualBoundingBoxLeft) * R));
-        const x1 = Math.min(W - 1, Math.ceil((pad + m.actualBoundingBoxRight) * R));
-        const y0 = Math.max(0, Math.floor((base - m.actualBoundingBoxAscent) * R));
-        const y1 = Math.min(H - 1, Math.ceil((base + m.actualBoundingBoxDescent) * R));
-        const filled = new Uint8Array(W * H);
-        const stack = [Math.round((x0 + x1) / 2) + Math.round((y0 + y1) / 2) * W];
-        let fx0 = W, fx1 = 0, fy0 = H, fy1 = 0;
-        while (stack.length) {
-            const i = stack.pop();
-            if (filled[i] || alpha[i * 4 + 3] >= 128) continue;
-            const x = i % W, y = (i - x) / W;
-            if (x <= x0 || x >= x1 || y <= y0 || y >= y1) return null; // la letra no tiene hueco cerrado
-            filled[i] = 1;
-            if (x < fx0) fx0 = x; if (x > fx1) fx1 = x; if (y < fy0) fy0 = y; if (y > fy1) fy1 = y;
-            stack.push(i - 1, i + 1, i - W, i + W);
-        }
-        if (fx1 - fx0 < 6 || fy1 - fy0 < 6) return null;
-        // Erosión cuadrada separable: ~1,5 px de margen respecto al trazo
-        const er = Math.round(1.5 * R);
-        const tmp = new Uint8Array(W * H), out = new Uint8Array(W * H);
-        for (let y = fy0; y <= fy1; y++) for (let x = fx0; x <= fx1; x++) {
-            let ok = 1;
-            for (let d = -er; d <= er && ok; d++) ok = filled[y * W + x + d];
-            tmp[y * W + x] = ok;
-        }
-        for (let y = fy0; y <= fy1; y++) for (let x = fx0; x <= fx1; x++) {
-            let ok = 1;
-            for (let d = -er; d <= er && ok; d++) ok = tmp[(y + d) * W + x];
-            out[y * W + x] = ok;
-        }
-        // Contorno de la contraforma (encogida) visto desde su centro en 256 direcciones:
-        // un trazado vectorial que sigue liso a cualquier escala
-        const cx0 = (fx0 + fx1) / 2, cy0 = (fy0 + fy1) / 2;
-        const radii = [];
-        for (let a = 0; a < 256; a++) {
-            const ang = (a / 256) * Math.PI * 2, dx = Math.cos(ang), dy = Math.sin(ang);
-            let r = 0;
-            while (r < W && out[Math.round(cy0 + dy * (r + 0.5)) * W + Math.round(cx0 + dx * (r + 0.5))]) r += 0.5;
-            radii.push(r);
-        }
-        // Media circular del radio: quita los escalones de la rejilla, que ampliados 100x se
-        // verían como dientes (el margen de la erosión absorbe la diferencia)
-        const outline = radii.map((_, a) => {
-            let sum = 0;
-            for (let d = -6; d <= 6; d++) sum += radii[(a + d + 256) % 256];
-            const r = sum / 13, ang = (a / 256) * Math.PI * 2;
-            return [(Math.cos(ang) * r) / R, (Math.sin(ang) * r) / R];
-        });
-        return {
-            outline, // en px CSS, respecto al centro
-            // centro en px CSS, respecto al origen de la letra sobre la línea base
-            cx: cx0 / R - pad,
-            cy: cy0 / R - base,
-            innerW: (fx1 - fx0) / R,
-            innerH: (fy1 - fy0) / R,
-        };
-    }
-
-    // Distancia del borde superior de la caja de una letra a su línea base, medida con un
-    // marcador sin tamaño alineado a la línea base justo detrás de la primera letra.
-    function baselineOffset(elem) {
-        const walker = document.createTreeWalker(elem, NodeFilter.SHOW_TEXT);
-        const range = document.createRange();
-        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-            const i = node.data.search(/\S/);
-            if (i < 0) continue;
-            range.setStart(node, i);
-            range.setEnd(node, i + 1);
-            const top = range.getBoundingClientRect().top;
-            const rest = node.splitText(i + 1);
-            const marker = document.createElement('span');
-            marker.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
-            rest.parentNode.insertBefore(marker, rest);
-            const offset = marker.getBoundingClientRect().top - top;
-            marker.remove();
-            elem.normalize();
-            return offset;
-        }
-        return null;
-    }
-
-    // Letras de un elemento con su origen y línea base relativos al portal
-    function glyphsOf(elem, zr) {
-        const ascent = baselineOffset(elem);
-        if (ascent === null) return [];
-        const upper = getComputedStyle(elem).textTransform === 'uppercase';
-        const walker = document.createTreeWalker(elem, NodeFilter.SHOW_TEXT);
-        const range = document.createRange();
-        const chars = [];
-        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-            for (let i = 0; i < node.data.length; i++) {
-                const ch = node.data[i];
-                if (/\s/.test(ch)) continue;
-                range.setStart(node, i);
-                range.setEnd(node, i + 1);
-                const r = range.getClientRects()[0];
-                if (r) chars.push({ ch: upper ? ch.toUpperCase() : ch, x: r.left - zr.left, y: r.top - zr.top + ascent });
-            }
-        }
-        return chars;
-    }
-
-    // El portal se dibuja en un canvas: fondo, etiqueta, título y párrafo, letra a letra en la
-    // posición exacta que ocupan en el HTML (que queda invisible, sólo como referencia).
-    // Escalar capas HTML o SVG hasta 80x hacía que Chrome reutilizara trozos viejos de su
-    // dibujo al volver a subir; el canvas se redibuja entero en cada frame y el texto se
-    // rasteriza a la escala real, así que sigue nítido.
+    // ---------- Portal de proyectos: el corte ----------
+    // La cabecera de «En producción» ocupa la pantalla como una hoja. Una línea roja subraya
+    // la última línea del título y la hoja se abre por ahí: la mitad de arriba
+    // sube, la de abajo baja y cada una se lleva su filo rojo. Debajo esperan los proyectos,
+    // fijos. Es el gesto de la intro (el nombre que se abre), aquí en horizontal y sin zoom.
     function portalScene(section) {
         const scene = section.querySelector('.portal-scene');
         const overlay = section.querySelector('.portal-overlay');
-        const zoom = section.querySelector('.portal-zoom');
+        const alta = section.querySelector('.portal-zoom');
         const cases = section.querySelector('.portal-cases');
         const spacer = section.querySelector('.portal-spacer');
-        const heading = section.querySelector('.production-heading');
-        const h2 = heading && heading.querySelector('h2');
-        if (!scene || !overlay || !zoom || !cases || !spacer || !h2) return null;
+        const h2 = section.querySelector('.production-heading h2');
+        if (!scene || !overlay || !alta || !cases || !spacer || !h2) return null;
         section.classList.add('portal-on');
 
-        const canvas = document.createElement('canvas');
-        canvas.className = 'portal-canvas';
-        canvas.setAttribute('aria-hidden', 'true');
-        overlay.insertBefore(canvas, zoom);
-        const ctx = canvas.getContext('2d');
+        // La hoja de abajo es una copia de la cabecera, sólo para la vista
+        const baja = alta.cloneNode(true);
+        baja.setAttribute('aria-hidden', 'true');
+        baja.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+        alta.classList.add('portal-hoja-alta');
+        baja.classList.add('portal-hoja-baja');
+        overlay.appendChild(baja);
+        const filos = [alta, baja].map(() => {
+            const filo = document.createElement('span');
+            filo.className = 'portal-filo';
+            filo.setAttribute('aria-hidden', 'true');
+            overlay.appendChild(filo);
+            return filo;
+        });
 
-        let geo = null;
-        let current = 0;
+        let cut = 0, vh = 0;
+        let current = -1;
         let drawnAt = -2;
 
         const measure = () => {
-            cases.style.transform = '';
+            alta.style.transform = baja.style.transform = cases.style.transform = '';
+            const zr = overlay.getBoundingClientRect(), hr = h2.getBoundingClientRect();
+            // Línea base de la última línea del título, medida con un marcador sin tamaño
+            const marca = document.createElement('span');
+            marca.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
+            h2.appendChild(marca);
+            const base = marca.getBoundingClientRect().top;
+            marca.remove();
+            vh = zr.height;
+            // El corte va justo bajo el texto: la línea roja lo subraya antes de abrirlo
+            cut = Math.round((base || hr.bottom) - zr.top + parseFloat(getComputedStyle(h2).fontSize) * 0.09);
+            overlay.style.setProperty('--corte', `${cut}px`);
             drawnAt = -2;
-            const shape = lastO(h2) && counterShape(h2);
-            if (!shape) {
-                section.classList.remove('portal-on');
-                canvas.remove();
-                geo = null;
-                return;
-            }
-            const zr = zoom.getBoundingClientRect();
-            const vw = zr.width, vh = zr.height;
-            const dpr = Math.min(window.devicePixelRatio || 1, 2);
-            canvas.width = Math.round(vw * dpr);
-            canvas.height = Math.round(vh * dpr);
-
-            const groups = [...heading.querySelectorAll('h3, h2, p')].map(elem => {
-                const cs = getComputedStyle(elem);
-                return {
-                    elem,
-                    font: `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`,
-                    color: cs.color,
-                    size: parseFloat(cs.fontSize),
-                    chars: glyphsOf(elem, zr),
-                };
-            });
-            // La «o» del portal es la última del título («portfolio.»)
-            const title = groups.find(g => g.elem === h2);
-            const o = title && [...title.chars].reverse().find(c => c.ch === 'o');
-            if (!o) { geo = null; return; }
-
-            geo = {
-                ...shape,
-                groups, vw, vh, dpr,
-                bg: getComputedStyle(section).backgroundColor,
-                cx: o.x + shape.cx, cy: o.y + shape.cy,
-                // escala a la que el hueco de la «o» cubre toda la pantalla
-                sMax: 1.3 * Math.hypot(vw / shape.innerW, vh / shape.innerH),
-            };
             current = -1;
         };
 
         const draw = p => {
-            const z = smooth(0, 0.88, p) * 0.5 + clamp(p / 0.88) * 0.5;
-            const s = Math.exp(z * Math.log(geo.sMax));
-            const q = smooth(0.05, 0.6, p);
-            const tx = (geo.vw / 2 - geo.cx) * q, ty = (geo.vh / 2 - geo.cy) * q;
-            const { dpr } = geo;
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.globalCompositeOperation = 'source-over';
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // pantalla = s · local + (t + c − s · c)
-            const ex = tx + geo.cx * (1 - s), ey = ty + geo.cy * (1 - s);
-            ctx.setTransform(dpr * s, 0, 0, dpr * s, dpr * ex, dpr * ey);
-            // Zona visible en coordenadas locales: para el fondo y para no dibujar letras fuera
-            const vx0 = -ex / s, vy0 = -ey / s, vx1 = (geo.vw - ex) / s, vy1 = (geo.vh - ey) / s;
-            ctx.fillStyle = geo.bg;
-            ctx.fillRect(vx0 - 1, vy0 - 1, vx1 - vx0 + 2, vy1 - vy0 + 2);
-            ctx.textBaseline = 'alphabetic';
-            for (const g of geo.groups) {
-                ctx.font = g.font;
-                ctx.fillStyle = g.color;
-                for (const c of g.chars) {
-                    if (c.x > vx1 + g.size || c.x < vx0 - g.size * 2 || c.y < vy0 - g.size || c.y > vy1 + g.size * 2) continue;
-                    ctx.fillText(c.ch, c.x, c.y);
-                }
-            }
-            // El interior de la «o» se abre como un iris cuando la letra ya ocupa media pantalla
-            const k = smooth(0.36, 0.6, p);
-            if (k > 0.001) {
-                // Trazado suave por los puntos medios del contorno
-                const pts = geo.outline;
-                const at = n => pts[(n + pts.length) % pts.length];
-                const mid = n => [geo.cx + (at(n)[0] + at(n + 1)[0]) / 2 * k, geo.cy + (at(n)[1] + at(n + 1)[1]) / 2 * k];
-                ctx.globalCompositeOperation = 'destination-out';
-                ctx.fillStyle = '#000';
-                ctx.beginPath();
-                ctx.moveTo(...mid(-1));
-                for (let n = 0; n < pts.length; n++) {
-                    const [mx, my] = mid(n);
-                    ctx.quadraticCurveTo(geo.cx + at(n)[0] * k, geo.cy + at(n)[1] * k, mx, my);
-                }
-                ctx.closePath();
-                ctx.fill();
-            }
-            cases.style.transform = p > 0 && p < 1 ? `scale(${(1 + 0.16 * (1 - smooth(0.3, 0.95, p))).toFixed(4)})` : '';
-            section.classList.toggle('portal-done', p >= 0.9);
+            // Primero la línea cruza la hoja; después las dos mitades se separan
+            const linea = smooth(0, 0.2, p);
+            const t = clamp((p - 0.16) / 0.84);
+            const o = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+            const up = -o * (cut + 2), down = o * (vh - cut + 2);
+            alta.style.transform = `translate3d(0,${up.toFixed(1)}px,0)`;
+            baja.style.transform = `translate3d(0,${down.toFixed(1)}px,0)`;
+            filos[0].style.transform = `translate3d(0,${up.toFixed(1)}px,0) scaleX(${linea.toFixed(4)})`;
+            filos[1].style.transform = `translate3d(0,${down.toFixed(1)}px,0) scaleX(${linea.toFixed(4)})`;
+            cases.style.transform = p > 0 && p < 1 ? `scale(${(1 + 0.04 * (1 - o)).toFixed(4)})` : '';
+            section.classList.toggle('portal-done', p >= 0.999);
         };
 
         const update = () => {
-            if (!geo) return false;
+            if (!vh) return false;
             const r = scene.getBoundingClientRect();
             const target = clamp(-r.top / spacer.offsetHeight);
             current = current < 0 ? target : current + (target - current) * 0.25;

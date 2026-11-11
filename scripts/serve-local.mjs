@@ -92,6 +92,16 @@ const server = http.createServer(async (request, response) => {
     const rewritten = rewrite(pathname);
     if (rewritten) path = await findFile(rewritten);
   }
+  // Sólo en local: los proyectos que en producción sirve su propio Worker (Horizonte, Sphaera…)
+  // se leen de la carpeta hermana, si está construida (../<nombre>/dist/proyecto/<nombre>/).
+  if (!path) {
+    const hermano = /^\/proyecto\/([\w-]+)\/(.+)$/.exec(pathname);
+    if (hermano) {
+      const base = resolve(root, '..', hermano[1], 'dist', 'proyecto', hermano[1]);
+      const fichero = resolve(base, hermano[2]);
+      if (fichero.startsWith(base + sep)) { try { await stat(fichero); path = fichero; } catch { /* no está construido */ } }
+    }
+  }
   if (!path) { response.writeHead(404).end('Not found'); return; }
   const contents = await readFile(path);
   response.setHeader('Content-Type', types[extname(path).toLowerCase()] || 'application/octet-stream');

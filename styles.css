@@ -1913,12 +1913,11 @@ button:focus-visible {
     height: 100svh;
 }
 
-/* ---------- Proyectos: portal en la última «o» de «portfolio» ----------
-   scenes.js añade .portal-on. El título se queda fijo y crece hacia la «o»; su interior se
-   abre (máscara con la forma real de la letra) y deja ver los proyectos, que esperan fijos
-   debajo. El fondo y el texto se dibujan en un canvas (.portal-canvas), letra a letra sobre
-   la posición del HTML, que queda invisible ocupando su sitio: así se ven nítidos a cualquier
-   escala. Al terminar el zoom se suelta todo y se sigue bajando por los proyectos. */
+/* ---------- Proyectos: el corte ----------
+   scenes.js añade .portal-on. La cabecera se queda fija a toda pantalla, en dos hojas iguales
+   recortadas por --corte (justo bajo la última línea del título). Una línea roja la subraya, cruza la
+   hoja y las dos mitades se separan con el scroll, cada una con su filo; debajo esperan los
+   proyectos, fijos. Al terminar se suelta todo y se sigue bajando por los proyectos. */
 .portal-scene {
     position: relative;
     width: 100%;
@@ -1952,13 +1951,28 @@ button:focus-visible {
     display: flex;
     align-items: center;
     padding: 0 var(--padding-x);
+    background: var(--surface-soft);
+    will-change: transform;
 }
 
-.portal-canvas {
+.portal-on .portal-hoja-alta {
+    clip-path: inset(0 0 calc(100% - var(--corte, 50%)) 0);
+}
+
+.portal-on .portal-hoja-baja {
+    clip-path: inset(var(--corte, 50%) 0 0 0);
+}
+
+.portal-filo {
     position: absolute;
-    inset: 0;
+    top: var(--corte, 50%);
+    left: 0;
     width: 100%;
-    height: 100%;
+    height: 1px;
+    background: var(--accent, #e5322d);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    will-change: transform;
 }
 
 .portal-on .production-heading {
@@ -1967,10 +1981,6 @@ button:focus-visible {
     opacity: 1;
     transform: none;
     transition: none;
-}
-
-.portal-on .production-heading {
-    visibility: hidden;
 }
 
 .portal-on.portal-done .portal-overlay {
@@ -1987,8 +1997,8 @@ button:focus-visible {
 
 .portal-on .portal-spacer {
     display: block;
-    height: 170vh;
-    height: 170svh;
+    height: 115vh;
+    height: 115svh;
 }
 
 /* ---------- Tecnologías: amanecer sobre el globo y órbitas ----------
@@ -5270,4 +5280,206 @@ html.has-intro .hero.cue-hidden .scroll-cue {
 @media (prefers-reduced-motion: reduce) {
     .skills-ventana svg { animation: none; }
     .skills-links .skills-rec { transition: none; }
+}
+
+/* ---------- Horizonte: pieza destacada ----------
+   El negro, la Computer Modern y los dos colores de cuerpo negro de su web (/proyecto/horizonte,
+   servida por su Worker). El agujero negro es el suyo, en vivo: horizonte.js carga su sombreador
+   y acerca la cámara con el scroll (.hz-on fija el plano; .hz-vivo, que ya pinta). Sin JS, sin
+   WebGL o con movimiento reducido queda el texto sobre negro, de corrido. */
+@font-face { font-family: "CMU Serif"; src: url("/proyecto/horizonte/fonts/cmu-serif.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "CMU Serif"; src: url("/proyecto/horizonte/fonts/cmu-serif-italica.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "CMU Bright"; src: url("/proyecto/horizonte/fonts/cmu-bright.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+
+.horizonte {
+    --hz-fondo: #04060b;
+    --hz-texto: #ece7dc;
+    --hz-tenue: #a4abba;
+    --hz-frio: #bfd3ff;
+    --hz-calido: #ffb87b;
+    position: relative;
+    z-index: 3;
+    display: block;
+    min-height: 0;
+    padding: 0;
+    background: var(--hz-fondo);
+    color: var(--hz-texto);
+    font-family: "CMU Serif", Georgia, serif;
+}
+
+.horizonte.hz-on {
+    height: 280vh;
+    height: 280svh;
+}
+
+.horizonte-plano {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 23rem);
+    align-items: end;
+    gap: 2.5rem clamp(2rem, 6vw, 6rem);
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 18vh var(--padding-x) clamp(2.5rem, 7vh, 4.5rem);
+    overflow: hidden;
+}
+
+.hz-on .horizonte-plano {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+}
+
+.horizonte-lienzo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hz-vivo .horizonte-lienzo {
+    opacity: 1;
+}
+
+.horizonte-plano::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(4 6 11 / 0.82), rgb(4 6 11 / 0) 52%);
+    pointer-events: none;
+}
+
+.hz-sin-gl .horizonte-plano {
+    background: radial-gradient(circle at 70% 42%, #000 0 11vh, #3a1c08 11.3vh, var(--hz-fondo) 52vh);
+}
+
+.horizonte-cabeza,
+.horizonte-lecturas {
+    position: relative;
+    z-index: 1;
+}
+
+.horizonte .horizonte-index {
+    margin-bottom: 0.4rem;
+    color: var(--hz-tenue);
+    font-family: "CMU Bright", Arial, sans-serif;
+}
+
+.horizonte .horizonte-titulo {
+    margin: 0 0 1.5rem -0.04em;
+    max-width: none;
+    color: var(--hz-texto);
+    font-family: inherit;
+    font-size: clamp(4.2rem, 1rem + 15vw, 12rem);
+    font-weight: 400;
+    line-height: 0.86;
+    letter-spacing: -0.035em;
+}
+
+.horizonte-texto {
+    display: grid;
+    gap: 1.6rem;
+    max-width: 31rem;
+    font-size: clamp(1.125rem, 0.95rem + 0.5vw, 1.3125rem);
+    line-height: 1.5;
+}
+
+.horizonte-texto p {
+    margin: 0;
+    color: var(--hz-texto);
+}
+
+.hz-on .horizonte-texto > * {
+    grid-area: 1 / 1;
+    align-self: end;
+}
+
+.hz-on .horizonte-sub {
+    opacity: calc(1 - var(--hz-fin, 0));
+    transform: translateY(calc(var(--hz-fin, 0) * -0.8rem));
+}
+
+.hz-on .horizonte-pie {
+    opacity: var(--hz-fin, 0);
+    transform: translateY(calc((1 - var(--hz-fin, 0)) * 0.8rem));
+    pointer-events: none;
+}
+
+.hz-on.hz-fin .horizonte-pie {
+    pointer-events: auto;
+}
+
+.horizonte .horizonte-links {
+    margin-top: 1.4rem;
+    color: var(--hz-texto);
+}
+
+.horizonte .horizonte-links a {
+    color: var(--hz-texto);
+    border-bottom-color: var(--hz-calido);
+    transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.horizonte .horizonte-links a:hover,
+.horizonte .horizonte-links a:focus-visible {
+    color: var(--hz-calido);
+}
+
+.horizonte-lecturas {
+    margin: 0;
+    padding: 0.2rem 0.9rem 0.3rem;
+    background: rgb(4 6 11 / 0.7);
+    font-family: "CMU Bright", Arial, sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.3;
+    font-variant-numeric: tabular-nums;
+}
+
+.horizonte-lecturas > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1.5rem;
+    padding: 0.45rem 0;
+    border-top: 1px solid rgb(191 211 255 / 0.2);
+}
+
+.horizonte-lecturas > div:first-child {
+    border-top: 0;
+}
+
+.horizonte-lecturas dt {
+    color: var(--hz-tenue);
+}
+
+.horizonte-lecturas dt i {
+    color: var(--hz-frio);
+    font-family: "CMU Serif", Georgia, serif;
+    font-size: 1.12em;
+}
+
+.horizonte-lecturas dd {
+    margin: 0;
+    text-align: right;
+}
+
+@media (max-width: 860px) {
+    .horizonte-plano {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.6rem;
+        padding-bottom: 1.6rem;
+    }
+
+    .horizonte-plano::after {
+        background: linear-gradient(to top, rgb(4 6 11 / 0.92) 0%, rgb(4 6 11 / 0.8) 38%, rgb(4 6 11 / 0) 62%);
+    }
+
+    .horizonte-lecturas {
+        padding-inline: 0;
+        background: transparent;
+        font-size: 0.82rem;
+    }
 }
