@@ -5483,3 +5483,82 @@ html.has-intro .hero.cue-hidden .scroll-cue {
         font-size: 0.82rem;
     }
 }
+
+/* ---------- Nocturna: tarjeta con el negro, el rojo y la tipografía de su web ---------- */
+@font-face {
+    font-family: 'Big Shoulders Display';
+    src: url('media/nocturna/big-shoulders-900.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+.nocturna-destacado {
+    --no-negro: #030204;
+    --no-tinta: #f3ece9;
+    --no-tenue: #a39a9c;
+    --no-rojo: #ff1f30;
+    --relleno: clamp(2.2rem, 6vw, 6rem);
+    position: relative;
+    overflow: clip;
+    margin-bottom: clamp(5rem, 12vh, 9rem);
+    padding: var(--relleno) var(--relleno) 0;
+    background: var(--no-negro);
+    color: var(--no-tinta);
+}
+
+.nocturna-cabeza { container-type: inline-size; }
+.nocturna-destacado ::selection { background: var(--no-rojo); color: var(--no-negro); }
+.nocturna-destacado .nocturna-index { color: var(--no-rojo); margin-bottom: 1.2rem; }
+
+.nocturna-titulo {
+    margin-left: -0.04em;
+    font-family: 'Big Shoulders Display', 'Arial Narrow', Impact, var(--font-body);
+    /* El tamaño sale del ancho de la tarjeta, no del de la ventana: así nunca se corta */
+    font-size: clamp(2.6rem, 22cqi, 15rem);
+    font-weight: 900;
+    line-height: 0.8;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+    color: var(--no-tinta);
+    text-shadow: 0.035em 0 0 var(--no-rojo);
+}
+
+.nocturna-sub {
+    max-width: 30ch;
+    margin-top: clamp(1.4rem, 3vh, 2.2rem);
+    font-size: clamp(1.15rem, 1.8vw, 1.6rem);
+    line-height: 1.35;
+    color: var(--no-tinta);
+}
+
+/* El perfil ocupa todo el ancho de la tarjeta, sangrando por los lados */
+.nocturna-ciudad {
+    --p: 0.5;
+    margin: clamp(2rem, 6vh, 4rem) calc(var(--relleno) * -1) 0;
+}
+.nocturna-ciudad svg { display: block; width: 100%; height: clamp(15rem, 42vw, 30rem); }
+.nocturna-capa { will-change: transform; }
+.nocturna-capa.c0 { transform: translateX(calc(var(--p) * -60px)); }
+.nocturna-capa.c1 { transform: translateX(calc(var(--p) * -150px)); }
+.nocturna-capa.c2 { transform: translateX(calc(var(--p) * -290px)); }
+.c0 .nocturna-torre { fill: #150509; }
+.c1 .nocturna-torre { fill: #0c0306; }
+.c2 .nocturna-torre { fill: #050203; }
+.nocturna-luz { fill: var(--no-rojo); }
+.nocturna-luz.calida { fill: #ffb08a; }
+.nocturna-via { stroke: var(--no-rojo); stroke-width: 2; fill: none; }
+.nocturna-tren { fill: var(--no-tinta); transform: translateX(calc(var(--p) * 1500px - 240px)); }
+.nocturna-faro { stroke: #ffd9cf; stroke-width: 2; stroke-linecap: round; opacity: 0.8; }
+.nocturna-ciudad figcaption {
+    padding: 1.1rem var(--relleno) 0;
+    max-width: 62ch;
+    color: var(--no-tenue);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.nocturna-pie { padding: clamp(2rem, 5vh, 3.5rem) 0 var(--relleno); display: grid; gap: 1.6rem; }
+.nocturna-pie p { max-width: 54ch; color: #d6cdcc; font-size: 1.05rem; line-height: 1.65; }
+.nocturna-links a { color: var(--no-tinta); border-bottom-color: var(--no-rojo); }
+.nocturna-links a:hover { color: var(--no-rojo); }

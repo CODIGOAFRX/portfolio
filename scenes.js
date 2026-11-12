@@ -616,6 +616,21 @@
         };
     }
 
+    // Nocturna: las tres capas del perfil se desplazan a distinta velocidad y el tren cruza la vía
+    function ciudadScene(fig) {
+        let last = -1;
+        return {
+            measure() {},
+            update() {
+                const p = crossing(fig);
+                if (Math.abs(p - last) < 0.0005) return false;
+                last = p;
+                fig.style.setProperty('--p', p.toFixed(4));
+                return false;
+            },
+        };
+    }
+
     // Ornamentos: el florón de torno gira con el scroll, como en el torno que lo hizo
     function floronScene(shape) {
         let last = Infinity;
@@ -642,9 +657,10 @@
     const floron = document.querySelector('.ornamentos-floron-forma');
     const capas = document.querySelector('.diseccion-capas');
     const mediatriz = document.querySelector('.trazado-mediatriz');
+    const ciudad = document.querySelector('.nocturna-ciudad');
     [timeline && timelineScene(timeline), production && portalScene(production), stack && orbitScene(stack),
         boveda && bovedaScene(boveda), maps && cortinaScene(maps), disc && compasScene(disc), floron && floronScene(floron),
-        capas && capasScene(capas), mediatriz && mediatrizScene(mediatriz)]
+        capas && capasScene(capas), mediatriz && mediatrizScene(mediatriz), ciudad && ciudadScene(ciudad)]
         .forEach(s => s && scenes.push(s));
     if (!scenes.length) return;
 
