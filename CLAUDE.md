@@ -14,6 +14,7 @@ Cloudflare en `worker/`. Todo el texto de la web y de los comentarios va en espa
 | Archivo | Escena |
 |---|---|
 | `intro-boot.js` + `intro.js` | Intro «Corte transversal»: el nombre se abre y enseña las capas de una petición real de AFORO |
+| `malla.js` | Malla de la portada: retícula que ocupa la primera pantalla y cede bajo el cursor (cada cruce es una masa con muelle). Sólo responde al ratón o al dedo y se apaga al empezar el corte |
 | `net.js` | Transición entre AFR-MIND y la trayectoria: la red del CV se ordena en una línea del tiempo |
 | `scenes.js` | Trayectoria, portal de proyectos (el corte de la cabecera) y órbitas del stack |
 | `horizonte.js` | Pieza destacada Horizonte: carga el sombreador de su web (`/proyecto/horizonte/gl.js`, función `descenso`) y acerca la cámara con el scroll. Si cambia esa función en el repo de Horizonte, hay que revisarlo aquí |
