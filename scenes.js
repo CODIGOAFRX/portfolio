@@ -631,6 +631,25 @@
         };
     }
 
+    // Milenario: el árbol se enciende de la raíz a la copa con el scroll y una línea marca la altura
+    function arbolScene(fig) {
+        const label = fig.querySelector('.milenario-nivel b');
+        let last = -1;
+        return {
+            measure() {},
+            update() {
+                const g = smooth(0.18, 0.72, crossing(fig));
+                if (Math.abs(g - last) < 0.0005) return false;
+                last = g;
+                fig.style.setProperty('--g', g.toFixed(4));
+                // el suelo está a 398 de 1030 unidades desde abajo; 8 unidades por metro
+                const m = Math.round((g * 1030 - 398) / 8);
+                label.textContent = `${m > 0 ? '+' : m < 0 ? '−' : ''}${Math.abs(m)} m`;
+                return false;
+            },
+        };
+    }
+
     // Ornamentos: el florón de torno gira con el scroll, como en el torno que lo hizo
     function floronScene(shape) {
         let last = Infinity;
@@ -658,9 +677,11 @@
     const capas = document.querySelector('.diseccion-capas');
     const mediatriz = document.querySelector('.trazado-mediatriz');
     const ciudad = document.querySelector('.nocturna-ciudad');
+    const arbol = document.querySelector('.milenario-corte');
     [timeline && timelineScene(timeline), production && portalScene(production), stack && orbitScene(stack),
         boveda && bovedaScene(boveda), maps && cortinaScene(maps), disc && compasScene(disc), floron && floronScene(floron),
-        capas && capasScene(capas), mediatriz && mediatrizScene(mediatriz), ciudad && ciudadScene(ciudad)]
+        capas && capasScene(capas), mediatriz && mediatrizScene(mediatriz), ciudad && ciudadScene(ciudad),
+        arbol && arbolScene(arbol)]
         .forEach(s => s && scenes.push(s));
     if (!scenes.length) return;
 

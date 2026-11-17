@@ -5714,3 +5714,99 @@ html.has-intro .hero.cue-hidden .scroll-cue {
 .nocturna-pie p { max-width: 54ch; color: #d6cdcc; font-size: 1.05rem; line-height: 1.65; }
 .nocturna-links a { color: var(--no-tinta); border-bottom-color: var(--no-rojo); }
 .nocturna-links a:hover { color: var(--no-rojo); }
+
+/* ---------- Milenario: tarjeta con el verde de bosque, el crema y el ámbar de su web ---------- */
+@font-face {
+    font-family: 'Fraunces Milenario';
+    src: url('media/milenario/fraunces-latin-opsz-italic.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+.milenario-destacado {
+    --mi-fondo: #0b0f0c;
+    --mi-crema: #f1e8d4;
+    --mi-tenue: rgba(241, 232, 212, 0.66);
+    --mi-ambar: #ecb96f;
+    --relleno: clamp(2.2rem, 6vw, 6rem);
+    position: relative;
+    overflow: clip;
+    margin-bottom: clamp(5rem, 12vh, 9rem);
+    padding: var(--relleno) var(--relleno) 0;
+    background: radial-gradient(120% 70% at 50% 100%, #17251b 0%, var(--mi-fondo) 62%);
+    color: var(--mi-crema);
+}
+
+.milenario-cabeza { container-type: inline-size; }
+.milenario-destacado ::selection { background: var(--mi-ambar); color: var(--mi-fondo); }
+.milenario-destacado .milenario-index { color: var(--mi-ambar); margin-bottom: 1.2rem; }
+
+.milenario-titulo {
+    margin-left: -0.04em;
+    font-family: 'Fraunces Milenario', Georgia, serif;
+    font-style: italic;
+    font-weight: 300;
+    /* El tamaño sale del ancho de la tarjeta, no del de la ventana: así nunca se corta */
+    font-size: clamp(3rem, 19cqi, 13rem);
+    line-height: 0.85;
+    letter-spacing: -0.03em;
+    color: var(--mi-crema);
+}
+
+.milenario-sub {
+    max-width: 32ch;
+    margin-top: clamp(1.4rem, 3vh, 2.2rem);
+    font-size: clamp(1.15rem, 1.8vw, 1.6rem);
+    line-height: 1.35;
+    color: var(--mi-crema);
+}
+
+/* --g: cuánto del árbol está encendido, de abajo arriba (lo mueve scenes.js; sin JS, entero) */
+.milenario-corte {
+    --g: 1;
+    margin: clamp(2rem, 6vh, 4rem) calc(var(--relleno) * -1) 0;
+}
+.milenario-lienzo { position: relative; aspect-ratio: 1000 / 1030; width: min(100%, 78vh); margin-inline: auto; }
+.milenario-lienzo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 100%;
+}
+.milenario-tenue { opacity: 0.14; }
+.milenario-vivo { clip-path: inset(calc((1 - var(--g)) * 100%) 0 0 0); }
+.milenario-nivel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--g) * 100%);
+    border-top: 1px solid var(--mi-ambar);
+    pointer-events: none;
+    /* se apaga al llegar a los extremos */
+    opacity: calc(min(var(--g), 1 - var(--g)) * 25);
+}
+.milenario-nivel b {
+    position: absolute;
+    right: var(--relleno);
+    bottom: 0.5rem;
+    font: 500 0.78rem/1 ui-monospace, 'Cascadia Mono', Consolas, monospace;
+    letter-spacing: 0.1em;
+    color: var(--mi-ambar);
+    font-variant-numeric: tabular-nums;
+}
+.milenario-corte figcaption {
+    padding: 1.1rem var(--relleno) 0;
+    max-width: 62ch;
+    color: var(--mi-tenue);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.milenario-pie { padding: clamp(2rem, 5vh, 3.5rem) 0 var(--relleno); display: grid; gap: 1.6rem; }
+.milenario-pie p { max-width: 54ch; color: #d9d2c0; font-size: 1.05rem; line-height: 1.65; }
+.milenario-links a { color: var(--mi-crema); border-bottom-color: var(--mi-ambar); }
+.milenario-links a:hover { color: var(--mi-ambar); }
+
