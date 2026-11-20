@@ -28,7 +28,7 @@
     <meta name="twitter:description"
         content="Desarrollo de principio a fin. Productos web en producción y automatización con Java, Python y TypeScript.">
     <meta name="twitter:image" content="https://www.pedrogomez.dev/og.png">
-    <link rel="stylesheet" href="styles.css?v=20261117-milenario">
+    <link rel="stylesheet" href="styles.css?v=20261120-consigna2">
     <script src="intro-boot.js?v=20261020-corte"></script>
 </head>
 
@@ -922,6 +922,51 @@
                                 <p>El tronco, cientos de ramas, decenas de miles de hojas y el micelio se generan por código al cargar: ni modelos 3D, ni vídeo. La calidad se ajusta sola al equipo para que vaya fluido también en un portátil de oficina.</p>
                                 <div class="case-links milenario-links">
                                     <a href="/proyecto/milenario/">Subir al árbol</a>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Consigna: el papel cuadriculado, el azul Crouwel y la Chakra Petch de su web (/proyecto/consigna,
+                             servida por su Worker con una ruta en la zona). Es una app de uso diario, no una escena: aquí, una
+                             vista quieta de su mesa con tres módulos, el número construido celda a celda y las tiras de 24
+                             celdas que marcan las horas que le quedan a cada cosa. Sin escena de scroll, como la cinta de skills. -->
+                        <article id="consigna" class="consigna-destacado" aria-labelledby="consigna-title">
+                            <div class="consigna-cabeza hidden-element">
+                                <p class="case-index consigna-index">App diaria / Workers + Durable Objects</p>
+                                <h3 id="consigna-title" class="consigna-titulo">Consigna<span class="consigna-barra" aria-hidden="true"></span></h3>
+                                <p class="consigna-sub">Deja algo en un dispositivo y recógelo en otro. Lo que no fijas caduca a las 24 horas.</p>
+                            </div>
+                            <figure class="consigna-mesa">
+                                <div class="consigna-muestra" aria-hidden="true">
+                                    <div class="consigna-ultimo">
+                                        <svg class="consigna-numero" viewBox="0 0 202 82" focusable="false"><path class="off" d="M0 0h10v10h-10zM48 0h10v10h-10zM12 12h10v10h-10zM24 12h10v10h-10zM36 12h10v10h-10zM12 24h10v10h-10zM24 24h10v10h-10zM12 36h10v10h-10zM36 36h10v10h-10zM24 48h10v10h-10zM36 48h10v10h-10zM12 60h10v10h-10zM24 60h10v10h-10zM36 60h10v10h-10zM0 72h10v10h-10zM48 72h10v10h-10zM72 0h10v10h-10zM84 0h10v10h-10zM96 0h10v10h-10zM120 0h10v10h-10zM72 12h10v10h-10zM84 12h10v10h-10zM120 12h10v10h-10zM72 24h10v10h-10zM96 24h10v10h-10zM120 24h10v10h-10zM84 36h10v10h-10zM96 36h10v10h-10zM120 36h10v10h-10zM72 60h10v10h-10zM84 60h10v10h-10zM96 60h10v10h-10zM120 60h10v10h-10zM72 72h10v10h-10zM84 72h10v10h-10zM96 72h10v10h-10zM120 72h10v10h-10zM144 0h10v10h-10zM156 0h10v10h-10zM180 0h10v10h-10zM192 0h10v10h-10zM144 12h10v10h-10zM180 12h10v10h-10zM192 12h10v10h-10zM144 24h10v10h-10zM156 24h10v10h-10zM180 24h10v10h-10zM192 24h10v10h-10zM144 36h10v10h-10zM156 36h10v10h-10zM180 36h10v10h-10zM192 36h10v10h-10zM144 48h10v10h-10zM156 48h10v10h-10zM180 48h10v10h-10zM192 48h10v10h-10zM144 60h10v10h-10zM156 60h10v10h-10zM180 60h10v10h-10zM192 60h10v10h-10zM144 72h10v10h-10zM192 72h10v10h-10z"/><path class="on" d="M12 0h10v10h-10zM24 0h10v10h-10zM36 0h10v10h-10zM0 12h10v10h-10zM48 12h10v10h-10zM0 24h10v10h-10zM36 24h10v10h-10zM48 24h10v10h-10zM0 36h10v10h-10zM24 36h10v10h-10zM48 36h10v10h-10zM0 48h10v10h-10zM12 48h10v10h-10zM48 48h10v10h-10zM0 60h10v10h-10zM48 60h10v10h-10zM12 72h10v10h-10zM24 72h10v10h-10zM36 72h10v10h-10zM108 0h10v10h-10zM96 12h10v10h-10zM108 12h10v10h-10zM84 24h10v10h-10zM108 24h10v10h-10zM72 36h10v10h-10zM108 36h10v10h-10zM72 48h10v10h-10zM84 48h10v10h-10zM96 48h10v10h-10zM108 48h10v10h-10zM120 48h10v10h-10zM108 60h10v10h-10zM108 72h10v10h-10zM168 0h10v10h-10zM156 12h10v10h-10zM168 12h10v10h-10zM168 24h10v10h-10zM168 36h10v10h-10zM168 48h10v10h-10zM168 60h10v10h-10zM156 72h10v10h-10zM168 72h10v10h-10zM180 72h10v10h-10z"/></svg>
+                                        <span>Lo último · Escuela · ahora</span>
+                                    </div>
+                                    <div class="consigna-modulo">
+                                        <span class="consigna-cab"><b>041</b> Escuela <i>ahora</i></span>
+                                        <span class="consigna-texto consigna-enlace">developer.mozilla.org/es/docs/Web/API/Popover_API</span>
+                                        <span class="consigna-tira"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+                                        <span class="consigna-acciones"><b>Copiar</b><b>Abrir</b></span>
+                                    </div>
+                                    <div class="consigna-modulo">
+                                        <span class="consigna-cab"><b>040</b> Portátil <i>12:04</i></span>
+                                        <span class="consigna-texto">memoria-proyecto.pdf · 2,4 MB</span>
+                                        <span class="consigna-tira"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+                                        <span class="consigna-acciones"><b>Descargar</b></span>
+                                    </div>
+                                    <div class="consigna-modulo es-fijada">
+                                        <span class="consigna-cab"><b>039</b> iPhone <i>ayer</i></span>
+                                        <span class="consigna-texto">Llevar el pendrive con la práctica 3 a clase</span>
+                                        <span class="consigna-fijada">Fijada · no caduca</span>
+                                        <span class="consigna-acciones"><b>Copiar</b></span>
+                                    </div>
+                                </div>
+                                <figcaption>Pegas en un ordenador y aparece en el otro sin recargar. Cada tira tiene 24 celdas, una por hora: las azules son las que le quedan.</figcaption>
+                            </figure>
+                            <div class="consigna-pie hidden-element">
+                                <p>La uso a diario entre el portátil, el ordenador de la escuela, el de casa y el iPhone. Un Worker de Cloudflare con un Durable Object por cuenta guarda textos y archivos troceados en SQLite, los caduca con una alarma y avisa a los demás dispositivos por WebSocket. Los dispositivos se emparejan con un código de seis cifras, para no escribir la contraseña en un ordenador ajeno.</p>
+                                <div class="case-links consigna-links">
+                                    <a href="/proyecto/consigna/">Abrir la consigna</a>
                                 </div>
                             </div>
                         </article>

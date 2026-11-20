@@ -5810,3 +5810,149 @@ html.has-intro .hero.cue-hidden .scroll-cue {
 .milenario-links a { color: var(--mi-crema); border-bottom-color: var(--mi-ambar); }
 .milenario-links a:hover { color: var(--mi-ambar); }
 
+
+/* ---------- Consigna: tarjeta con el papel cuadriculado, el azul Crouwel y la Chakra Petch de su web ---------- */
+@font-face {
+    font-family: 'Chakra Petch Consigna';
+    src: url('media/consigna/chakra-petch-600-latin.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+.consigna-destacado {
+    --co-papel: #ffffff;
+    --co-rejilla: #e6ebf2;
+    --co-tinta: #111111;
+    --co-tinta-2: #4a5260;
+    --co-azul: #0057ff;
+    --co-celda: 24px;
+    --relleno: clamp(2.2rem, 6vw, 6rem);
+    position: relative;
+    overflow: clip;
+    margin-bottom: clamp(5rem, 12vh, 9rem);
+    padding: var(--relleno) var(--relleno) 0;
+    border: 1.5px solid var(--co-tinta);
+    background-color: var(--co-papel);
+    background-image:
+        linear-gradient(var(--co-rejilla) 1px, transparent 1px),
+        linear-gradient(90deg, var(--co-rejilla) 1px, transparent 1px);
+    background-size: var(--co-celda) var(--co-celda);
+    color: var(--co-tinta);
+}
+.consigna-destacado ::selection { background: var(--co-azul); color: var(--co-papel); }
+.consigna-cabeza { container-type: inline-size; }
+.consigna-destacado .consigna-index { color: var(--co-azul); margin-bottom: 1.2rem; }
+
+.consigna-titulo {
+    display: flex;
+    align-items: center;
+    gap: 0.12em;
+    font-family: 'Chakra Petch Consigna', 'Segoe UI', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: clamp(3rem, 15cqi, 11rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+/* La única diagonal de su sistema */
+.consigna-barra {
+    display: inline-block;
+    width: 0.62em;
+    height: 0.62em;
+    background: linear-gradient(to bottom right, transparent calc(50% - 0.035em), var(--co-azul) calc(50% - 0.035em), var(--co-azul) calc(50% + 0.035em), transparent calc(50% + 0.035em));
+}
+.consigna-sub {
+    max-width: 34ch;
+    margin-top: clamp(1.4rem, 3vh, 2.2rem);
+    font-size: clamp(1.15rem, 1.8vw, 1.6rem);
+    line-height: 1.35;
+}
+
+.consigna-mesa { margin: clamp(2rem, 6vh, 4rem) 0 0; }
+.consigna-muestra {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) repeat(3, minmax(0, 1fr));
+    gap: var(--co-celda);
+    align-items: stretch;
+}
+.consigna-ultimo,
+.consigna-modulo {
+    display: grid;
+    background: var(--co-papel);
+    border: 1.5px solid var(--co-tinta);
+}
+.consigna-ultimo {
+    align-content: space-between;
+    gap: 1rem;
+    padding: var(--co-celda);
+    border-color: var(--co-azul);
+}
+.consigna-numero { display: block; width: 100%; height: auto; }
+.consigna-numero .on { fill: var(--co-azul); }
+.consigna-numero .off { fill: var(--co-rejilla); }
+.consigna-ultimo span,
+.consigna-cab,
+.consigna-acciones,
+.consigna-fijada {
+    font: 600 0.8rem/1 'Chakra Petch Consigna', 'Segoe UI', system-ui, sans-serif;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+.consigna-ultimo span { color: var(--co-tinta-2); }
+
+.consigna-modulo { grid-template-rows: auto 1fr auto auto; }
+.consigna-cab {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 0.8rem;
+    border-bottom: 1px solid var(--co-azul);
+}
+.consigna-cab b { font-size: 0.95rem; letter-spacing: 0.04em; }
+.consigna-cab i { margin-left: auto; font-style: normal; font-weight: 500; }
+.consigna-modulo.es-fijada .consigna-cab { background: var(--co-tinta); color: var(--co-papel); }
+.consigna-texto {
+    padding: 0.9rem 0.8rem 1.2rem;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+.consigna-enlace { color: var(--co-azul); text-decoration: underline; text-underline-offset: 3px; }
+/* 24 celdas, una por hora: las azules son las horas que quedan */
+.consigna-tira {
+    display: grid;
+    grid-template-columns: repeat(24, minmax(0, 1fr));
+    gap: 2px;
+    margin: 0 0.8rem 0.8rem;
+}
+.consigna-tira i { height: 8px; background: var(--co-rejilla); }
+.consigna-tira i.on { background: var(--co-azul); }
+.consigna-fijada { padding: 0 0.8rem 0.8rem; }
+.consigna-acciones {
+    display: flex;
+    gap: 1.2rem;
+    padding: 0.85rem 0.8rem;
+    border-top: 1px solid var(--co-azul);
+    color: var(--co-azul);
+}
+.consigna-mesa figcaption {
+    padding-top: 1.1rem;
+    max-width: 62ch;
+    color: var(--co-tinta-2);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.consigna-pie { padding: clamp(2rem, 5vh, 3.5rem) 0 var(--relleno); display: grid; gap: 1.6rem; }
+.consigna-pie p { max-width: 58ch; color: #2b2f36; font-size: 1.05rem; line-height: 1.65; }
+.consigna-links a { color: var(--co-tinta); border-bottom-color: var(--co-azul); }
+.consigna-links a:hover { color: var(--co-azul); }
+
+@media (max-width: 1100px) {
+    .consigna-muestra { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+    .consigna-muestra { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .consigna-ultimo { display: none; }
+}
