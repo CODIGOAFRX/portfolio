@@ -4952,18 +4952,18 @@ html.has-intro .hero.cue-hidden .scroll-cue {
         font-size: clamp(3.4rem, 5.6vw, 6rem);
     }
 
-    .mundos :is(.comedia-sub, .boveda-sub, .ornamentos-sub, .palimpsesto-sub, .sphaera-sub, .diseccion-sub, .trazado-sub) {
+    .mundos :is(.comedia-sub, .boveda-sub, .ornamentos-sub, .palimpsesto-sub, .sphaera-sub, .diseccion-sub, .trazado-sub, .milenario-sub, .consigna-sub) {
         font-size: clamp(1.2rem, 1.45vw, 1.55rem);
     }
 
-    .mundos :is(.comedia-pie, .boveda-pie, .ornamentos-pie, .palimpsesto-pie, .sphaera-pie, .diseccion-pie, .trazado-pie) {
+    .mundos :is(.comedia-pie, .boveda-pie, .ornamentos-pie, .palimpsesto-pie, .sphaera-pie, .diseccion-pie, .trazado-pie, .milenario-pie, .consigna-pie) {
         grid-template-columns: 1fr;
         gap: 1.4rem;
         margin-top: auto;
         padding-top: clamp(2.5rem, 5vh, 4rem);
     }
 
-    .mundos :is(.comedia-pie, .boveda-pie, .ornamentos-pie, .palimpsesto-pie, .sphaera-pie, .diseccion-pie, .trazado-pie) p {
+    .mundos :is(.comedia-pie, .boveda-pie, .ornamentos-pie, .palimpsesto-pie, .sphaera-pie, .diseccion-pie, .trazado-pie, .milenario-pie, .consigna-pie) p {
         font-size: 0.98rem;
     }
 
@@ -5034,6 +5034,16 @@ html.has-intro .hero.cue-hidden .scroll-cue {
 
     .mundos .trazado-mediatriz {
         width: min(100%, 380px);
+    }
+
+    /* Milenario y Consigna a media página: el árbol algo más bajo y la mesa de Consigna en dos columnas,
+       con el número grande y los tres módulos en un cuadrado de dos por dos */
+    .mundos .milenario-lienzo {
+        width: min(100%, 62vh);
+    }
+
+    .mundos .consigna-muestra {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
