@@ -5966,3 +5966,152 @@ html.has-intro .hero.cue-hidden .scroll-cue {
     .consigna-muestra { grid-template-columns: minmax(0, 1fr); gap: 12px; }
     .consigna-ultimo { display: none; }
 }
+
+/* ---------- Poda: tarjeta con el negro cálido, la arcilla y la JetBrains Mono de la app ---------- */
+@font-face {
+    font-family: 'JetBrains Mono';
+    src: url('media/poda/jetbrains-mono.woff2') format('woff2');
+    font-weight: 100 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+.poda-destacado {
+    --po-fondo: #0f0e0d;
+    --po-linea: #2a2724;
+    --po-tinta: #ece6dc;
+    --po-tinta-2: #b7afa4;
+    --po-tenue: #8f877d;
+    --po-arcilla: #e0875f;
+    --relleno: clamp(2.2rem, 6vw, 6rem);
+    position: relative;
+    overflow: clip;
+    margin-bottom: clamp(5rem, 12vh, 9rem);
+    padding: var(--relleno) var(--relleno) 0;
+    background: var(--po-fondo);
+    color: var(--po-tinta);
+    font-family: 'JetBrains Mono', 'Cascadia Mono', Consolas, ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+}
+.poda-destacado ::selection { background: #e0875f59; color: var(--po-tinta); }
+.poda-cabeza { container-type: inline-size; }
+.poda-destacado .poda-index { color: var(--po-arcilla); margin-bottom: 1.2rem; }
+
+.poda-titulo {
+    font-family: inherit;
+    font-size: clamp(3rem, 17cqi, 11rem);
+    font-weight: 700;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    color: var(--po-tinta);
+}
+/* El cursor de la terminal, quieto: en la portada nada se mueve solo */
+.poda-cursor { display: inline-block; width: 0.42em; height: 0.09em; margin-left: 0.08em; background: var(--po-arcilla); }
+
+.poda-sub {
+    max-width: 34ch;
+    margin-top: clamp(1.4rem, 3vh, 2.2rem);
+    font-size: clamp(1rem, 1.6vw, 1.35rem);
+    line-height: 1.45;
+    color: var(--po-tinta-2);
+}
+
+.poda-ventana {
+    margin: clamp(2rem, 6vh, 4rem) 0 0;
+    border: 1px solid var(--po-linea);
+    border-radius: 12px;
+    overflow: hidden;
+}
+.poda-pestanas {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    padding: 0.8rem 1.2rem;
+    border-bottom: 1px solid var(--po-linea);
+    color: var(--po-tenue);
+    font-size: 0.78rem;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.poda-pestanas b { color: var(--po-arcilla); font-weight: 700; }
+.poda-pestanas .on { color: var(--po-tinta); box-shadow: 0 0.95rem 0 -0.8rem var(--po-arcilla); }
+.poda-pestanas em { margin-left: auto; font-style: normal; }
+.poda-pestanas em span { color: var(--po-tinta); }
+
+.poda-resumen {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.6rem 2rem;
+    padding: 1.4rem 1.2rem 1rem;
+}
+.poda-cifra { font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 650; line-height: 1; letter-spacing: -0.035em; }
+.poda-cifra small { color: var(--po-tenue); font-size: 0.5em; font-weight: 400; letter-spacing: 0; }
+.poda-estado { color: var(--po-tinta-2); font-size: 0.8rem; }
+
+/* 400 celdas: el disco entero. Los tramos son los de la demo (477 GB, 1,19 GB por celda). */
+.poda-celdas {
+    --cols: 50;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: 3px;
+    padding: 0 1.2rem 1rem;
+}
+.poda-celdas i { aspect-ratio: 1; border-radius: 2px; background: #1e1c1a; transition: background-color 0.35s, box-shadow 0.35s; }
+.poda-celdas i:nth-child(-n+82) { background: #8b5cf6; }
+.poda-celdas i:nth-child(n+83):nth-child(-n+102) { background: #16a34a; }
+.poda-celdas i:nth-child(n+103):nth-child(-n+110) { background: #ec4899; }
+.poda-celdas i:nth-child(n+111):nth-child(-n+170) { background: #3b82f6; }
+.poda-celdas i:nth-child(n+171):nth-child(-n+195) { background: #ea580c; }
+.poda-celdas i:nth-child(n+196):nth-child(-n+198) { background: #0d9488; }
+.poda-celdas i:nth-child(n+199):nth-child(-n+209) { background: #b98900; }
+.poda-celdas i:nth-child(n+210):nth-child(-n+215) { background: #6b655e; }
+.poda-celdas i:nth-child(n+216):nth-child(-n+217) { background: #7a4d38; }
+.poda-celdas i:nth-child(n+218):nth-child(-n+327) { background: #4a4540; }
+/* Sin escena: las celdas de los tres archivos, ya marcadas */
+.poda-celdas:not(.vivo) i:nth-child(n+76):nth-child(-n+82),
+.poda-celdas:not(.vivo) i:nth-child(n+141):nth-child(-n+170),
+.poda-celdas i.s { background: #e0875f1f; box-shadow: inset 0 0 0 1.5px var(--po-arcilla); }
+.poda-celdas i.l { background: #1e1c1a; box-shadow: none; }
+
+.poda-leyenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.2rem;
+    margin: 0;
+    padding: 0 1.2rem 1.2rem;
+    list-style: none;
+    color: var(--po-tinta-2);
+    font-size: 0.74rem;
+}
+.poda-leyenda li { display: inline-flex; align-items: center; gap: 0.45rem; }
+.poda-leyenda li::before { content: ""; width: 0.6rem; height: 0.6rem; border-radius: 2px; background: var(--c); }
+.poda-leyenda .video { --c: #8b5cf6; }
+.poda-leyenda .dev { --c: #16a34a; }
+.poda-leyenda .imagen { --c: #ec4899; }
+.poda-leyenda .appdata { --c: #3b82f6; }
+.poda-leyenda .ia { --c: #ea580c; }
+.poda-leyenda .resto { --c: #4a4540; }
+.poda-leyenda .libre { --c: #1e1c1a; }
+.poda-leyenda .soltar { color: #f2b393; }
+.poda-leyenda .soltar::before { background: #e0875f1f; box-shadow: inset 0 0 0 1.5px var(--po-arcilla); }
+
+.poda-ventana figcaption {
+    padding: 1rem 1.2rem 1.2rem;
+    border-top: 1px solid var(--po-linea);
+    max-width: 70ch;
+    color: var(--po-tenue);
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+.poda-pie { padding: clamp(2rem, 5vh, 3.5rem) 0 var(--relleno); display: grid; gap: 1.6rem; }
+.poda-pie p { max-width: 62ch; color: var(--po-tinta-2); font-size: 0.95rem; line-height: 1.7; }
+.poda-links a { color: var(--po-tinta); border-bottom-color: var(--po-arcilla); }
+.poda-links a:hover { color: var(--po-arcilla); }
+
+@media (max-width: 700px) {
+    .poda-celdas { --cols: 25; gap: 2px; }
+    .poda-pestanas > span:not(.on) { display: none; }
+}

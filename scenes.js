@@ -666,6 +666,46 @@
         };
     }
 
+    // Poda: al cruzar la pantalla se marcan en arcilla las celdas de tres archivos y luego se sueltan en
+    // cascada; la cifra baja de 254 a 210 GB y el espacio libre sube lo mismo, como en la app
+    function podaScene(fig) {
+        const caja = fig.querySelector('.poda-celdas');
+        const cifra = fig.querySelector('[data-poda-cifra]');
+        const libre = fig.querySelector('[data-poda-libre]');
+        const estado = fig.querySelector('[data-poda-estado]');
+        if (!caja || !cifra || !libre || !estado) return null;
+        const celdas = [...caja.children];
+        // Las del vídeo repetido (76-82) y las de los dos discos virtuales (141-170), de izquierda a derecha
+        const marcadas = [];
+        for (let i = 76; i <= 82; i++) marcadas.push(celdas[i - 1]);
+        for (let i = 141; i <= 170; i++) marcadas.push(celdas[i - 1]);
+        caja.classList.add('vivo');
+        const GB = 44.2;
+        const num = n => n.toLocaleString('es-ES', { maximumFractionDigits: n < 100 ? 1 : 0, minimumFractionDigits: n < 100 ? 1 : 0 });
+        let last = -1;
+        return {
+            measure() {},
+            update() {
+                const p = crossing(fig);
+                if (Math.abs(p - last) < 0.0005) return false;
+                last = p;
+                const marca = Math.round(smooth(0.18, 0.36, p) * marcadas.length);
+                const suelta = Math.round(smooth(0.42, 0.58, p) * marcadas.length);
+                marcadas.forEach((c, i) => {
+                    c.classList.toggle('l', i < suelta);
+                    c.classList.toggle('s', i >= suelta && i < marca);
+                });
+                const liberado = GB * suelta / marcadas.length;
+                cifra.textContent = num(254 - liberado);
+                libre.textContent = `${num(88.9 + liberado)} GB`;
+                estado.textContent = suelta ? `Liberados ${num(liberado)} GB`
+                    : marca ? `A soltar: ${num(GB * marca / marcadas.length)} GB · se pueden recuperar desde la Papelera`
+                        : '573.281 archivos en 41.250 carpetas · 3 s';
+                return false;
+            },
+        };
+    }
+
     const scenes = [];
     const timeline = document.getElementById('timeline');
     const production = document.getElementById('production');
@@ -677,11 +717,12 @@
     const capas = document.querySelector('.diseccion-capas');
     const mediatriz = document.querySelector('.trazado-mediatriz');
     const ciudad = document.querySelector('.nocturna-ciudad');
+    const podaFig = document.querySelector('.poda-ventana');
     const arbol = document.querySelector('.milenario-corte');
     [timeline && timelineScene(timeline), production && portalScene(production), stack && orbitScene(stack),
         boveda && bovedaScene(boveda), maps && cortinaScene(maps), disc && compasScene(disc), floron && floronScene(floron),
         capas && capasScene(capas), mediatriz && mediatrizScene(mediatriz), ciudad && ciudadScene(ciudad),
-        arbol && arbolScene(arbol)]
+        arbol && arbolScene(arbol), podaFig && podaScene(podaFig)]
         .forEach(s => s && scenes.push(s));
     if (!scenes.length) return;
 
