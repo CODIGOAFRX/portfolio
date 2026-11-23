@@ -6115,3 +6115,186 @@ html.has-intro .hero.cue-hidden .scroll-cue {
     .poda-celdas { --cols: 25; gap: 2px; }
     .poda-pestanas > span:not(.on) { display: none; }
 }
+
+/* ---------- Ubuntu junto a Windows: tarjeta con el croquis de vía de la guía (roca, grafito, cuerda) ---------- */
+@font-face {
+    font-family: 'Archivo Croquis';
+    src: url('media/arranque-dual/archivo.woff2') format('woff2-variations'), url('media/arranque-dual/archivo.woff2') format('woff2');
+    font-weight: 100 900;
+    font-stretch: 62% 125%;
+    font-display: swap;
+}
+
+.dual-destacado {
+    --du-roca: #ecede8;
+    --du-grafito: #17191c;
+    --du-grafito-2: #464b4f;
+    --du-cuerda: #e8461e;
+    --du-aux: #7d8580;
+    --du-sobre: #08090a;
+    --relleno: clamp(2.2rem, 6vw, 6rem);
+    position: relative;
+    overflow: clip;
+    margin-bottom: clamp(5rem, 12vh, 9rem);
+    padding: var(--relleno);
+    background: var(--du-roca);
+    color: var(--du-grafito);
+    font-family: 'Archivo Croquis', Arial, sans-serif;
+}
+.dual-destacado ::selection { background: var(--du-cuerda); color: var(--du-sobre); }
+.dual-cabeza { container-type: inline-size; max-width: 62rem; }
+.dual-destacado .dual-index {
+    color: var(--du-grafito-2);
+    font-stretch: 72%;
+    font-weight: 700;
+    border-bottom: 1px solid var(--du-grafito);
+    padding-bottom: 0.7rem;
+}
+
+.dual-titulo {
+    margin: 0;
+    font-family: inherit;
+    font-size: clamp(2.8rem, 11cqi, 8.5rem);
+    font-stretch: 64%;
+    font-weight: 850;
+    line-height: 0.88;
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    color: var(--du-grafito);
+}
+
+.dual-sub {
+    max-width: 46ch;
+    margin: 1.2rem 0 0;
+    font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+    line-height: 1.45;
+}
+
+.dual-croquis { margin: clamp(2.5rem, 6vw, 4.5rem) 0 0; }
+
+.dual-via {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.dual-tramo {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    text-align: center;
+}
+/* El tramo de cuerda que llega a cada reunión: fino pendiente; la cuerda lo cubre al avanzar */
+.dual-tramo:not(:first-child)::before,
+.dual-tramo:not(:first-child)::after {
+    content: "";
+    position: absolute;
+    top: 21px;
+    left: -50%;
+    width: 100%;
+    pointer-events: none;
+}
+.dual-tramo::before { border-top: 1px solid var(--du-aux); }
+.dual-tramo::after {
+    height: 4px;
+    margin-top: -2px;
+    background: var(--du-cuerda);
+    transform: scaleX(var(--avance, 1));
+    transform-origin: left;
+}
+.dual-tramo.descenso::before { border-top: 2px dashed var(--du-aux); }
+.dual-tramo.descenso::after { display: none; }
+
+.dual-tramo b {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid var(--du-grafito);
+    background: var(--du-roca);
+    font-stretch: 72%;
+    font-size: 1rem;
+    font-weight: 800;
+    transition: background-color .25s, border-color .25s;
+}
+.dual-tramo.reunion b { box-shadow: 0 0 0 3px var(--du-roca), 0 0 0 5px var(--du-grafito); }
+.dual-tramo.descenso b { border-style: dashed; }
+.dual-via:not(.vivo) .dual-tramo:not(.descenso) b,
+.dual-tramo.hecho b { background: var(--du-cuerda); border-color: var(--du-cuerda); color: var(--du-sobre); }
+/* Doble trazo cruzando la cuerda antes del largo sin vuelta atrás */
+.dual-tramo.sin-vuelta > span::before {
+    content: "";
+    position: absolute;
+    top: 9px;
+    left: -4px;
+    z-index: 2;
+    width: 8px;
+    height: 26px;
+    border-left: 2px solid var(--du-grafito);
+    border-right: 2px solid var(--du-grafito);
+    background: var(--du-roca);
+}
+
+.dual-tramo span {
+    max-width: 10ch;
+    font-stretch: 72%;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.dual-estado {
+    margin: 1.8rem 0 0;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--du-grafito);
+    font-stretch: 72%;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+}
+
+.dual-croquis figcaption {
+    margin-top: 0.5rem;
+    max-width: 60ch;
+    color: var(--du-grafito-2);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.dual-pie {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.5rem 4rem;
+    align-items: end;
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+}
+.dual-pie p { max-width: 62ch; margin: 0; font-size: 1rem; line-height: 1.6; }
+.dual-links a { color: var(--du-grafito); border-bottom: 2px solid var(--du-cuerda); }
+.dual-links a:focus-visible { outline: 3px solid var(--du-grafito); outline-offset: 4px; }
+
+@media (max-width: 720px) {
+    .dual-tramo span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .dual-tramo.sin-vuelta > span { position: static; width: 0; height: 0; overflow: visible; clip: auto; font-size: 0; }
+    .dual-tramo.sin-vuelta > span::before { top: 4px; left: -3px; width: 6px; height: 16px; }
+    .dual-tramo b { width: 24px; height: 24px; font-size: 0.72rem; border-width: 1.5px; }
+    .dual-tramo:not(:first-child)::before, .dual-tramo:not(:first-child)::after { top: 12px; }
+    .dual-tramo::after { height: 3px; margin-top: -1px; }
+    .dual-tramo.reunion b { box-shadow: 0 0 0 2px var(--du-roca), 0 0 0 3.5px var(--du-grafito); }
+    .dual-pie { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dual-tramo b { transition: none; }
+}

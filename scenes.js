@@ -706,6 +706,36 @@
         };
     }
 
+    // Ubuntu junto a Windows: al cruzar la pantalla, la cuerda recorre los ocho largos del croquis y cada reunión se
+    // rellena al llegar; el descenso se queda discontinuo, como en la guía
+    function dualScene(fig) {
+        const via = fig.querySelector('.dual-via');
+        const estado = fig.querySelector('[data-dual-estado]');
+        if (!via || !estado) return null;
+        const tramos = [...via.children].slice(0, 8);
+        const pasos = [4, 6, 3, 4, 7, 5, 7, 3];
+        via.classList.add('vivo');
+        let last = -1;
+        return {
+            measure() {},
+            update() {
+                const p = crossing(fig);
+                if (Math.abs(p - last) < 0.0005) return false;
+                last = p;
+                const avance = smooth(0.12, 0.62, p) * 8;
+                tramos.forEach((t, i) => {
+                    t.style.setProperty('--avance', clamp(avance - i + 1).toFixed(3));
+                    t.classList.toggle('hecho', avance >= i + 1);
+                });
+                const n = Math.min(8, Math.floor(avance) + 1);
+                const hechos = pasos.slice(0, Math.floor(avance)).reduce((a, b) => a + b, 0);
+                estado.textContent = avance >= 8 ? 'Vía completa · 39 pasos'
+                    : `Largo ${n} de 8 · ${hechos} de 39 pasos · ${tramos[n - 1].querySelector('span').textContent}`;
+                return false;
+            },
+        };
+    }
+
     const scenes = [];
     const timeline = document.getElementById('timeline');
     const production = document.getElementById('production');
@@ -718,11 +748,12 @@
     const mediatriz = document.querySelector('.trazado-mediatriz');
     const ciudad = document.querySelector('.nocturna-ciudad');
     const podaFig = document.querySelector('.poda-ventana');
+    const dualFig = document.querySelector('.dual-croquis');
     const arbol = document.querySelector('.milenario-corte');
     [timeline && timelineScene(timeline), production && portalScene(production), stack && orbitScene(stack),
         boveda && bovedaScene(boveda), maps && cortinaScene(maps), disc && compasScene(disc), floron && floronScene(floron),
         capas && capasScene(capas), mediatriz && mediatrizScene(mediatriz), ciudad && ciudadScene(ciudad),
-        arbol && arbolScene(arbol), podaFig && podaScene(podaFig)]
+        arbol && arbolScene(arbol), podaFig && podaScene(podaFig), dualFig && dualScene(dualFig)]
         .forEach(s => s && scenes.push(s));
     if (!scenes.length) return;
 
