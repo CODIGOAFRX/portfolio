@@ -17,3 +17,9 @@ transicion-intro/*.wav
 
 # Capturas sin comprimir de la página de PERA ERP (scripts/capture-pera.mjs)
 proyecto/pera-erp/media/raw/
+.vercel
+
+# Local de esta máquina (skill instalable y sus hooks, borradores temporales)
+.claude/settings.local.json
+.claude/skills/impeccable/
+.tmp-*/
