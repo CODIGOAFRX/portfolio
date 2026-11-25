@@ -38,6 +38,24 @@
         "value": "rgb(43, 47, 54)",
         "createdAt": "2026-11-20T21:02:37.557Z",
         "reason": "Claude: cada bloque destacado del portal usa la tipografía y la paleta de su propia web, igual que Herbario con Bodoni o Comedia con Switzer; Consigna usa Chakra Petch y el azul Crouwel de /proyecto/consigna"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "geist",
+        "files": [
+          "chuleta/claude-code-k7q3m9/index.html"
+        ],
+        "createdAt": "2026-11-25T10:18:51.832Z",
+        "reason": "Claude: la chuleta es una herramienta privada sin enlazar, fuera de la marca del portfolio; Geist es su tipografía elegida a propósito"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "geist mono",
+        "files": [
+          "chuleta/claude-code-k7q3m9/index.html"
+        ],
+        "createdAt": "2026-11-25T10:18:51.996Z",
+        "reason": "Claude: la chuleta es una herramienta privada sin enlazar, fuera de la marca del portfolio; Geist es su tipografía elegida a propósito"
       }
     ]
   }
