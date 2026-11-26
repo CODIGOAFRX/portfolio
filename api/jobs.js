@@ -1,6 +1,8 @@
 import { isSameOrigin, readSession } from '../lib/auth.js';
 import { callWorker } from '../lib/worker-api.js';
 
+import { importNewJobs } from '../lib/import-new-jobs.js';
+
 export default async function handler(request, response) {
     try {
         if (!readSession(request)) {
@@ -10,8 +12,8 @@ export default async function handler(request, response) {
         return response.status(503).json({ error: 'El acceso privado no está configurado' });
     }
 
-    if (!['GET', 'PATCH'].includes(request.method)) {
-        response.setHeader('Allow', 'GET, PATCH');
+    if (!['GET', 'PATCH', 'POST'].includes(request.method)) {
+        response.setHeader('Allow', 'GET, PATCH, POST');
         return response.status(405).end();
     }
     if (request.method === 'PATCH' && !isSameOrigin(request)) {
@@ -19,6 +21,12 @@ export default async function handler(request, response) {
     }
 
     try {
+        if (request.method === 'POST') {
+            response.setHeader('Cache-Control', 'no-store');
+            if (!request.headers.origin || !isSameOrigin(request)) return response.status(403).end();
+            if (request.headers['content-type']?.split(';')[0] !== 'application/json') return response.status(415).end();
+            return await importNewJobs(request.body, response);
+        }
         const path = request.method === 'GET'
             ? '/jobs'
             : `/jobs/${encodeURIComponent(String(request.body?.id ?? ''))}`;
