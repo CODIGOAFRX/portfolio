@@ -279,3 +279,27 @@ document.getElementById('clear-filters').addEventListener('click', () => {
 });
 
 loadJobs();
+
+document.getElementById('import-form').addEventListener('submit', async event => {
+    event.preventDefault();
+    const button = event.currentTarget.querySelector('button');
+    const input = document.getElementById('import-data');
+    const note = document.getElementById('import-result');
+    button.disabled = true;
+    try {
+        const body = JSON.stringify(JSON.parse(input.value));
+        const response = await fetch('/api/jobs', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body
+        });
+        if (!response.ok) throw new Error('Error de importación (HTTP ' + response.status + '). Revisa el panel antes de reintentar.');
+        const result = await response.json();
+        note.textContent = 'Guardadas: ' + result.saved.length + '. Duplicadas: ' + result.skipped + '. ' +
+            result.saved.map(job => job.title + ' (' + job.sourceId + ')').join(', ');
+        input.value = '';
+        await loadJobs();
+    } catch (error) {
+        note.textContent = error.message;
+    } finally {
+        button.disabled = false;
+    }
+});
