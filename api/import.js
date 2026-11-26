@@ -9,7 +9,13 @@ export default async function handler(request, response) {
 
     const authorization = request.headers.authorization || '';
     const receivedToken = authorization.startsWith('Bearer ') ? authorization.slice(7) : '';
-    if (!process.env.INGESTION_TOKEN || !safeSecretEqual(receivedToken, process.env.INGESTION_TOKEN)) {
+    const ingestionToken = process.env.INGESTION_TOKEN;
+    const laptopToken = process.env.LAPTOP_INGESTION_TOKEN;
+    const allowed = ingestionToken && (
+        safeSecretEqual(receivedToken, ingestionToken) ||
+        (laptopToken && safeSecretEqual(receivedToken, laptopToken))
+    );
+    if (!allowed) {
         return response.status(401).json({ error: 'No autorizado' });
     }
 
@@ -17,7 +23,7 @@ export default async function handler(request, response) {
         const result = await callWorker('/jobs/import', {
             method: 'POST',
             body: request.body,
-            token: process.env.INGESTION_TOKEN
+            token: ingestionToken
         });
         response.setHeader('Cache-Control', 'no-store');
         return response.status(result.response.status).json(result.payload);
