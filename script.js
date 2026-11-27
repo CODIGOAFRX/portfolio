@@ -204,18 +204,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectsContainer = document.getElementById('github-projects');
     const projects = [
         {
-            name: 'Tareas',
-            status: 'Experimento con agentes · Claude Code',
-            description: 'Lista de tareas hecha de principio a fin por tres agentes de Claude Code: un orquestador que reparte el trabajo, un developer que lo implementa y un tester que lo valida.',
-            goal: 'Probar un ciclo de desarrollo con agentes de papeles separados: el developer no puede tocar los tests y el tester no puede tocar el código, y cada tarea vuelve al developer hasta que el tester da el visto bueno.',
-            tech: 'JavaScript sin frameworks, CSS, localStorage, node:test, Playwright y subagentes de Claude Code. Servida por un Worker de Cloudflare.',
-            features: 'Añadir, completar, filtrar y borrar tareas; contador de pendientes; guardado que sobrevive a datos corruptos; texto pintado sin innerHTML; modo oscuro y uso completo con teclado.',
-            result: 'Tres tareas y cuatro vueltas: la interfaz falló la primera prueba por un error en consola y pasó en la segunda. 78 tests en verde y nueve criterios comprobados en un navegador real.',
-            href: '/proyecto/tareas/',
-            linkLabel: 'Abrir Tareas',
-            codeHref: 'https://github.com/CODIGOAFRX/tareas'
-        },
-        {
             name: 'Tune?',
             status: 'Herramienta de audio · Primera versión',
             description: 'Analizador de tonalidad y tempo para beats y canciones que funciona en el navegador.',
@@ -269,6 +257,18 @@ document.addEventListener('DOMContentLoaded', () => {
             result: 'En el ejemplo documentado reduce a la mitad las brechas de FPR y FNR, manteniendo todo el flujo en local.',
             href: 'https://github.com/CODIGOAFRX/sesgo_framework',
             linkLabel: 'GitHub'
+        },
+        {
+            name: 'Tareas',
+            status: 'Experimento con agentes · Claude Code',
+            description: 'Lista de tareas hecha de principio a fin por tres agentes de Claude Code: un orquestador que reparte el trabajo, un developer que lo implementa y un tester que lo valida.',
+            goal: 'Probar un ciclo de desarrollo con agentes de papeles separados: el developer no puede tocar los tests y el tester no puede tocar el código, y cada tarea vuelve al developer hasta que el tester da el visto bueno.',
+            tech: 'JavaScript sin frameworks, CSS, localStorage, node:test, Playwright y subagentes de Claude Code. Servida por un Worker de Cloudflare.',
+            features: 'Añadir, completar, filtrar y borrar tareas; contador de pendientes; guardado que sobrevive a datos corruptos; texto pintado sin innerHTML; modo oscuro y uso completo con teclado.',
+            result: 'Tres tareas y cuatro vueltas: la interfaz falló la primera prueba por un error en consola y pasó en la segunda. 78 tests en verde y nueve criterios comprobados en un navegador real.',
+            href: '/proyecto/tareas/',
+            linkLabel: 'Abrir Tareas',
+            codeHref: 'https://github.com/CODIGOAFRX/tareas'
         },
         {
             name: 'TrackMix',
