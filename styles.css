@@ -6295,6 +6295,526 @@ html.has-intro .hero.cue-hidden .scroll-cue {
     .dual-pie { grid-template-columns: minmax(0, 1fr); }
 }
 
+@media (min-width: 1100px) {
+    /* Poda, Ubuntu junto a Windows y AFR · Claude Skills a media página */
+    .mundos .poda-sub,
+    .mundos .dual-sub,
+    .mundos .horario-sub {
+        font-size: clamp(1rem, 1.25vw, 1.2rem);
+    }
+
+    .mundos .poda-pestanas {
+        gap: 0.85rem;
+        padding: 0.7rem 1rem;
+        font-size: 0.74rem;
+    }
+
+    .mundos .poda-pestanas > span:nth-of-type(n + 4) {
+        display: none;
+    }
+
+    .mundos .poda-celdas {
+        --cols: 25;
+        gap: 2px;
+        padding: 0 1rem 0.9rem;
+    }
+
+    .mundos .poda-resumen {
+        padding: 1.1rem 1rem 0.85rem;
+    }
+
+    .mundos .poda-leyenda {
+        padding: 0 1rem 1rem;
+        gap: 0.35rem 0.9rem;
+    }
+
+    .mundos .poda-ventana figcaption {
+        padding: 0.85rem 1rem 1rem;
+    }
+
+    .mundos .poda-pie,
+    .mundos .dual-pie,
+    .mundos .horario-pie {
+        grid-template-columns: 1fr;
+        gap: 1.4rem;
+        margin-top: auto;
+        padding: clamp(2rem, 4vh, 3rem) 0 0;
+    }
+
+    .mundos .poda-pie p,
+    .mundos .dual-pie p,
+    .mundos .horario-pie p {
+        font-size: 0.96rem;
+    }
+
+    .mundos .dual-croquis {
+        margin-top: clamp(2rem, 4vh, 3rem);
+    }
+
+    .mundos .dual-tramo {
+        gap: 0.55rem;
+    }
+
+    .mundos .dual-tramo b {
+        width: 28px;
+        height: 28px;
+        font-size: 0.78rem;
+        border-width: 1.5px;
+    }
+
+    .mundos .dual-tramo:not(:first-child)::before,
+    .mundos .dual-tramo:not(:first-child)::after {
+        top: 14px;
+    }
+
+    .mundos .dual-tramo.reunion b {
+        box-shadow: 0 0 0 2px var(--du-roca), 0 0 0 3.5px var(--du-grafito);
+    }
+
+    .mundos .dual-tramo.sin-vuelta > span::before {
+        top: 5px;
+        left: -3px;
+        width: 6px;
+        height: 18px;
+    }
+
+    .mundos .dual-tramo span {
+        max-width: 8ch;
+        font-stretch: 64%;
+        font-size: 0.64rem;
+        letter-spacing: 0.01em;
+        line-height: 1.15;
+    }
+
+    /* AFR · Claude Skills a media página (junto a Ubuntu) */
+    .mundos .skills-destacado {
+        gap: 1.15rem;
+        border-radius: 0;
+    }
+
+    .mundos .skills-casete {
+        padding: 1rem 1.15rem 0;
+        column-gap: 1rem;
+    }
+
+    .mundos .skills-titulo {
+        font-size: clamp(2rem, 3.1vw, 3.1rem);
+    }
+
+    .mundos .skills-sub {
+        font-size: 0.92rem;
+    }
+
+    .mundos .skills-ventana {
+        padding: 0.45rem 0.65rem;
+    }
+
+    .mundos .skills-ventana svg {
+        width: 38px;
+    }
+
+    .mundos .skills-ventana span {
+        width: 18px;
+        height: 12px;
+        box-shadow: inset 0 0 0 3px #19172a;
+    }
+
+    .mundos .skills-caras {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .mundos .skills-cara {
+        padding: 0.85rem 1rem;
+    }
+
+    .mundos .skills-cara h4 {
+        font-size: 1.05rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .mundos .skills-cara ol {
+        columns: 2 140px;
+        column-gap: 1rem;
+    }
+
+    .mundos .skills-cara li {
+        font-size: 0.8rem;
+        padding: 0.22rem 0;
+    }
+
+    .mundos .skills-pie {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-top: auto;
+        padding-top: 0.5rem;
+    }
+
+    .mundos .skills-pie p {
+        font-size: 0.94rem;
+    }
+}
+
+/* ---------- Horario semanal: tarjeta de producto en el mismo lenguaje que /horario ---------- */
+.horario-destacado {
+    --ho-bg: #ffffff;
+    --ho-ink: #111111;
+    --ho-muted: #696969;
+    --ho-soft: #9a9a9a;
+    --ho-line: #e5e5e5;
+    --ho-wash: #f7f7f5;
+    --relleno: clamp(2.2rem, 6vw, 6rem);
+    position: relative;
+    overflow: clip;
+    margin-bottom: clamp(5rem, 12vh, 9rem);
+    padding: var(--relleno);
+    background: var(--ho-bg);
+    color: var(--ho-ink);
+    border: 1px solid var(--ho-line);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.horario-destacado .horario-index {
+    color: var(--ho-muted);
+    margin-bottom: 1.1rem;
+}
+
+.horario-titulo {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(2.6rem, 5vw, 4.6rem);
+    font-weight: 700;
+    line-height: 0.96;
+    letter-spacing: -0.045em;
+    color: var(--ho-ink);
+}
+
+.horario-titulo span {
+    color: var(--ho-soft);
+    font-weight: 500;
+}
+
+.horario-sub {
+    max-width: 44ch;
+    margin: 1.15rem 0 0;
+    font-size: clamp(1rem, 1.5vw, 1.25rem);
+    line-height: 1.48;
+    color: var(--ho-muted);
+}
+
+.horario-mesa {
+    margin: clamp(1.8rem, 4vh, 2.8rem) 0 0;
+}
+
+.horario-muestra {
+    border: 1px solid var(--ho-line);
+    background: var(--ho-bg);
+}
+
+.horario-barra {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.65rem 0.9rem;
+    border-bottom: 1px solid var(--ho-line);
+    background: var(--ho-wash);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ho-muted);
+}
+
+.horario-barra strong {
+    color: var(--ho-ink);
+    font-weight: 700;
+}
+
+.horario-barra em {
+    font-style: normal;
+    color: var(--ho-muted);
+}
+
+.horario-rejilla {
+    display: grid;
+    grid-template-columns: 2.6rem repeat(5, minmax(0, 1fr));
+    grid-template-rows: auto repeat(5, 2.2rem);
+    font-size: 0.72rem;
+    background: var(--ho-bg);
+}
+
+.horario-dia {
+    grid-row: 1;
+    padding: 0.45rem 0.25rem;
+    border-bottom: 1px solid var(--ho-line);
+    border-left: 1px solid #f0f0f0;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ho-muted);
+}
+
+.horario-hora {
+    grid-column: 1;
+    padding: 0.35rem 0.4rem 0 0;
+    border-top: 1px solid #f3f3f3;
+    text-align: right;
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    font-size: 0.66rem;
+    color: var(--ho-soft);
+}
+
+.horario-bloque {
+    margin: 2px;
+    padding: 0.3rem 0.4rem;
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 600;
+    line-height: 1.2;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.horario-bloque small {
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    font-size: 0.6rem;
+    font-weight: 400;
+    opacity: 0.85;
+}
+
+.horario-bloque--dev { background: #111111; }
+.horario-bloque--clase { background: #1d4ed8; }
+.horario-bloque--reunion { background: #15803d; }
+.horario-bloque--prod { background: #b45309; }
+.horario-bloque--qa { background: #6d28d9; }
+
+.horario-mesa figcaption {
+    margin-top: 0.7rem;
+    max-width: 58ch;
+    color: var(--ho-muted);
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.horario-pie {
+    display: grid;
+    gap: 1.4rem;
+    margin-top: clamp(2rem, 4vh, 3rem);
+}
+
+.horario-pie p {
+    max-width: 60ch;
+    margin: 0;
+    color: var(--ho-muted);
+    font-size: 0.98rem;
+    line-height: 1.65;
+}
+
+.horario-links a {
+    color: var(--ho-ink);
+    border-bottom-color: var(--ho-ink);
+}
+
+.horario-links a:first-child {
+    border-bottom-color: var(--accent, #e5322d);
+}
+
+/* ---------- 05 / Laboratorio visual: galería editorial a todo el ancho en 3 columnas ---------- */
+.visual-lab {
+    display: block;
+    position: relative;
+    z-index: 2;
+    padding: clamp(5rem, 11vh, 9rem) 0 clamp(5rem, 10vh, 8rem);
+    background: var(--bg-color, #ffffff);
+    border-top: 1px solid var(--border-color, #eeeeee);
+}
+
+.visual-lab > .content-wrapper {
+    padding-inline: var(--padding-x);
+}
+
+.visual-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: clamp(2.5rem, 8vw, 8rem);
+    align-items: end;
+    margin-bottom: clamp(3rem, 6vh, 5rem);
+}
+
+.visual-heading .section-label {
+    margin-bottom: 1.5rem;
+}
+
+.visual-heading h2 {
+    max-width: 920px;
+    font-size: clamp(3.4rem, 5.8vw, 6.6rem);
+    font-weight: 400;
+    line-height: 0.92;
+    letter-spacing: -0.055em;
+}
+
+.visual-heading > p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.visual-grid {
+    width: 100%;
+    padding-inline: clamp(1rem, 2.2vw, 2.5rem);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1rem, 1.5vw, 1.5rem);
+    margin-bottom: 0;
+}
+
+.visual-grid > article {
+    margin-bottom: 0;
+}
+
+@media (max-width: 960px) {
+    .visual-heading {
+        grid-template-columns: 1fr;
+        gap: 1.75rem;
+    }
+}
+
+@media (min-width: 820px) {
+    .visual-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: stretch;
+    }
+
+    .visual-grid > article {
+        display: flex;
+        flex-direction: column;
+        --relleno: clamp(1.6rem, 2.5vw, 2.6rem);
+        padding: var(--relleno);
+    }
+
+    .visual-grid :is(.catabasis-pie, .herbario-pie, .comedia-pie, .boveda-pie, .ornamentos-pie, .sphaera-pie, .diseccion-pie, .trazado-pie, .nocturna-pie, .milenario-pie) {
+        grid-template-columns: 1fr;
+        gap: 1.15rem;
+        margin-top: auto;
+        padding-top: clamp(1.6rem, 3.2vh, 2.4rem);
+    }
+}
+
+@media (min-width: 1200px) {
+    .visual-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .visual-grid > article {
+        grid-column: span 2;
+        --relleno: clamp(1.5rem, 2vw, 2.3rem);
+        padding: var(--relleno);
+    }
+
+    .visual-grid > article.visual-span-3 {
+        grid-column: span 3;
+        --relleno: clamp(1.9rem, 2.8vw, 3rem);
+        padding: var(--relleno);
+    }
+
+    /* Escala afinada para las tarjetas en 3 columnas (ancho de pantalla completo) */
+    .visual-grid > article:not(.visual-span-3) :is(.catabasis-title, .comedia-titulo, .boveda-titulo, .sphaera-titulo) {
+        font-size: clamp(2.3rem, 3.3vw, 4rem);
+    }
+
+    .visual-grid > article:not(.visual-span-3) .herbario-titulo {
+        font-size: min(clamp(2.3rem, 3.3vw, 4rem), 15cqi);
+    }
+
+    .visual-grid > article:not(.visual-span-3) .diseccion-titulo {
+        font-size: clamp(1.95rem, 2.8vw, 3.4rem);
+    }
+
+    .visual-grid > article:not(.visual-span-3) :is(.catabasis-sub, .herbario-sub, .comedia-sub, .boveda-sub, .sphaera-sub, .diseccion-sub) {
+        font-size: clamp(0.98rem, 1.08vw, 1.18rem);
+    }
+
+    .visual-grid > article:not(.visual-span-3) :is(.catabasis-pie, .herbario-pie, .comedia-pie, .boveda-pie, .sphaera-pie, .diseccion-pie) p {
+        font-size: 0.9rem;
+    }
+
+    .visual-grid .catabasis-criatura img {
+        max-height: clamp(100px, 9.5vw, 155px);
+    }
+
+    .visual-grid .catabasis-criatura-1 {
+        margin-top: clamp(-3.2rem, -2.8vw, -1rem);
+    }
+
+    .visual-grid .herbario-ano {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
+    }
+
+    .visual-grid .herbario-planta:nth-child(n + 4) {
+        display: none;
+    }
+
+    .visual-grid .herbario-planta img {
+        height: clamp(175px, 16vw, 260px);
+    }
+
+    .visual-grid .comedia-giro {
+        width: min(68%, 230px);
+    }
+
+    .visual-grid .comedia-canticas {
+        margin: 1.5rem calc(-1 * var(--relleno)) 0;
+    }
+
+    .visual-grid .comedia-cantica {
+        padding: 0.85rem;
+    }
+
+    .visual-grid .comedia-parte {
+        font-size: 1.15rem;
+    }
+
+    .visual-grid .comedia-cantica figcaption {
+        font-size: 0.78rem;
+    }
+
+    .visual-grid .boveda-lamina {
+        max-width: 280px;
+        margin-inline: auto;
+    }
+
+    .visual-grid .boveda-astros li {
+        font-size: 0.95rem;
+    }
+
+    .visual-grid .sphaera-compas {
+        width: min(100%, 260px);
+    }
+
+    .visual-grid .sphaera-discos,
+    .visual-grid .diseccion-actos {
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+    }
+
+    .visual-grid .diseccion-cuerpo {
+        width: min(100%, 200px);
+    }
+
+    /* Fila de cierre (Nocturna + Milenario) más compacta en altura */
+    .visual-grid .milenario-lienzo {
+        width: min(100%, 50vh);
+    }
+
+    .visual-grid .trazado-mediatriz {
+        width: min(100%, 340px);
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .dual-tramo b { transition: none; }
 }

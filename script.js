@@ -204,18 +204,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectsContainer = document.getElementById('github-projects');
     const projects = [
         {
-            name: 'Horario',
-            status: 'Herramienta abierta · En uso',
-            description: 'Horario semanal de lunes a domingo por horas, que se edita arrastrando y se lleva en el móvil como una app. Cualquiera puede crear su cuenta y usarlo.',
-            goal: 'Organizar la semana con algo tan rápido como el papel: crear, mover y alargar actividades sin formularios y tenerlas igual en el ordenador y en el móvil.',
-            tech: 'JavaScript sin frameworks, CSS, Vercel Functions, Cloudflare Workers, D1, scrypt y node:test.',
-            features: 'Cuentas propias con contraseña cifrada; arrastrar para crear, mover, alargar o duplicar (con Ctrl); copiar, cortar y pegar; deshacer; vista de semana y de día; impresión en A4; copias en JSON; icono para la pantalla de inicio y panel de administración con borrado de cuentas y bloqueo de IPs.',
-            result: 'Abierto en pedrogomez.dev/horario: cada cuenta tiene su horario en D1, límite de altas por IP y un administrador que puede borrar cuentas y bloquear IPs. Se pinta al instante desde la copia local y el servidor sanea cada horario antes de guardarlo.',
-            href: '/horario',
-            linkLabel: 'Crear mi horario',
-            codeHref: 'https://github.com/CODIGOAFRX/portfolio/tree/main/horario'
-        },
-        {
             name: 'Tareas',
             status: 'Experimento con agentes · Claude Code',
             description: 'Lista de tareas hecha de principio a fin por tres agentes de Claude Code: un orquestador que reparte el trabajo, un developer que lo implementa y un tester que lo valida.',

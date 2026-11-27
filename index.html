@@ -28,7 +28,7 @@
     <meta name="twitter:description"
         content="Desarrollo de principio a fin. Productos web en producción y automatización con Java, Python y TypeScript.">
     <meta name="twitter:image" content="https://www.pedrogomez.dev/og.png">
-    <link rel="stylesheet" href="styles.css?v=20261124-dual">
+    <link rel="stylesheet" href="styles.css?v=20261127-visual3">
     <script src="intro-boot.js?v=20261020-corte"></script>
 </head>
 
@@ -46,7 +46,8 @@
             <a href="#pera">PERA ERP</a>
             <a href="#about">Perfil</a>
             <a href="#timeline">Trayectoria</a>
-            <a href="#production">En producción</a>
+            <a href="#production">Productos</a>
+            <a href="#visual">Visual</a>
             <a href="#projects">Otros proyectos</a>
             <a href="#stack">Stack</a>
             <a href="#contact">Contacto</a>
@@ -278,11 +279,10 @@
                         <div class="content-wrapper">
                             <div class="production-heading hidden-element">
                                 <div>
-                                    <h3 class="section-label">04 / Productos en producción</h3>
-                                    <h2>Software que ya trabaja fuera del portfolio.</h2>
+                                    <h3 class="section-label">04 / Productos y aplicaciones</h3>
+                                    <h2>Software hecho para usarse.</h2>
                                 </div>
-                                <p>Proyectos completos en los que diseño la experiencia, desarrollo la lógica y mantengo la
-                                    infraestructura que los hace funcionar.</p>
+                                <p>Productos en producción para clientes, demos completas y herramientas propias: diseño la experiencia, desarrollo la lógica y mantengo la infraestructura.</p>
                             </div>
                         </div>
                     </div>
@@ -508,429 +508,8 @@
                             </div>
                         </article>
 
-                        <!-- Catábasis y el Herbario hablan del mundo vivo: en escritorio van uno junto a otro,
-                             a media página; en móvil, uno debajo de otro. -->
-                        <div class="mundos">
-                        <!-- Catábasis: bestiario con el papel y la tinta de su web, servido por su propio Worker
-                             en /proyecto/catabasis. El fondo baja del papel al abismo, como la web, y las láminas
-                             van sin papel (versión alfa) para no depender de mix-blend-mode. -->
-                        <article id="catabasis" class="catabasis" aria-labelledby="catabasis-title">
-                            <div class="catabasis-heading hidden-element">
-                                <p class="case-index catabasis-index">Proyecto visual / Bestiario imposible</p>
-                                <h3 id="catabasis-title" class="catabasis-title">Catábasis</h3>
-                                <p class="catabasis-sub">Un mundo por explorar, del cielo al abismo, poblado de criaturas imposibles.</p>
-                            </div>
-                            <ol class="catabasis-descenso" aria-label="Algunas criaturas del bestiario">
-                                <li class="catabasis-criatura catabasis-criatura-1">
-                                    <figure>
-                                        <img src="/media/catabasis/vampiro.webp" width="1100" height="714" loading="lazy" alt="Murciélago con cabeza de hombre, litografía coloreada de 1851">
-                                        <figcaption><span class="catabasis-cota">+800 m</span><span class="catabasis-latin" lang="la">Vespertilio foenerator</span>Vampiro de levita</figcaption>
-                                    </figure>
-                                </li>
-                                <li class="catabasis-criatura catabasis-criatura-2">
-                                    <figure>
-                                        <img src="/media/catabasis/girasol.webp" width="765" height="1100" loading="lazy" alt="Girasol con rostro y cuerpo de persona, de Les Fleurs animées de Grandville">
-                                        <figcaption><span class="catabasis-cota">+25 m</span><span class="catabasis-latin" lang="la">Helianthus vigilans</span>Girasol centinela</figcaption>
-                                    </figure>
-                                </li>
-                                <li class="catabasis-criatura catabasis-criatura-3">
-                                    <figure>
-                                        <img src="/media/catabasis/mandragora.webp" width="738" height="1100" loading="lazy" alt="Mandrágora con forma de mujer, xilografía coloreada de 1491">
-                                        <figcaption><span class="catabasis-cota">-120 m</span><span class="catabasis-latin" lang="la">Mandragora femina</span>Mandrágora hembra</figcaption>
-                                    </figure>
-                                </li>
-                                <li class="catabasis-criatura catabasis-criatura-4">
-                                    <figure>
-                                        <img src="/media/catabasis/pez.webp" width="817" height="1100" loading="lazy" alt="Peces de colores imposibles de la obra de Louis Renard, 1754">
-                                        <figcaption><span class="catabasis-cota">-1.400 m</span><span class="catabasis-latin" lang="la">Piscis versicolor</span>Pez de colores de más</figcaption>
-                                    </figure>
-                                </li>
-                                <li class="catabasis-criatura catabasis-criatura-5">
-                                    <figure>
-                                        <img src="/media/catabasis/medusa.webp" width="688" height="966" loading="lazy" alt="Medusas de largos tentáculos de Ernst Haeckel, Kunstformen der Natur">
-                                        <figcaption><span class="catabasis-cota">-4.000 m</span><span class="catabasis-latin" lang="la">Desmonema annasethe</span>Medusa de Anna</figcaption>
-                                    </figure>
-                                </li>
-                            </ol>
-                            <div class="catabasis-pie hidden-element">
-                                <p>152 láminas antiguas de dominio público, limpiadas y ampliadas, con fichas inventadas y un osario donde montar quimeras con sus huesos.</p>
-                                <div class="case-links catabasis-links">
-                                    <a href="/proyecto/catabasis/">Empezar el descenso</a>
-                                    <a href="/proyecto/catabasis/herbolario">Abrir el herbolario</a>
-                                    <a href="https://github.com/CODIGOAFRX/catabasis" target="_blank" rel="noopener noreferrer">Ver código</a>
-                                </div>
-                            </div>
-                        </article>
-
-                        <!-- Herbario del año: el taller del herbolario de su web (/proyecto/herbario, servida por su propio
-                             Worker): papel de estraza, Besley, máquina de escribir y sello en azul de Prusia. Las plantas
-                             brotan en tinta desde la raíz y les llega el color con el scroll; sin soporte o con movimiento
-                             reducido, enteras. -->
-                        <article id="herbario" class="herbario-destacado" aria-labelledby="herbario-title">
-                            <div class="herbario-cabeza hidden-element">
-                                <p class="case-index herbario-index"><span class="herbario-sello">Flora de la península</span> Proyecto visual / Almanaque botánico</p>
-                                <h3 id="herbario-title" class="herbario-titulo"><span>Herbario</span> <em>del año</em></h3>
-                                <p class="herbario-sub">Doce meses de flora española en láminas antiguas que brotan, florecen, dan fruto y se secan con el scroll.</p>
-                            </div>
-                            <ol class="herbario-ano" aria-label="Algunas plantas del año">
-                                <li class="herbario-planta">
-                                    <figure>
-                                        <img src="/media/herbario/galanthus-nivalis.webp" width="248" height="700" loading="lazy" decoding="async" alt="Campanilla de invierno, de la Deutschlands Flora de Jacob Sturm">
-                                        <figcaption><span class="herbario-mes">Enero</span><span class="herbario-latin" lang="la">Galanthus nivalis</span>Campanilla de invierno</figcaption>
-                                    </figure>
-                                </li>
-                                <li class="herbario-planta">
-                                    <figure>
-                                        <img src="/media/herbario/papaver-rhoeas.webp" width="353" height="700" loading="lazy" decoding="async" alt="Amapola con su pétalo y su cápsula, de la Deutschlands Flora de Jacob Sturm">
-                                        <figcaption><span class="herbario-mes">Mayo</span><span class="herbario-latin" lang="la">Papaver rhoeas</span>Amapola</figcaption>
-                                    </figure>
-                                </li>
-                                <li class="herbario-planta">
-                                    <figure>
-                                        <img src="/media/herbario/hypericum-perforatum.webp" width="387" height="700" loading="lazy" decoding="async" alt="Hipérico, la hierba de San Juan, de la Deutschlands Flora de Jacob Sturm">
-                                        <figcaption><span class="herbario-mes">Junio</span><span class="herbario-latin" lang="la">Hypericum perforatum</span>Hipérico</figcaption>
-                                    </figure>
-                                </li>
-                                <li class="herbario-planta">
-                                    <figure>
-                                        <img src="/media/herbario/crocus-sativus.webp" width="300" height="700" loading="lazy" decoding="async" alt="Azafrán con su bulbo, de Köhler's Medizinal-Pflanzen">
-                                        <figcaption><span class="herbario-mes">Octubre</span><span class="herbario-latin" lang="la">Crocus sativus</span>Azafrán</figcaption>
-                                    </figure>
-                                </li>
-                                <li class="herbario-planta">
-                                    <figure>
-                                        <img src="/media/herbario/ilex-aquifolium.webp" width="501" height="700" loading="lazy" decoding="async" alt="Rama de acebo, de la Deutschlands Flora de Jacob Sturm">
-                                        <figcaption><span class="herbario-mes">Diciembre</span><span class="herbario-latin" lang="la">Ilex aquifolium</span>Acebo</figcaption>
-                                    </figure>
-                                </li>
-                            </ol>
-                            <div class="herbario-pie hidden-element">
-                                <p>36 láminas de 1750 a 1927, de la Biodiversity Heritage Library, recortadas en capas sin redibujar nada. Le dices dónde vives y te cuenta qué florece hoy; lo que guardes se monta en tu pliego y se descarga como cianotipia.</p>
-                                <div class="case-links herbario-links">
-                                    <a href="/proyecto/herbario/">Recorrer el año</a>
-                                    <a href="/proyecto/herbario/#hoy">Qué florece hoy</a>
-                                    <a href="https://github.com/CODIGOAFRX/herbario" target="_blank" rel="noopener noreferrer">Ver código</a>
-                                </div>
-                            </div>
-                        </article>
-                        </div>
-
-                        <!-- Comedia y Bóveda, una junto a otra en escritorio: un poema y un cielo, cada uno con la
-                             tipografía y los colores de su web. En móvil, una debajo de otra. -->
-                        <div class="mundos mundos--cielos">
-                        <!-- Comedia: el papel de Caetani, la Switzer y los campos de color de su web (/proyecto/comedia,
-                             servida por su propio Worker). El centro de la Tierra gira media vuelta con el scroll, como
-                             Dante en la cadera de Lucifer; sin soporte o con movimiento reducido, ya derecho. -->
-                        <article id="comedia" class="comedia-destacado" aria-labelledby="comedia-title">
-                            <div class="comedia-cabeza">
-                                <div class="hidden-element">
-                                    <p class="case-index comedia-index">Proyecto visual / Viaje por un poema</p>
-                                    <h3 id="comedia-title" class="comedia-titulo">Comedia</h3>
-                                    <p class="comedia-sub">La Divina Comedia de Dante con el scroll: bajar al centro de la Tierra, dar la vuelta y subir hasta las estrellas.</p>
-                                </div>
-                                <figure class="comedia-giro">
-                                    <img src="/media/comedia/centro.webp" width="900" height="900" loading="lazy" decoding="async" alt="El centro de la Tierra en la Figura universal de Caetani: el Infierno bajo Jerusalén y el camino que sube al Purgatorio">
-                                    <figcaption>La Tierra en la Figura universal de Michelangelo Caetani, 1855. Gira con el scroll, como Dante en la cadera de Lucifer.</figcaption>
-                                </figure>
-                            </div>
-                            <ol class="comedia-canticas" aria-label="Las tres partes del poema">
-                                <li class="comedia-cantica comedia-cantica--infierno">
-                                    <figure>
-                                        <img src="/media/comedia/caronte.webp" width="952" height="473" loading="lazy" decoding="async" alt="Caronte rema por el Aqueronte con Dante y Virgilio, miniatura de Siena de hacia 1445">
-                                        <figcaption><span class="comedia-parte">Infierno</span>Nueve círculos hacia abajo. Caronte, canto III.</figcaption>
-                                    </figure>
-                                </li>
-                                <li class="comedia-cantica comedia-cantica--purgatorio">
-                                    <figure>
-                                        <img src="/media/comedia/soberbios.webp" width="952" height="426" loading="lazy" decoding="async" alt="La puerta del Purgatorio y los soberbios doblados bajo piedras, miniatura de Siena de hacia 1445">
-                                        <figcaption><span class="comedia-parte">Purgatorio</span>Siete cornisas hacia arriba. Los soberbios, canto X.</figcaption>
-                                    </figure>
-                                </li>
-                                <li class="comedia-cantica comedia-cantica--paraiso">
-                                    <figure>
-                                        <img src="/media/comedia/jupiter.webp" width="520" height="520" loading="lazy" decoding="async" alt="El águila de la justicia hecha de almas, con Beatriz y Dante, miniatura de Giovanni di Paolo">
-                                        <figcaption><span class="comedia-parte">Paraíso</span>Nueve cielos y la luz. El águila, canto XVIII.</figcaption>
-                                    </figure>
-                                </li>
-                            </ol>
-                            <div class="comedia-pie hidden-element">
-                                <p>36 láminas de 1370 a 1921, del Public Domain Image Archive y de Wikimedia Commons, recortadas sin redibujar nada. La lámina de Caetani hace de mapa: la cámara entra en ella, la inscripción de la puerta se entinta palabra a palabra, los nueve círculos se bajan como un pozo y en el centro de la Tierra la lámina gira media vuelta. Arriba, siete cornisas con los grabados de Doré que le borran a Dante las siete P de la frente y un juego para ver dónde se castiga y dónde se purga cada pecado.</p>
-                                <div class="case-links comedia-links">
-                                    <a href="/proyecto/comedia/">Empezar a bajar</a>
-                                    <a href="/proyecto/comedia/#pecado">Un pecado, dos sitios</a>
-                                    <a href="https://github.com/CODIGOAFRX/comedia" target="_blank" rel="noopener noreferrer">Ver código</a>
-                                </div>
-                            </div>
-                        </article>
-
-                        <!-- Bóveda: el cielo de cualquier noche, en la cianotipia de su web (/proyecto/boveda, servida por
-                             su propio Worker). La lámina sale del motor de la app en dos capas: el aro graduado queda fijo
-                             y el cielo gira alrededor de la Polar con el scroll, que es lo que en la app hace pasar las horas.
-                             Sin soporte o con movimiento reducido, la lámina queda quieta. -->
-                        <article id="boveda" class="boveda-destacado" aria-labelledby="boveda-title">
-                            <div class="boveda-texto">
-                                <div class="boveda-cabeza hidden-element">
-                                    <p class="case-index boveda-index">Proyecto visual / Atlas celeste</p>
-                                    <h3 id="boveda-title" class="boveda-titulo">Bóveda</h3>
-                                    <p class="boveda-sub">El cielo de cualquier noche entre 1800 y 2050, calculado estrella a estrella y grabado como en un atlas de 1690.</p>
-                                </div>
-                                <ol class="boveda-astros" aria-label="Lo que había sobre Granada el 15 de enero de 2027 a las 22:00">
-                                    <li><span class="boveda-altura">+44°</span><span class="boveda-donde">al oeste</span>Cuarto creciente</li>
-                                    <li><span class="boveda-altura">+38°</span><span class="boveda-donde">al norte</span>Estrella Polar</li>
-                                    <li><span class="boveda-altura">+27°</span><span class="boveda-donde">al oeste</span>Saturno</li>
-                                    <li><span class="boveda-altura">+27°</span><span class="boveda-donde">al sudeste</span>Sirio</li>
-                                    <li><span class="boveda-altura">+15°</span><span class="boveda-donde">al este</span>Júpiter</li>
-                                </ol>
-                                <div class="boveda-pie hidden-element">
-                                    <p>5.044 estrellas, siete planetas, la Luna y el Sol calculados en el navegador con un motor astronómico propio, sin librerías y comprobado con 23 pruebas contra los ejemplos de Jean Meeus. Se arrastra para mover las horas y cada cielo se graba como lámina para imprimir.</p>
-                                    <div class="case-links boveda-links">
-                                        <a href="/proyecto/boveda/">Ver el cielo de esta noche</a>
-                                        <a href="/proyecto/boveda/#calculo">Cómo se calcula</a>
-                                        <a href="https://github.com/CODIGOAFRX/boveda" target="_blank" rel="noopener noreferrer">Ver código</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <figure class="boveda-lamina">
-                                <div class="boveda-disco">
-                                    <img class="boveda-cielo" src="/media/boveda/boveda-cielo.webp" width="2020" height="2020" loading="lazy" decoding="async" alt="">
-                                </div>
-                                <img class="boveda-aro" src="/media/boveda/boveda-aro.webp" width="1200" height="1200" loading="lazy" decoding="async"
-                                    alt="Planisferio grabado en blanco sobre azul: el cielo de Granada el 15 de enero de 2027 a las 22:00, con Orión, Tauro y Géminis en lo alto, la media Luna al oeste y la Vía Láctea en trama">
-                                <figcaption><span class="lamina-num">Lámina calculada</span>El cielo sobre Granada el 15 de enero de 2027, a las 22:00. Al bajar por la página pasan las horas y el cielo gira alrededor de la Polar.</figcaption>
-                            </figure>
-                        </article>
-                        </div>
-
-                        <!-- Ornamentos y Palimpsesto: dos herramientas que rescatan papel antiguo, una tipográfica y
-                             otra cartográfica. -->
-                        <div class="mundos mundos--oficios">
-                        <!-- Ornamentos: el papel, la Fell y el bermellón de su web (/proyecto/ornamentos, servida por su
-                             Worker). Las capitulares se pintan como máscara CSS, que es como se usan desde la web, y el
-                             florón de torno gira con el scroll; sin soporte o con movimiento reducido, quieto. -->
-                        <article id="ornamentos" class="ornamentos-destacado" aria-labelledby="ornamentos-title">
-                            <div class="ornamentos-cabeza hidden-element">
-                                <p class="case-index ornamentos-index">Recurso para la web / Capitulares y florones</p>
-                                <h3 id="ornamentos-title" class="ornamentos-titulo" aria-label="Ornamentos"><span class="ornamentos-letra ornamentos-letra--o" aria-hidden="true"></span><span aria-hidden="true">rnamentos</span></h3>
-                                <p class="ornamentos-sub">Capitulares de cinco alfabetos, del siglo XI al XIX, y florones de torno de 1869, listos para cualquier web con una línea de CSS.</p>
-                            </div>
-                            <ol class="ornamentos-alfabetos" aria-label="Una capitular de cada alfabeto">
-                                <li><span class="ornamentos-letra ornamentos-letra--a" aria-hidden="true"></span><span class="ornamentos-siglo">Siglo XI</span>Románico alemán</li>
-                                <li><span class="ornamentos-letra ornamentos-letra--b" aria-hidden="true"></span><span class="ornamentos-siglo">Siglo XIV</span>Gótico alemán</li>
-                                <li><span class="ornamentos-letra ornamentos-letra--c" aria-hidden="true"></span><span class="ornamentos-siglo">Siglo XVI</span>Veneciano</li>
-                                <li><span class="ornamentos-letra ornamentos-letra--d" aria-hidden="true"></span><span class="ornamentos-siglo">Siglo XIX</span>Rústico</li>
-                            </ol>
-                            <figure class="ornamentos-floron">
-                                <span class="ornamentos-floron-forma" aria-hidden="true"></span>
-                                <figcaption>Florón de torno de Edward J. Woolsey, 1869, usado como máscara: toma el color que se le dé.</figcaption>
-                            </figure>
-                            <div class="ornamentos-pie hidden-element">
-                                <p>120 letras del Alphabet-album de Silvestre (París, 1843), recortadas y vectorizadas, y 23 florones fotografiados en 1869. Se escribe un párrafo y la primera letra se vuelve capitular, con su HTML y su CSS para copiar.</p>
-                                <div class="case-links ornamentos-links">
-                                    <a href="/proyecto/ornamentos/">Abrir Ornamentos</a>
-                                    <a href="/proyecto/ornamentos/#catalogo">Ver el catálogo</a>
-                                    <a href="https://github.com/CODIGOAFRX/ornamentos" target="_blank" rel="noopener noreferrer">Ver código</a>
-                                </div>
-                            </div>
-                        </article>
-
-                        <!-- Palimpsesto: el papel y la Fell de su web (/proyecto/palimpsesto, servida por su Worker). La
-                             cortina entre 1956 y hoy se mueve con el scroll (scenes.js), como la que se arrastra en la app;
-                             sin soporte o con movimiento reducido, a la mitad. -->
-                        <article id="palimpsesto" class="palimpsesto-destacado" aria-labelledby="palimpsesto-title">
-                            <div class="palimpsesto-cabeza hidden-element">
-                                <p class="case-index palimpsesto-index">Mapa interactivo / Granada en dos épocas</p>
-                                <h3 id="palimpsesto-title" class="palimpsesto-titulo">Palimpsesto</h3>
-                                <p class="palimpsesto-sub">La misma ciudad en dos épocas, una encima de otra, con una cortina que se arrastra.</p>
-                            </div>
-                            <figure class="palimpsesto-cortina">
-                                <div class="palimpsesto-mapas">
-                                    <img src="/media/palimpsesto/granada-hoy.webp" width="1200" height="720" loading="lazy" decoding="async" alt="El centro de Granada hoy, en ortofoto: la ciudad llega hasta la ronda y la Alhambra asoma entre el verde">
-                                    <img class="palimpsesto-antes" src="/media/palimpsesto/granada-1956.webp" width="1200" height="720" loading="lazy" decoding="async" alt="El mismo trozo de Granada en 1956, en blanco y negro: donde hoy hay manzanas, al oeste, había huertas">
-                                    <span class="palimpsesto-linea" aria-hidden="true"><span>1956</span><span>Hoy</span></span>
-                                </div>
-                                <figcaption>El centro de Granada en el vuelo americano de 1956 y en la ortofoto de hoy. Al bajar, la cortina pasa de una época a otra. © Instituto Geográfico Nacional.</figcaption>
-                            </figure>
-                            <div class="palimpsesto-pie hidden-element">
-                                <p>Siete capas del Instituto Geográfico Nacional, de las planimetrías de 1870 a la ortofoto de hoy, con cortina, lupa y fundido. Un Worker convierte cada tesela en su petición al IGN y la guarda en caché; funciona en toda España.</p>
-                                <div class="case-links palimpsesto-links">
-                                    <a href="/proyecto/palimpsesto/">Abrir Palimpsesto</a>
-                                    <a href="https://github.com/CODIGOAFRX/palimpsesto" target="_blank" rel="noopener noreferrer">Ver código</a>
-                                </div>
-                            </div>
-                        </article>
-                        </div>
-
-                        <!-- Lo más nuevo: Sphaera y Disección, láminas antiguas a la luz y a oscuras. -->
-                        <div class="mundos mundos--nuevo">
-                        <!-- Sphaera: el negro, la Jost y el rojo de su web (/proyecto/sphaera, servida por su Worker). Como
-                             en su portada, el brazo del compás da la vuelta con el scroll y dentro se abre la luz de Fludd
-                             (scenes.js); sin soporte o con movimiento reducido, el círculo ya cerrado. -->
-                        <article id="sphaera" class="sphaera-destacado" aria-labelledby="sphaera-title">
-                            <div class="sphaera-cabeza hidden-element">
-                                <p class="case-index sphaera-index">Proyecto visual / Geometría del círculo</p>
-                                <h3 id="sphaera-title" class="sphaera-titulo">Sphaera</h3>
-                                <p class="sphaera-sub">El círculo y la esfera, del compás de Euclides a la pompa de jabón, en láminas antiguas.</p>
-                            </div>
-                            <figure class="sphaera-compas">
-                                <div class="sphaera-disco">
-                                    <img src="/media/sphaera/luz.webp" width="780" height="780" loading="lazy" decoding="async" alt="Grabado redondo: un disco de rayos claros que se abre desde un centro negro, rodeado de oscuridad">
-                                    <svg viewBox="-500 -500 1000 1000" aria-hidden="true" focusable="false">
-                                        <circle class="sphaera-traza" r="440" pathLength="1" transform="rotate(-90)"/>
-                                        <line class="sphaera-brazo" x1="0" y1="0" x2="0" y2="-440"/>
-                                        <circle class="sphaera-centro" r="7"/>
-                                    </svg>
-                                </div>
-                                <figcaption>La luz brota de la oscuridad. Robert Fludd, 1617. Al bajar, el compás da la vuelta y la lámina se abre, como en la portada de la web.</figcaption>
-                            </figure>
-                            <ol class="sphaera-discos" aria-label="Tres capítulos de la web">
-                                <li><img src="/media/sphaera/torno.webp" width="640" height="640" loading="lazy" decoding="async" alt="Estrella de seis puntas dentro de un anillo de espirales, torneada y fotografiada en 1869"><span class="sphaera-cap">Círculos sobre círculos</span>Woolsey, 1869</li>
-                                <li><img src="/media/sphaera/diatomea.webp" width="900" height="900" loading="lazy" decoding="async" alt="Una diatomea redonda con anillos y rayos, al microscopio"><span class="sphaera-cap">Lo pequeño también</span>Filbri, 1887</li>
-                                <li><img src="/media/sphaera/eclipse.webp" width="900" height="900" loading="lazy" decoding="async" alt="Eclipse total de Sol: un disco negro rodeado de la corona"><span class="sphaera-cap">Dos discos iguales</span>Trouvelot, 1878</li>
-                            </ol>
-                            <div class="sphaera-pie hidden-element">
-                                <p>58 láminas de dominio público, del siglo XII a 1909, y figuras que se calculan con el scroll: π entre polígonos, las órbitas de Ptolomeo a Kepler y el eclipse con el porcentaje tapado.</p>
-                                <div class="case-links sphaera-links">
-                                    <a href="/proyecto/sphaera/">Empezar por el centro</a>
-                                    <a href="https://github.com/CODIGOAFRX/sphaera" target="_blank" rel="noopener noreferrer">Ver código</a>
-                                </div>
-                            </div>
-                        </article>
-
-                        <!-- Disección: el negro, la Bodoni y el rojo de sangre de su web (/proyecto/diseccion, servida por su
-                             Worker). Como en su primer acto, el mismo cuerpo de hacia 1430 se abre capa a capa con el
-                             scroll y un bisturí marca el corte (scenes.js); sin soporte o con movimiento reducido, en hueso. -->
-                        <article id="diseccion" class="diseccion-destacado" aria-labelledby="diseccion-title">
-                            <div class="diseccion-cabeza hidden-element">
-                                <p class="case-index diseccion-index">Proyecto visual / Láminas médicas</p>
-                                <h3 id="diseccion-title" class="diseccion-titulo">Disección</h3>
-                                <p class="diseccion-sub">Lección pública de anatomía en nueve cortes, con láminas médicas reales de 1425 a 1926.</p>
-                            </div>
-                            <figure class="diseccion-cuerpo">
-                                <div class="diseccion-capas">
-                                    <img src="/media/diseccion/piel.webp" width="520" height="776" loading="lazy" decoding="async" alt="Figura medieval de un hombre desnudo, de frente, pintada sobre pergamino entre texto en latín">
-                                    <img src="/media/diseccion/venas.webp" width="520" height="776" loading="lazy" decoding="async" alt="">
-                                    <img src="/media/diseccion/musculo.webp" width="520" height="776" loading="lazy" decoding="async" alt="">
-                                    <img src="/media/diseccion/visceras.webp" width="520" height="776" loading="lazy" decoding="async" alt="">
-                                    <img src="/media/diseccion/hueso.webp" width="520" height="776" loading="lazy" decoding="async" alt="La misma figura reducida al esqueleto, con la columna y las costillas a la vista">
-                                    <span class="diseccion-bisturi" aria-hidden="true"></span>
-                                </div>
-                                <figcaption>El mismo cuerpo, dibujado cinco veces hacia 1430 en el rollo del cirujano John of Arderne. Al bajar pierde la piel, las venas, el músculo y las vísceras, como en el primer acto de la web.</figcaption>
-                            </figure>
-                            <ol class="diseccion-actos" aria-label="Tres actos de la web">
-                                <li><img src="/media/diseccion/angel.webp" width="420" height="560" loading="lazy" decoding="async" alt="Espalda de una mujer con la piel abierta y doblada como dos alas, en mezzotinta de color"><span class="diseccion-acto">La carne</span>Gautier d’Agoty, 1746</li>
-                                <li><img src="/media/diseccion/visceras-mascagni.webp" width="420" height="560" loading="lazy" decoding="async" alt="Torso abierto en color con el corazón, los pulmones, el hígado y los intestinos"><span class="diseccion-acto">Las vísceras</span>Mascagni, 1823</li>
-                                <li><img src="/media/diseccion/catacumbas.webp" width="420" height="560" loading="lazy" decoding="async" alt="Pasillo subterráneo con las paredes hechas de calaveras y huesos apilados"><span class="diseccion-acto">El osario</span>Nadar, 1861</li>
-                            </ol>
-                            <div class="diseccion-pie hidden-element">
-                                <p>58 láminas de dominio público, del rollo de un cirujano medieval a la res de Soutine. Todo se abre con el scroll: la piel se corta capa a capa, gotea sangre sobre los hombres heridos, una linterna alumbra las catacumbas de París y unas constantes vitales cuentan las horas post mórtem. Contiene imágenes médicas explícitas.</p>
-                                <div class="case-links diseccion-links">
-                                    <a href="/proyecto/diseccion/">Entrar en la lección</a>
-                                    <a href="https://github.com/CODIGOAFRX/diseccion" target="_blank" rel="noopener noreferrer">Ver código</a>
-                                </div>
-                            </div>
-                        </article>
-
-                        </div>
-
-                        <!-- Trazado y Nocturna, uno junto a otro: el papel del dibujo técnico y la ciudad de noche. -->
-
-                        <!-- Trazado: el papel cuadriculado, la Barlow Condensed y el rojo de la solución de su web
-                             (/proyecto/trazado, servida por su Worker). Como en sus láminas, el compás traza los cuatro
-                             arcos de la mediatriz con el scroll y la regla une los cortes (scenes.js); sin soporte o con
-                             movimiento reducido, la figura ya trazada. Las tres figuras pequeñas salen de trazos.js. -->
-                        <div class="mundos mundos--trazos">
-                        <article id="trazado" class="trazado-destacado" aria-labelledby="trazado-title">
-                            <div class="trazado-cabeza hidden-element">
-                                <p class="case-index trazado-index">Proyecto visual / Dibujo técnico</p>
-                                <h3 id="trazado-title" class="trazado-titulo">Trazado</h3>
-                                <p class="trazado-sub">Diez construcciones con regla y compás que se trazan con el scroll, con los instrumentos encima del papel.</p>
-                            </div>
-                            <figure class="trazado-mediatriz">
-                                <svg viewBox="150 60 700 680" aria-hidden="true" focusable="false">
-                                    <path class="trazado-arco a0" d="M416.6 126.8A320 320 0 0 1 553.2 297.8" pathLength="1"/>
-                                    <path class="trazado-arco a1" d="M553.2 502.2A320 320 0 0 1 416.6 673.2" pathLength="1"/>
-                                    <path class="trazado-arco a2" d="M446.8 297.8A320 320 0 0 1 583.4 126.8" pathLength="1"/>
-                                    <path class="trazado-arco a3" d="M583.4 673.2A320 320 0 0 1 446.8 502.2" pathLength="1"/>
-                                    <path class="trazado-dato" d="M250 400H750"/>
-                                    <path class="trazado-sol" d="M500 130V670" pathLength="1"/>
-                                    <path class="trazado-recto" d="M522 400V378H500"/>
-                                    <circle class="trazado-p" cx="250" cy="400" r="7"/><circle class="trazado-p" cx="750" cy="400" r="7"/>
-                                    <text x="206" y="412">A</text><text x="770" y="412">B</text>
-                                    <g class="trazado-compas">
-                                        <path class="trazado-pata"/><path class="trazado-pata"/>
-                                        <circle class="trazado-charnela" r="11"/>
-                                    </g>
-                                </svg>
-                                <figcaption>La mediatriz: cuatro arcos con el compás y una recta con la regla. Al bajar se traza paso a paso, como en cada lámina de la web.</figcaption>
-                            </figure>
-                            <ol class="trazado-laminas" aria-label="Tres láminas de la web">
-                                <li><svg class="trazado-mini" viewBox="-58.3 36 944.3 700" aria-hidden="true" focusable="false"><g class="trazos"><path class="t dato" d="M150 590L830 590" pathLength="1"/><path class="t aux" d="M150 590L745.5 203.3" pathLength="1"/><path class="t aux" d="M234.9 508A118 118 0 0 1 259.4 545.8" pathLength="1"/><path class="t aux" d="M333.8 443.8A118 118 0 0 1 358.4 481.5" pathLength="1"/><path class="t aux" d="M432.8 379.5A118 118 0 0 1 457.3 417.3" pathLength="1"/><path class="t aux" d="M531.8 315.2A118 118 0 0 1 556.3 353" pathLength="1"/><path class="t aux" d="M630.7 251A118 118 0 0 1 655.3 288.7" pathLength="1"/><path class="t aux" d="M644.8 268.7L830 590" pathLength="1"/><path class="t aux" d="M545.9 332.9L694 590" pathLength="1"/><path class="t aux" d="M446.9 397.2L558 590" pathLength="1"/><path class="t aux" d="M347.9 461.5L422 590" pathLength="1"/><path class="t aux" d="M249 525.7L286 590" pathLength="1"/></g><g class="marcas"><g class="cota"><path d="M150 598L150 660M286 598L286 660M150 650L286 650"/><path class="flecha" d="M150 650L166 645.5L166 654.5ZM286 650L270 654.5L270 645.5Z"/><text transform="translate(218 638) rotate(0)">27,2 mm</text></g><g class="cota"><path d="M286 598L286 660M422 598L422 660M286 650L422 650"/><path class="flecha" d="M286 650L302 645.5L302 654.5ZM422 650L406 654.5L406 645.5Z"/><text transform="translate(354 638) rotate(0)">27,2 mm</text></g><g class="cota"><path d="M422 598L422 660M558 598L558 660M422 650L558 650"/><path class="flecha" d="M422 650L438 645.5L438 654.5ZM558 650L542 654.5L542 645.5Z"/><text transform="translate(490 638) rotate(0)">27,2 mm</text></g><g class="cota"><path d="M558 598L558 660M694 598L694 660M558 650L694 650"/><path class="flecha" d="M558 650L574 645.5L574 654.5ZM694 650L678 654.5L678 645.5Z"/><text transform="translate(626 638) rotate(0)">27,2 mm</text></g><g class="cota"><path d="M694 598L694 660M830 598L830 660M694 650L830 650"/><path class="flecha" d="M694 650L710 645.5L710 654.5ZM830 650L814 654.5L814 645.5Z"/><text transform="translate(762 638) rotate(0)">27,2 mm</text></g></g><g class="rotulos"><g class="p dato"><circle cx="150" cy="590" r="5.5"/><text x="116" y="602">A</text></g><g class="p dato"><circle cx="830" cy="590" r="5.5"/><text x="844" y="602">B</text></g><g class="p aux"><circle cx="249" cy="525.7" r="5.5"/><text x="235" y="507.7">1</text></g><g class="p aux"><circle cx="347.9" cy="461.5" r="5.5"/><text x="333.9" y="443.5">2</text></g><g class="p aux"><circle cx="446.9" cy="397.2" r="5.5"/><text x="432.9" y="379.2">3</text></g><g class="p aux"><circle cx="545.9" cy="332.9" r="5.5"/><text x="531.9" y="314.9">4</text></g><g class="p aux"><circle cx="644.8" cy="268.7" r="5.5"/><text x="630.8" y="250.7">5</text></g><g class="p sol"><circle cx="830" cy="590" r="5.5"/></g><g class="p sol"><circle cx="694" cy="590" r="5.5"/></g><g class="p sol"><circle cx="558" cy="590" r="5.5"/></g><g class="p sol"><circle cx="422" cy="590" r="5.5"/></g><g class="p sol"><circle cx="286" cy="590" r="5.5"/></g></g></svg><span class="trazado-cap">Dividir un segmento</span>Tales, con escuadra y cartabón</li>
-                                <li><svg class="trazado-mini" viewBox="120.5 74 827.1 620.3" aria-hidden="true" focusable="false"><g class="trazos"><path class="t dato" d="M750 380A250 250 0 1 1 250 380A250 250 0 1 1 750 380" pathLength="1"/><path class="t aux" d="M250 380L750 380" pathLength="1"/><path class="t aux" d="M500 130L500 630" pathLength="1"/><path class="t aux" d="M595.9 239.6A170 170 0 0 1 647.7 295.9" pathLength="1"/><path class="t aux" d="M647.7 464.1A170 170 0 0 1 595.9 520.4" pathLength="1"/><path class="t aux" d="M602.3 295.9A170 170 0 0 1 654.1 239.6" pathLength="1"/><path class="t aux" d="M654.1 520.4A170 170 0 0 1 602.3 464.1" pathLength="1"/><path class="t aux" d="M625 244.8L625 515.2" pathLength="1"/><path class="t aux" d="M500 130A279.5 279.5 0 0 0 345.5 380" pathLength="1"/><path class="t aux" d="M500 130L345.5 380" pathLength="1"/><path class="t aux" d="M766.4 254.2A293.9 293.9 0 0 1 700.4 344.9" pathLength="1"/><path class="t aux" d="M701.9 594.4A293.9 293.9 0 0 1 595.3 559.8" pathLength="1"/><path class="t aux" d="M358.5 638.3A293.9 293.9 0 0 1 358.5 526.2" pathLength="1"/><path class="t aux" d="M210.6 325.2A293.9 293.9 0 0 1 317.2 290.6" pathLength="1"/><path class="t sol" d="M500 130L737.8 302.7" pathLength="1"/><path class="t sol" d="M737.8 302.7L646.9 582.3" pathLength="1"/><path class="t sol" d="M646.9 582.3L353.1 582.3" pathLength="1"/><path class="t sol" d="M353.1 582.3L262.2 302.7" pathLength="1"/><path class="t sol" d="M262.2 302.7L500 130" pathLength="1"/></g><g class="marcas"><g class="cota"><path d="M352.3 384.2L388 406.3M506.8 134.2L542.5 156.3M379.5 401L534 151"/><path class="flecha" d="M379.5 401L384.1 385.1L391.8 389.8ZM534 151L529.4 167L521.8 162.3Z"/><text transform="translate(446.6 269.7) rotate(-58.3)">58,8 mm</text></g><g class="cota"><path d="M745.4 305.2L827.2 331.8M654.6 584.7L736.3 611.3M817.7 328.7L726.8 608.2"/><path class="flecha" d="M817.7 328.7L817 345.3L808.4 342.5ZM726.8 608.2L727.5 591.6L736.1 594.4Z"/><text transform="translate(783.7 472.2) rotate(-72)">58,8 mm</text></g></g><g class="rotulos"><g class="p dato"><circle cx="500" cy="380" r="5.5"/><text x="466" y="412">O</text></g><g class="p dato"><circle cx="500" cy="130" r="5.5"/><text x="512" y="114">C</text></g><g class="p aux"><circle cx="625" cy="380" r="5.5"/><text x="635" y="410">M</text></g><g class="p aux"><circle cx="345.5" cy="380" r="5.5"/><text x="331.5" y="412">N</text></g></g></svg><span class="trazado-cap">Pentágono</span>Con el número de oro dentro</li>
-                                <li><svg class="trazado-mini" viewBox="92.4 39 869.3 652" aria-hidden="true" focusable="false"><g class="trazos"><path class="t dato" d="M178.4 487.5A175 175 0 1 1 481.6 312.5A175 175 0 1 1 178.4 487.5" pathLength="1"/><path class="t aux" d="M330 400L870 330" pathLength="1"/><path class="t aux" d="M525.4 124.7A337.6 337.6 0 0 1 614.3 217.9" pathLength="1"/><path class="t aux" d="M651.3 503.6A337.6 337.6 0 0 1 589.1 616.4" pathLength="1"/><path class="t aux" d="M548.7 226.4A337.6 337.6 0 0 1 610.9 113.6" pathLength="1"/><path class="t aux" d="M674.6 605.3A337.6 337.6 0 0 1 585.7 512.1" pathLength="1"/><path class="t aux" d="M574.3 167L625.7 563" pathLength="1"/><path class="t aux" d="M870 330A272.3 272.3 0 1 1 330 400A272.3 272.3 0 1 1 870 330" pathLength="1"/><path class="t sol" d="M870 330L207.6 196.9" pathLength="1"/><path class="t sol" d="M870 330L263.4 627.6" pathLength="1"/><path class="t aux" d="M330 400L364.5 228.4" pathLength="1"/><path class="t aux" d="M330 400L407.1 557.1" pathLength="1"/></g><g class="marcas"><path class="recto" d="M360.1 250L381.7 254.3L386 232.8"/><path class="recto" d="M397.4 537.4L417.1 527.7L426.8 547.4"/><g class="cota"><path d="M871.6 322.2L880.6 277.1M366 220.6L375.1 175.5M878.7 286.9L373.1 185.3"/><path class="flecha" d="M878.7 286.9L862.1 288.1L863.9 279.3ZM373.1 185.3L389.7 184L387.9 192.9Z"/><text transform="translate(623.5 247.8) rotate(11.4)">103,1 mm</text></g><g class="cota"><path d="M873.5 337.2L893.8 378.5M410.6 564.3L430.9 605.6M889.4 369.5L426.5 596.6"/><path class="flecha" d="M889.4 369.5L877 380.6L873 372.5ZM426.5 596.6L438.8 585.5L442.8 593.6Z"/><text transform="translate(663.2 493.8) rotate(-26.1)">103,1 mm</text></g></g><g class="rotulos"><g class="p dato"><circle cx="330" cy="400" r="5.5"/><text x="296" y="430">O</text></g><g class="p dato"><circle cx="870" cy="330" r="5.5"/><text x="884" y="316">P</text></g><g class="p aux"><circle cx="600" cy="365" r="5.5"/><text x="588" y="399">M</text></g><g class="p sol"><circle cx="364.5" cy="228.4" r="5.5"/><text x="354.5" y="208.4">T</text></g><g class="p sol"><circle cx="407.1" cy="557.1" r="5.5"/><text x="401.1" y="597.1">T'</text></g></g></svg><span class="trazado-cap">Tangentes</span>Desde un punto exterior</li>
-                            </ol>
-                            <div class="trazado-pie hidden-element">
-                                <p>Mediatriz, bisectriz, paralelas, Tales, triángulos, polígonos y tangentes. La geometría se calcula en el navegador, cada lámina termina con una comprobación medida y entre ellas van los grabados de Hirschvogel (1543) y las fortalezas de Errard (1600).</p>
-                                <div class="case-links trazado-links">
-                                    <a href="/proyecto/trazado/">Empezar a trazar</a>
-                                    <a href="https://github.com/CODIGOAFRX/trazado" target="_blank" rel="noopener noreferrer">Ver código</a>
-                                </div>
-                            </div>
-                        </article>
-
-                        <!-- Nocturna: el negro, el rojo y la Big Shoulders de su web (/proyecto/nocturna, servida por su
-                             Worker). Allí la ciudad es Three.js; aquí es un perfil en tres capas de SVG que se desplazan a
-                             distinta velocidad con el scroll mientras el tren cruza (scenes.js). Sin soporte o con
-                             movimiento reducido, el perfil quieto con el tren a media vía. -->
-                        <article id="nocturna" class="nocturna-destacado" aria-labelledby="nocturna-title">
-                            <div class="nocturna-cabeza hidden-element">
-                                <p class="case-index nocturna-index">Proyecto visual / Three.js</p>
-                                <h3 id="nocturna-title" class="nocturna-titulo">Nocturna</h3>
-                                <p class="nocturna-sub">El último tren de la línea 0 cruza una ciudad que no existe. El scroll mueve el tren.</p>
-                            </div>
-                            <figure class="nocturna-ciudad">
-                                <svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false"><g class="nocturna-capa c0"><path class="nocturna-torre" d="M-60 400V225h87V400zM36 400V246h76V400zM115 400V123h85V400zM209 400V134h58V400zM277 400V85h64V400zM346 400V259h47V400zM399 400V190h55V400zM464 400V221h42V400zM515 400V251h72V400zM590 400V259h46V400zM645 400V259h58V400zM706 400V228h80V400zM787 400V117h57V400zM846 400V192h74V400zM922 400V255h41V400zM966 400V191h66V400zM1042 400V246h87V400zM1132 400V112h79V400zM1221 400V96h45V400zM1269 400V175h51V400zM1326 400V234h41V400zM1369 400V229h85V400zM1460 400V151h62V400zM1525 400V223h69V400z"/></g><g class="nocturna-capa c1"><path class="nocturna-torre" d="M-60 400V166h70V400zM18 400V177h46V400zM74 400V298h66V400zM149 400V273h46V400zM200 400V257h63V400zM274 400V154h72V400zM358 400V180h55V400zM422 400V287h78V400zM509 400V162h35V400zM546 400V282h53V400zM610 400V303h34V400zM650 400V233h54V400zM710 400V308h37V400zM755 400V266h75V400zM838 400V283h52V400zM897 400V303h65V400zM967 400V294h35V400zM1008 400V166h43V400zM1056 400V226h42V400zM1105 400V289h58V400zM1172 400V202h59V400zM1236 400V151h78V400zM1323 400V276h51V400zM1382 400V272h77V400zM1464 400V252h43V400zM1518 400V303h79V400z"/><path class="nocturna-luz" d="M-55 176h5v6h-5zM-37 187h5v6h-5zM-1 231h5v6h-5zM-55 297h5v6h-5zM-28 297h5v6h-5zM-37 319h5v6h-5zM-55 330h5v6h-5zM-46 341h5v6h-5zM-55 352h5v6h-5zM23 187h5v6h-5zM41 209h5v6h-5zM50 209h5v6h-5zM41 220h5v6h-5zM32 253h5v6h-5zM23 264h5v6h-5zM32 308h5v6h-5zM79 341h5v6h-5zM88 374h5v6h-5zM106 374h5v6h-5zM154 294h5v6h-5zM172 294h5v6h-5zM154 360h5v6h-5zM232 278h5v6h-5zM250 289h5v6h-5zM214 300h5v6h-5zM223 300h5v6h-5zM241 322h5v6h-5zM223 333h5v6h-5zM232 355h5v6h-5zM279 175h5v6h-5zM306 175h5v6h-5zM324 175h5v6h-5zM288 186h5v6h-5zM297 197h5v6h-5zM306 208h5v6h-5zM288 219h5v6h-5zM297 252h5v6h-5zM315 263h5v6h-5zM333 274h5v6h-5zM279 307h5v6h-5zM297 329h5v6h-5zM333 329h5v6h-5zM306 340h5v6h-5zM324 340h5v6h-5zM288 351h5v6h-5zM324 362h5v6h-5zM324 373h5v6h-5zM363 201h5v6h-5zM363 223h5v6h-5zM390 278h5v6h-5zM372 322h5v6h-5zM390 355h5v6h-5zM472 319h5v6h-5zM427 363h5v6h-5zM436 363h5v6h-5zM481 363h5v6h-5zM532 205h5v6h-5zM523 282h5v6h-5zM514 315h5v6h-5zM578 292h5v6h-5zM587 292h5v6h-5zM551 303h5v6h-5zM560 303h5v6h-5zM560 336h5v6h-5zM551 369h5v6h-5zM560 380h5v6h-5zM615 357h5v6h-5zM615 379h5v6h-5zM691 254h5v6h-5zM664 276h5v6h-5zM673 276h5v6h-5zM778 276h5v6h-5zM823 287h5v6h-5zM787 309h5v6h-5zM787 320h5v6h-5zM778 353h5v6h-5zM787 375h5v6h-5zM870 315h5v6h-5zM843 370h5v6h-5zM861 370h5v6h-5zM870 370h5v6h-5zM911 324h5v6h-5zM911 335h5v6h-5zM938 335h5v6h-5zM920 357h5v6h-5zM929 368h5v6h-5zM911 379h5v6h-5zM990 326h5v6h-5zM981 348h5v6h-5zM990 348h5v6h-5zM972 370h5v6h-5zM1013 176h5v6h-5zM1013 286h5v6h-5zM1013 297h5v6h-5zM1022 319h5v6h-5zM1022 352h5v6h-5zM1031 363h5v6h-5zM1061 247h5v6h-5zM1088 247h5v6h-5zM1088 258h5v6h-5zM1079 269h5v6h-5zM1088 302h5v6h-5zM1110 310h5v6h-5zM1146 321h5v6h-5zM1128 354h5v6h-5zM1186 212h5v6h-5zM1177 234h5v6h-5zM1222 245h5v6h-5zM1186 256h5v6h-5zM1222 278h5v6h-5zM1186 289h5v6h-5zM1177 344h5v6h-5zM1195 366h5v6h-5zM1213 377h5v6h-5zM1277 161h5v6h-5zM1286 194h5v6h-5zM1250 216h5v6h-5zM1286 227h5v6h-5zM1241 260h5v6h-5zM1286 260h5v6h-5zM1295 260h5v6h-5zM1277 282h5v6h-5zM1286 304h5v6h-5zM1286 315h5v6h-5zM1277 326h5v6h-5zM1304 326h5v6h-5zM1337 297h5v6h-5zM1346 297h5v6h-5zM1337 374h5v6h-5zM1423 282h5v6h-5zM1396 315h5v6h-5zM1414 326h5v6h-5zM1396 337h5v6h-5zM1405 381h5v6h-5zM1496 295h5v6h-5zM1478 306h5v6h-5zM1487 328h5v6h-5zM1496 328h5v6h-5zM1487 350h5v6h-5zM1550 313h5v6h-5zM1577 313h5v6h-5zM1559 324h5v6h-5zM1586 324h5v6h-5zM1550 346h5v6h-5zM1559 346h5v6h-5zM1523 368h5v6h-5zM1559 368h5v6h-5z"/><path class="nocturna-luz calida" d="M32 242h5v6h-5zM79 308h5v6h-5zM133 374h5v6h-5zM214 289h5v6h-5zM324 219h5v6h-5zM306 263h5v6h-5zM306 373h5v6h-5zM445 297h5v6h-5zM445 319h5v6h-5zM463 330h5v6h-5zM523 348h5v6h-5zM664 243h5v6h-5zM655 287h5v6h-5zM664 287h5v6h-5zM769 298h5v6h-5zM760 353h5v6h-5zM843 326h5v6h-5zM1070 346h5v6h-5zM1137 376h5v6h-5zM1222 267h5v6h-5zM1222 311h5v6h-5zM1213 355h5v6h-5zM1195 377h5v6h-5zM1250 238h5v6h-5zM1286 271h5v6h-5zM1241 381h5v6h-5zM1250 381h5v6h-5zM1328 363h5v6h-5zM1441 326h5v6h-5zM1423 348h5v6h-5zM1469 361h5v6h-5zM1559 335h5v6h-5zM1532 368h5v6h-5z"/></g><g class="nocturna-capa c2"><path class="nocturna-torre" d="M-60 400V243h70V400zM13 400V245h47V400zM63 400V302h63V400zM138 400V295h56V400zM197 400V263h75V400zM282 400V324h96V400zM384 400V329h41V400zM433 400V358h73V400zM515 400V351h87V400zM611 400V304h51V400zM673 400V260h61V400zM740 400V249h92V400zM843 400V332h42V400zM894 400V342h60V400zM964 400V249h87V400zM1058 400V263h44V400zM1104 400V297h80V400zM1192 400V359h64V400zM1267 400V360h80V400zM1359 400V316h84V400zM1446 400V251h64V400zM1515 400V344h62V400z"/><path class="nocturna-luz" d="M-37 264h5v6h-5zM-10 264h5v6h-5zM-28 308h5v6h-5zM-55 319h5v6h-5zM-46 319h5v6h-5zM-55 330h5v6h-5zM-46 330h5v6h-5zM-1 330h5v6h-5zM-55 341h5v6h-5zM-46 341h5v6h-5zM-10 341h5v6h-5zM-10 363h5v6h-5zM45 255h5v6h-5zM18 299h5v6h-5zM27 299h5v6h-5zM45 299h5v6h-5zM27 376h5v6h-5zM68 312h5v6h-5zM113 312h5v6h-5zM104 323h5v6h-5zM113 323h5v6h-5zM86 334h5v6h-5zM77 345h5v6h-5zM77 367h5v6h-5zM95 367h5v6h-5zM152 327h5v6h-5zM179 349h5v6h-5zM179 382h5v6h-5zM256 295h5v6h-5zM229 306h5v6h-5zM238 317h5v6h-5zM247 317h5v6h-5zM211 339h5v6h-5zM211 350h5v6h-5zM229 350h5v6h-5zM265 350h5v6h-5zM229 361h5v6h-5zM229 372h5v6h-5zM256 383h5v6h-5zM265 383h5v6h-5zM287 334h5v6h-5zM359 334h5v6h-5zM359 345h5v6h-5zM305 356h5v6h-5zM332 356h5v6h-5zM332 367h5v6h-5zM332 378h5v6h-5zM359 378h5v6h-5zM389 350h5v6h-5zM407 361h5v6h-5zM556 361h5v6h-5zM529 383h5v6h-5zM643 325h5v6h-5zM687 270h5v6h-5zM705 292h5v6h-5zM714 336h5v6h-5zM714 347h5v6h-5zM678 358h5v6h-5zM808 259h5v6h-5zM745 270h5v6h-5zM763 292h5v6h-5zM790 292h5v6h-5zM799 303h5v6h-5zM808 303h5v6h-5zM763 325h5v6h-5zM763 336h5v6h-5zM808 336h5v6h-5zM790 347h5v6h-5zM817 347h5v6h-5zM808 369h5v6h-5zM754 380h5v6h-5zM772 380h5v6h-5zM781 380h5v6h-5zM875 342h5v6h-5zM875 353h5v6h-5zM848 364h5v6h-5zM848 375h5v6h-5zM875 375h5v6h-5zM908 352h5v6h-5zM926 352h5v6h-5zM908 363h5v6h-5zM969 259h5v6h-5zM996 259h5v6h-5zM1014 259h5v6h-5zM1005 270h5v6h-5zM1023 270h5v6h-5zM1023 281h5v6h-5zM1005 314h5v6h-5zM1023 314h5v6h-5zM987 325h5v6h-5zM996 325h5v6h-5zM1041 336h5v6h-5zM996 358h5v6h-5zM1032 358h5v6h-5zM1032 369h5v6h-5zM1063 273h5v6h-5zM1090 284h5v6h-5zM1081 317h5v6h-5zM1090 361h5v6h-5zM1081 372h5v6h-5zM1081 383h5v6h-5zM1172 307h5v6h-5zM1109 318h5v6h-5zM1109 329h5v6h-5zM1136 340h5v6h-5zM1136 351h5v6h-5zM1172 351h5v6h-5zM1136 362h5v6h-5zM1109 373h5v6h-5zM1118 373h5v6h-5zM1154 384h5v6h-5zM1233 369h5v6h-5zM1290 381h5v6h-5zM1382 326h5v6h-5zM1418 326h5v6h-5zM1436 326h5v6h-5zM1382 337h5v6h-5zM1427 337h5v6h-5zM1382 348h5v6h-5zM1427 348h5v6h-5zM1391 370h5v6h-5zM1460 305h5v6h-5zM1478 305h5v6h-5zM1496 316h5v6h-5zM1487 338h5v6h-5zM1460 382h5v6h-5zM1565 354h5v6h-5z"/><path class="nocturna-luz calida" d="M-55 275h5v6h-5zM-19 297h5v6h-5zM-28 352h5v6h-5zM-37 374h5v6h-5zM18 343h5v6h-5zM86 345h5v6h-5zM305 345h5v6h-5zM359 356h5v6h-5zM368 367h5v6h-5zM296 378h5v6h-5zM416 361h5v6h-5zM492 379h5v6h-5zM574 383h5v6h-5zM616 347h5v6h-5zM634 380h5v6h-5zM678 325h5v6h-5zM687 336h5v6h-5zM714 369h5v6h-5zM678 380h5v6h-5zM754 259h5v6h-5zM799 314h5v6h-5zM799 347h5v6h-5zM808 347h5v6h-5zM857 342h5v6h-5zM866 375h5v6h-5zM917 352h5v6h-5zM978 281h5v6h-5zM969 314h5v6h-5zM1041 314h5v6h-5zM1023 325h5v6h-5zM1032 325h5v6h-5zM969 347h5v6h-5zM1005 369h5v6h-5zM978 380h5v6h-5zM1172 373h5v6h-5zM1460 272h5v6h-5zM1478 283h5v6h-5zM1496 305h5v6h-5zM1469 382h5v6h-5zM1478 382h5v6h-5z"/></g><path class="nocturna-via" d="M-60 402H1560"/><g class="nocturna-tren"><path d="M0 393h150l14 9H-8z"/><path class="nocturna-faro" d="M164 402h60"/></g></svg>
-                                <figcaption>Aquí, un perfil de papel. En su web es una ciudad en 3D que se recorre por dentro: Las Agujas, El Mercado, El Túnel y El Núcleo.</figcaption>
-                            </figure>
-                            <div class="nocturna-pie hidden-element">
-                                <p>Más de mil edificios, rótulos en un alfabeto inventado, lluvia y suelo mojado, generados por código al cargar: ni modelos 3D, ni texturas, ni vídeo. Menos de veinte llamadas de dibujo, para que vaya fluida también en equipos modestos.</p>
-                                <div class="case-links nocturna-links">
-                                    <a href="/proyecto/nocturna/">Subir al tren</a>
-                                </div>
-                            </div>
-                        </article>
-                        </div>
-
-                        <!-- Milenario: el verde de bosque, el crema y el ámbar de su web (/proyecto/milenario, servida por su
-                             Worker). Allí el árbol es Three.js; aquí es un dibujo de líneas que se enciende de la raíz a la
-                             copa con el scroll mientras una línea marca la altura (scenes.js). Sin soporte o con movimiento
-                             reducido, el árbol entero encendido. Comparte fila con Consigna, como Trazado y Nocturna. -->
+                        <!-- Consigna y Horario: dos apps diarias propias en Cloudflare Workers + D1 -->
                         <div class="mundos mundos--apps">
-                        <article id="milenario" class="milenario-destacado" aria-labelledby="milenario-title">
-                            <div class="milenario-cabeza hidden-element">
-                                <p class="case-index milenario-index">Proyecto visual / Three.js</p>
-                                <h3 id="milenario-title" class="milenario-titulo">Milenario</h3>
-                                <p class="milenario-sub">Un árbol de tres mil años, de la raíz a la copa. El scroll te sube por él.</p>
-                            </div>
-                            <figure class="milenario-corte">
-                                <div class="milenario-lienzo">
-                                    <img class="milenario-tenue" src="media/milenario/arbol.svg" alt="" width="1000" height="1030" loading="lazy" decoding="async">
-                                    <img class="milenario-vivo" src="media/milenario/arbol.svg" alt="" width="1000" height="1030" loading="lazy" decoding="async">
-                                    <span class="milenario-nivel" aria-hidden="true"><b>+78 m</b></span>
-                                </div>
-                                <figcaption>Aquí, un dibujo de líneas. En su web es un árbol en 3D que se recorre por dentro: las raíces y su red de hongos bajo tierra, el tronco, las ramas y la copa bajo las estrellas.</figcaption>
-                            </figure>
-                            <div class="milenario-pie hidden-element">
-                                <p>El tronco, cientos de ramas, decenas de miles de hojas y el micelio se generan por código al cargar: ni modelos 3D, ni vídeo. La calidad se ajusta sola al equipo para que vaya fluido también en un portátil de oficina.</p>
-                                <div class="case-links milenario-links">
-                                    <a href="/proyecto/milenario/">Subir al árbol</a>
-                                </div>
-                            </div>
-                        </article>
-
-                        <!-- Consigna: el papel cuadriculado, el azul Crouwel y la Chakra Petch de su web (/proyecto/consigna,
-                             servida por su Worker con una ruta en la zona). Es una app de uso diario, no una escena: aquí, una
-                             vista quieta de su mesa con tres módulos, el número construido celda a celda y las tiras de 24
-                             celdas que marcan las horas que le quedan a cada cosa. Sin escena de scroll. -->
                         <article id="consigna" class="consigna-destacado" aria-labelledby="consigna-title">
                             <div class="consigna-cabeza hidden-element">
                                 <p class="case-index consigna-index">App diaria / Workers + Durable Objects</p>
@@ -971,12 +550,76 @@
                                 </div>
                             </div>
                         </article>
+
+                        <article id="horario" class="horario-destacado" aria-labelledby="horario-title">
+                            <div class="horario-cabeza hidden-element">
+                                <p class="case-index horario-index">App diaria / Workers + D1</p>
+                                <h3 id="horario-title" class="horario-titulo">Horario <span>semanal.</span></h3>
+                                <p class="horario-sub">Organiza tu semana arrastrando bloques, sin formularios, y llévala igual en el ordenador y en el móvil.</p>
+                            </div>
+                            <figure class="horario-mesa">
+                                <div class="horario-muestra" aria-hidden="true">
+                                    <div class="horario-barra"><strong>Semana tipo</strong><em>Sincronizado</em></div>
+                                    <div class="horario-rejilla">
+                                        <span class="horario-dia" style="grid-column:2">L</span>
+                                        <span class="horario-dia" style="grid-column:3">M</span>
+                                        <span class="horario-dia" style="grid-column:4">X</span>
+                                        <span class="horario-dia" style="grid-column:5">J</span>
+                                        <span class="horario-dia" style="grid-column:6">V</span>
+                                        <span class="horario-hora" style="grid-row:2">09:00</span>
+                                        <span class="horario-hora" style="grid-row:3">10:00</span>
+                                        <span class="horario-hora" style="grid-row:4">11:00</span>
+                                        <span class="horario-hora" style="grid-row:5">12:00</span>
+                                        <span class="horario-hora" style="grid-row:6">13:00</span>
+                                        <div class="horario-bloque horario-bloque--dev" style="grid-column:2;grid-row:2/span 3"><span>Backend</span><small>09–12</small></div>
+                                        <div class="horario-bloque horario-bloque--reunion" style="grid-column:2;grid-row:5/span 2"><span>Equipo</span><small>12–14</small></div>
+                                        <div class="horario-bloque horario-bloque--clase" style="grid-column:3;grid-row:2/span 2"><span>Clase IA</span><small>09–11</small></div>
+                                        <div class="horario-bloque horario-bloque--prod" style="grid-column:3;grid-row:4/span 3"><span>PERA</span><small>11–14</small></div>
+                                        <div class="horario-bloque horario-bloque--dev" style="grid-column:4;grid-row:2/span 3"><span>API</span><small>09–12</small></div>
+                                        <div class="horario-bloque horario-bloque--qa" style="grid-column:4;grid-row:5/span 2"><span>Tests</span><small>12–14</small></div>
+                                        <div class="horario-bloque horario-bloque--clase" style="grid-column:5;grid-row:2/span 2"><span>Clase IA</span><small>09–11</small></div>
+                                        <div class="horario-bloque horario-bloque--dev" style="grid-column:5;grid-row:4/span 3"><span>Front</span><small>11–14</small></div>
+                                        <div class="horario-bloque horario-bloque--prod" style="grid-column:6;grid-row:2/span 2"><span>Deploy</span><small>09–11</small></div>
+                                        <div class="horario-bloque horario-bloque--reunion" style="grid-column:6;grid-row:4/span 2"><span>Revisión</span><small>11–13</small></div>
+                                    </div>
+                                </div>
+                                <figcaption>Arrastra para crear, mover, alargar o duplicar actividades, con atajos de teclado, impresión en A4 y modo app en el móvil.</figcaption>
+                            </figure>
+                            <div class="horario-pie hidden-element">
+                                <p>Cuentas propias con contraseña cifrada (scrypt), copia local al instante, sincronización con Cloudflare D1, vista de semana y día, copias en JSON y panel de administración con borrado de cuentas y bloqueo de IPs.</p>
+                                <div class="case-links horario-links">
+                                    <a href="/horario">Crear mi horario</a>
+                                    <a href="https://github.com/CODIGOAFRX/portfolio/tree/main/horario" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
                         </div>
 
-                        <!-- Poda: el negro cálido, la arcilla y la JetBrains Mono de la app (/proyecto/poda, servida por su
-                             Worker). La rejilla son las 400 celdas del disco de su demo; al bajar se marcan en arcilla las de
-                             tres archivos y luego se sueltan en cascada mientras la cifra baja (scenes.js). Sin soporte o con
-                             movimiento reducido, las celdas quedan marcadas. -->
+                        <!-- Palimpsesto y Poda: mapa histórico con Worker y gestor de disco en Python -->
+                        <div class="mundos mundos--utiles">
+                        <article id="palimpsesto" class="palimpsesto-destacado" aria-labelledby="palimpsesto-title">
+                            <div class="palimpsesto-cabeza hidden-element">
+                                <p class="case-index palimpsesto-index">Mapa interactivo / Granada en dos épocas</p>
+                                <h3 id="palimpsesto-title" class="palimpsesto-titulo">Palimpsesto</h3>
+                                <p class="palimpsesto-sub">La misma ciudad en dos épocas, una encima de otra, con una cortina que se arrastra.</p>
+                            </div>
+                            <figure class="palimpsesto-cortina">
+                                <div class="palimpsesto-mapas">
+                                    <img src="/media/palimpsesto/granada-hoy.webp" width="1200" height="720" loading="lazy" decoding="async" alt="El centro de Granada hoy, en ortofoto: la ciudad llega hasta la ronda y la Alhambra asoma entre el verde">
+                                    <img class="palimpsesto-antes" src="/media/palimpsesto/granada-1956.webp" width="1200" height="720" loading="lazy" decoding="async" alt="El mismo trozo de Granada en 1956, en blanco y negro: donde hoy hay manzanas, al oeste, había huertas">
+                                    <span class="palimpsesto-linea" aria-hidden="true"><span>1956</span><span>Hoy</span></span>
+                                </div>
+                                <figcaption>El centro de Granada en el vuelo americano de 1956 y en la ortofoto de hoy. Al bajar, la cortina pasa de una época a otra. © Instituto Geográfico Nacional.</figcaption>
+                            </figure>
+                            <div class="palimpsesto-pie hidden-element">
+                                <p>Siete capas del Instituto Geográfico Nacional, de las planimetrías de 1870 a la ortofoto de hoy, con cortina, lupa y fundido. Un Worker convierte cada tesela en su petición al IGN y la guarda en caché; funciona en toda España.</p>
+                                <div class="case-links palimpsesto-links">
+                                    <a href="/proyecto/palimpsesto/">Abrir Palimpsesto</a>
+                                    <a href="https://github.com/CODIGOAFRX/palimpsesto" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
+
                         <article id="poda" class="poda-destacado" aria-labelledby="poda-title">
                             <div class="poda-cabeza hidden-element">
                                 <p class="case-index poda-index">Herramienta / Python para Windows</p>
@@ -1004,44 +647,10 @@
                                 </div>
                             </div>
                         </article>
+                        </div>
 
-                        <!-- Ubuntu junto a Windows: la guía de arranque dual (/proyecto/arranque-dual, servida por su Worker), con
-                             el croquis de vía de su web: roca, grafito y cuerda, Archivo estrecha. Al bajar, la cuerda recorre los
-                             ocho largos y las reuniones se rellenan (scenes.js); el descenso queda discontinuo. Sin soporte o con
-                             movimiento reducido, la vía se ve entera. -->
-                        <article id="arranque-dual" class="dual-destacado" aria-labelledby="dual-title">
-                            <div class="dual-cabeza hidden-element">
-                                <p class="case-index dual-index">Guía / Para seguir desde el móvil</p>
-                                <h3 id="dual-title" class="dual-titulo">Ubuntu junto a Windows</h3>
-                                <p class="dual-sub">Instalar Linux sin quitar Windows, largo a largo, con las reuniones donde se puede parar y el descenso dibujado desde el principio.</p>
-                            </div>
-                            <figure class="dual-croquis">
-                                <ol class="dual-via" aria-label="Los largos de la guía">
-                                    <li class="dual-tramo"><b>1</b><span>Descargar</span></li>
-                                    <li class="dual-tramo reunion"><b>2</b><span>Preparar Windows</span></li>
-                                    <li class="dual-tramo"><b>3</b><span>Crear el USB</span></li>
-                                    <li class="dual-tramo reunion"><b>4</b><span>Arrancar del USB</span></li>
-                                    <li class="dual-tramo sin-vuelta"><b>5</b><span>Instalar</span></li>
-                                    <li class="dual-tramo reunion"><b>6</b><span>Primer arranque</span></li>
-                                    <li class="dual-tramo"><b>7</b><span>Herramientas</span></li>
-                                    <li class="dual-tramo"><b>8</b><span>Qué arranca</span></li>
-                                    <li class="dual-tramo descenso"><b>D</b><span>Descenso</span></li>
-                                </ol>
-                                <p class="dual-estado" data-dual-estado>Vía completa · 39 pasos</p>
-                                <figcaption>La cuerda llega hasta la última casilla marcada. Doble anillo: reunión, donde parar sin riesgo. Doble trazo: el único paso sin vuelta atrás fácil.</figcaption>
-                            </figure>
-                            <div class="dual-pie hidden-element">
-                                <p>La hice para instalar Ubuntu en mi propio equipo con el PC ocupado y la guía en el móvil. Cada paso dice qué deberías ver en pantalla y qué hacer si no; el progreso se guarda en el navegador y se pasa a otro dispositivo con un enlace. Calcula cuánto espacio dar a Ubuntu, copia las órdenes de un toque y mantiene la pantalla encendida. Sin dependencias, solo enlaces a las descargas oficiales.</p>
-                                <div class="case-links dual-links">
-                                    <a href="/proyecto/arranque-dual/">Abrir la guía</a>
-                                    <a href="https://github.com/CODIGOAFRX/arranque-dual" target="_blank" rel="noopener noreferrer">Ver código</a>
-                                </div>
-                            </div>
-                        </article>
-
-                        <!-- AFR · Claude Skills: la cinta de skills que uso con Claude Code (/proyecto/skills, servida por su
-                             Worker), con la carátula de su web: negro de J-card, etiqueta lila a rotulador, bandas en diagonal
-                             y las dos caras con sus pistas. Cierra el portal sin escena de scroll. -->
+                        <!-- AFR · Claude Skills y Ubuntu junto a Windows: herramientas y guías en pareja -->
+                        <div class="mundos mundos--guias">
                         <article id="skills" class="skills-destacado" aria-labelledby="skills-title">
                             <div class="skills-casete hidden-element">
                                 <div class="skills-etiqueta">
@@ -1094,9 +703,391 @@
                                 </div>
                             </div>
                         </article>
+
+                        <article id="arranque-dual" class="dual-destacado" aria-labelledby="dual-title">
+                            <div class="dual-cabeza hidden-element">
+                                <p class="case-index dual-index">Guía / Para seguir desde el móvil</p>
+                                <h3 id="dual-title" class="dual-titulo">Ubuntu junto a Windows</h3>
+                                <p class="dual-sub">Instalar Linux sin quitar Windows, largo a largo, con las reuniones donde se puede parar y el descenso dibujado desde el principio.</p>
+                            </div>
+                            <figure class="dual-croquis">
+                                <ol class="dual-via" aria-label="Los largos de la guía">
+                                    <li class="dual-tramo"><b>1</b><span>Descargar</span></li>
+                                    <li class="dual-tramo reunion"><b>2</b><span>Preparar Windows</span></li>
+                                    <li class="dual-tramo"><b>3</b><span>Crear el USB</span></li>
+                                    <li class="dual-tramo reunion"><b>4</b><span>Arrancar del USB</span></li>
+                                    <li class="dual-tramo sin-vuelta"><b>5</b><span>Instalar</span></li>
+                                    <li class="dual-tramo reunion"><b>6</b><span>Primer arranque</span></li>
+                                    <li class="dual-tramo"><b>7</b><span>Herramientas</span></li>
+                                    <li class="dual-tramo"><b>8</b><span>Qué arranca</span></li>
+                                    <li class="dual-tramo descenso"><b>D</b><span>Descenso</span></li>
+                                </ol>
+                                <p class="dual-estado" data-dual-estado>Vía completa · 39 pasos</p>
+                                <figcaption>La cuerda llega hasta la última casilla marcada. Doble anillo: reunión, donde parar sin riesgo. Doble trazo: el único paso sin vuelta atrás fácil.</figcaption>
+                            </figure>
+                            <div class="dual-pie hidden-element">
+                                <p>La hice para instalar Ubuntu en mi propio equipo con el PC ocupado y la guía en el móvil. Cada paso dice qué deberías ver en pantalla y qué hacer si no; el progreso se guarda en el navegador y se pasa a otro dispositivo con un enlace. Calcula cuánto espacio dar a Ubuntu, copia las órdenes de un toque y mantiene la pantalla encendida. Sin dependencias, solo enlaces a las descargas oficiales.</p>
+                                <div class="case-links dual-links">
+                                    <a href="/proyecto/arranque-dual/">Abrir la guía</a>
+                                    <a href="https://github.com/CODIGOAFRX/arranque-dual" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
+                        </div>
                     </div>
                 </div>
                 <div class="portal-spacer" aria-hidden="true"></div>
+            </div>
+        </section>
+
+        <!-- Visual Lab Section: las diez experiencias visuales a todo el ancho en 3 columnas -->
+        <section id="visual" class="visual-lab" aria-labelledby="visual-title">
+            <div class="content-wrapper">
+                <div class="visual-heading hidden-element">
+                    <div>
+                        <h3 class="section-label">05 / Laboratorio visual</h3>
+                        <h2 id="visual-title">Código para mirar y tocar.</h2>
+                    </div>
+                    <p>Diez experiencias interactivas hechas a mano: láminas antiguas, geometría, astronomía y mundos 3D en Three.js que avanzan con el scroll.</p>
+                </div>
+            </div>
+            <div class="visual-grid mundos">
+                <article id="catabasis" class="catabasis" aria-labelledby="catabasis-title">
+                            <div class="catabasis-heading hidden-element">
+                                <p class="case-index catabasis-index">Proyecto visual / Bestiario imposible</p>
+                                <h3 id="catabasis-title" class="catabasis-title">Catábasis</h3>
+                                <p class="catabasis-sub">Un mundo por explorar, del cielo al abismo, poblado de criaturas imposibles.</p>
+                            </div>
+                            <ol class="catabasis-descenso" aria-label="Algunas criaturas del bestiario">
+                                <li class="catabasis-criatura catabasis-criatura-1">
+                                    <figure>
+                                        <img src="/media/catabasis/vampiro.webp" width="1100" height="714" loading="lazy" alt="Murciélago con cabeza de hombre, litografía coloreada de 1851">
+                                        <figcaption><span class="catabasis-cota">+800 m</span><span class="catabasis-latin" lang="la">Vespertilio foenerator</span>Vampiro de levita</figcaption>
+                                    </figure>
+                                </li>
+                                <li class="catabasis-criatura catabasis-criatura-2">
+                                    <figure>
+                                        <img src="/media/catabasis/girasol.webp" width="765" height="1100" loading="lazy" alt="Girasol con rostro y cuerpo de persona, de Les Fleurs animées de Grandville">
+                                        <figcaption><span class="catabasis-cota">+25 m</span><span class="catabasis-latin" lang="la">Helianthus vigilans</span>Girasol centinela</figcaption>
+                                    </figure>
+                                </li>
+                                <li class="catabasis-criatura catabasis-criatura-3">
+                                    <figure>
+                                        <img src="/media/catabasis/mandragora.webp" width="738" height="1100" loading="lazy" alt="Mandrágora con forma de mujer, xilografía coloreada de 1491">
+                                        <figcaption><span class="catabasis-cota">-120 m</span><span class="catabasis-latin" lang="la">Mandragora femina</span>Mandrágora hembra</figcaption>
+                                    </figure>
+                                </li>
+                                <li class="catabasis-criatura catabasis-criatura-4">
+                                    <figure>
+                                        <img src="/media/catabasis/pez.webp" width="817" height="1100" loading="lazy" alt="Peces de colores imposibles de la obra de Louis Renard, 1754">
+                                        <figcaption><span class="catabasis-cota">-1.400 m</span><span class="catabasis-latin" lang="la">Piscis versicolor</span>Pez de colores de más</figcaption>
+                                    </figure>
+                                </li>
+                                <li class="catabasis-criatura catabasis-criatura-5">
+                                    <figure>
+                                        <img src="/media/catabasis/medusa.webp" width="688" height="966" loading="lazy" alt="Medusas de largos tentáculos de Ernst Haeckel, Kunstformen der Natur">
+                                        <figcaption><span class="catabasis-cota">-4.000 m</span><span class="catabasis-latin" lang="la">Desmonema annasethe</span>Medusa de Anna</figcaption>
+                                    </figure>
+                                </li>
+                            </ol>
+                            <div class="catabasis-pie hidden-element">
+                                <p>152 láminas antiguas de dominio público, limpiadas y ampliadas, con fichas inventadas y un osario donde montar quimeras con sus huesos.</p>
+                                <div class="case-links catabasis-links">
+                                    <a href="/proyecto/catabasis/">Empezar el descenso</a>
+                                    <a href="/proyecto/catabasis/herbolario">Abrir el herbolario</a>
+                                    <a href="https://github.com/CODIGOAFRX/catabasis" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
+
+                <article id="herbario" class="herbario-destacado" aria-labelledby="herbario-title">
+                            <div class="herbario-cabeza hidden-element">
+                                <p class="case-index herbario-index"><span class="herbario-sello">Flora de la península</span> Proyecto visual / Almanaque botánico</p>
+                                <h3 id="herbario-title" class="herbario-titulo"><span>Herbario</span> <em>del año</em></h3>
+                                <p class="herbario-sub">Doce meses de flora española en láminas antiguas que brotan, florecen, dan fruto y se secan con el scroll.</p>
+                            </div>
+                            <ol class="herbario-ano" aria-label="Algunas plantas del año">
+                                <li class="herbario-planta">
+                                    <figure>
+                                        <img src="/media/herbario/galanthus-nivalis.webp" width="248" height="700" loading="lazy" decoding="async" alt="Campanilla de invierno, de la Deutschlands Flora de Jacob Sturm">
+                                        <figcaption><span class="herbario-mes">Enero</span><span class="herbario-latin" lang="la">Galanthus nivalis</span>Campanilla de invierno</figcaption>
+                                    </figure>
+                                </li>
+                                <li class="herbario-planta">
+                                    <figure>
+                                        <img src="/media/herbario/papaver-rhoeas.webp" width="353" height="700" loading="lazy" decoding="async" alt="Amapola con su pétalo y su cápsula, de la Deutschlands Flora de Jacob Sturm">
+                                        <figcaption><span class="herbario-mes">Mayo</span><span class="herbario-latin" lang="la">Papaver rhoeas</span>Amapola</figcaption>
+                                    </figure>
+                                </li>
+                                <li class="herbario-planta">
+                                    <figure>
+                                        <img src="/media/herbario/hypericum-perforatum.webp" width="387" height="700" loading="lazy" decoding="async" alt="Hipérico, la hierba de San Juan, de la Deutschlands Flora de Jacob Sturm">
+                                        <figcaption><span class="herbario-mes">Junio</span><span class="herbario-latin" lang="la">Hypericum perforatum</span>Hipérico</figcaption>
+                                    </figure>
+                                </li>
+                                <li class="herbario-planta">
+                                    <figure>
+                                        <img src="/media/herbario/crocus-sativus.webp" width="300" height="700" loading="lazy" decoding="async" alt="Azafrán con su bulbo, de Köhler's Medizinal-Pflanzen">
+                                        <figcaption><span class="herbario-mes">Octubre</span><span class="herbario-latin" lang="la">Crocus sativus</span>Azafrán</figcaption>
+                                    </figure>
+                                </li>
+                                <li class="herbario-planta">
+                                    <figure>
+                                        <img src="/media/herbario/ilex-aquifolium.webp" width="501" height="700" loading="lazy" decoding="async" alt="Rama de acebo, de la Deutschlands Flora de Jacob Sturm">
+                                        <figcaption><span class="herbario-mes">Diciembre</span><span class="herbario-latin" lang="la">Ilex aquifolium</span>Acebo</figcaption>
+                                    </figure>
+                                </li>
+                            </ol>
+                            <div class="herbario-pie hidden-element">
+                                <p>36 láminas de 1750 a 1927, de la Biodiversity Heritage Library, recortadas en capas sin redibujar nada. Le dices dónde vives y te cuenta qué florece hoy; lo que guardes se monta en tu pliego y se descarga como cianotipia.</p>
+                                <div class="case-links herbario-links">
+                                    <a href="/proyecto/herbario/">Recorrer el año</a>
+                                    <a href="/proyecto/herbario/#hoy">Qué florece hoy</a>
+                                    <a href="https://github.com/CODIGOAFRX/herbario" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
+
+                <article id="comedia" class="comedia-destacado" aria-labelledby="comedia-title">
+                            <div class="comedia-cabeza">
+                                <div class="hidden-element">
+                                    <p class="case-index comedia-index">Proyecto visual / Viaje por un poema</p>
+                                    <h3 id="comedia-title" class="comedia-titulo">Comedia</h3>
+                                    <p class="comedia-sub">La Divina Comedia de Dante con el scroll: bajar al centro de la Tierra, dar la vuelta y subir hasta las estrellas.</p>
+                                </div>
+                                <figure class="comedia-giro">
+                                    <img src="/media/comedia/centro.webp" width="900" height="900" loading="lazy" decoding="async" alt="El centro de la Tierra en la Figura universal de Caetani: el Infierno bajo Jerusalén y el camino que sube al Purgatorio">
+                                    <figcaption>La Tierra en la Figura universal de Michelangelo Caetani, 1855. Gira con el scroll, como Dante en la cadera de Lucifer.</figcaption>
+                                </figure>
+                            </div>
+                            <ol class="comedia-canticas" aria-label="Las tres partes del poema">
+                                <li class="comedia-cantica comedia-cantica--infierno">
+                                    <figure>
+                                        <img src="/media/comedia/caronte.webp" width="952" height="473" loading="lazy" decoding="async" alt="Caronte rema por el Aqueronte con Dante y Virgilio, miniatura de Siena de hacia 1445">
+                                        <figcaption><span class="comedia-parte">Infierno</span>Nueve círculos hacia abajo. Caronte, canto III.</figcaption>
+                                    </figure>
+                                </li>
+                                <li class="comedia-cantica comedia-cantica--purgatorio">
+                                    <figure>
+                                        <img src="/media/comedia/soberbios.webp" width="952" height="426" loading="lazy" decoding="async" alt="La puerta del Purgatorio y los soberbios doblados bajo piedras, miniatura de Siena de hacia 1445">
+                                        <figcaption><span class="comedia-parte">Purgatorio</span>Siete cornisas hacia arriba. Los soberbios, canto X.</figcaption>
+                                    </figure>
+                                </li>
+                                <li class="comedia-cantica comedia-cantica--paraiso">
+                                    <figure>
+                                        <img src="/media/comedia/jupiter.webp" width="520" height="520" loading="lazy" decoding="async" alt="El águila de la justicia hecha de almas, con Beatriz y Dante, miniatura de Giovanni di Paolo">
+                                        <figcaption><span class="comedia-parte">Paraíso</span>Nueve cielos y la luz. El águila, canto XVIII.</figcaption>
+                                    </figure>
+                                </li>
+                            </ol>
+                            <div class="comedia-pie hidden-element">
+                                <p>36 láminas de 1370 a 1921, del Public Domain Image Archive y de Wikimedia Commons, recortadas sin redibujar nada. La lámina de Caetani hace de mapa: la cámara entra en ella, la inscripción de la puerta se entinta palabra a palabra, los nueve círculos se bajan como un pozo y en el centro de la Tierra la lámina gira media vuelta. Arriba, siete cornisas con los grabados de Doré que le borran a Dante las siete P de la frente y un juego para ver dónde se castiga y dónde se purga cada pecado.</p>
+                                <div class="case-links comedia-links">
+                                    <a href="/proyecto/comedia/">Empezar a bajar</a>
+                                    <a href="/proyecto/comedia/#pecado">Un pecado, dos sitios</a>
+                                    <a href="https://github.com/CODIGOAFRX/comedia" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
+
+                <article id="boveda" class="boveda-destacado" aria-labelledby="boveda-title">
+                            <div class="boveda-texto">
+                                <div class="boveda-cabeza hidden-element">
+                                    <p class="case-index boveda-index">Proyecto visual / Atlas celeste</p>
+                                    <h3 id="boveda-title" class="boveda-titulo">Bóveda</h3>
+                                    <p class="boveda-sub">El cielo de cualquier noche entre 1800 y 2050, calculado estrella a estrella y grabado como en un atlas de 1690.</p>
+                                </div>
+                                <ol class="boveda-astros" aria-label="Lo que había sobre Granada el 15 de enero de 2027 a las 22:00">
+                                    <li><span class="boveda-altura">+44°</span><span class="boveda-donde">al oeste</span>Cuarto creciente</li>
+                                    <li><span class="boveda-altura">+38°</span><span class="boveda-donde">al norte</span>Estrella Polar</li>
+                                    <li><span class="boveda-altura">+27°</span><span class="boveda-donde">al oeste</span>Saturno</li>
+                                    <li><span class="boveda-altura">+27°</span><span class="boveda-donde">al sudeste</span>Sirio</li>
+                                    <li><span class="boveda-altura">+15°</span><span class="boveda-donde">al este</span>Júpiter</li>
+                                </ol>
+                                <div class="boveda-pie hidden-element">
+                                    <p>5.044 estrellas, siete planetas, la Luna y el Sol calculados en el navegador con un motor astronómico propio, sin librerías y comprobado con 23 pruebas contra los ejemplos de Jean Meeus. Se arrastra para mover las horas y cada cielo se graba como lámina para imprimir.</p>
+                                    <div class="case-links boveda-links">
+                                        <a href="/proyecto/boveda/">Ver el cielo de esta noche</a>
+                                        <a href="/proyecto/boveda/#calculo">Cómo se calcula</a>
+                                        <a href="https://github.com/CODIGOAFRX/boveda" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <figure class="boveda-lamina">
+                                <div class="boveda-disco">
+                                    <img class="boveda-cielo" src="/media/boveda/boveda-cielo.webp" width="2020" height="2020" loading="lazy" decoding="async" alt="">
+                                </div>
+                                <img class="boveda-aro" src="/media/boveda/boveda-aro.webp" width="1200" height="1200" loading="lazy" decoding="async"
+                                    alt="Planisferio grabado en blanco sobre azul: el cielo de Granada el 15 de enero de 2027 a las 22:00, con Orión, Tauro y Géminis en lo alto, la media Luna al oeste y la Vía Láctea en trama">
+                                <figcaption><span class="lamina-num">Lámina calculada</span>El cielo sobre Granada el 15 de enero de 2027, a las 22:00. Al bajar por la página pasan las horas y el cielo gira alrededor de la Polar.</figcaption>
+                            </figure>
+                        </article>
+
+                <article id="sphaera" class="sphaera-destacado" aria-labelledby="sphaera-title">
+                            <div class="sphaera-cabeza hidden-element">
+                                <p class="case-index sphaera-index">Proyecto visual / Geometría del círculo</p>
+                                <h3 id="sphaera-title" class="sphaera-titulo">Sphaera</h3>
+                                <p class="sphaera-sub">El círculo y la esfera, del compás de Euclides a la pompa de jabón, en láminas antiguas.</p>
+                            </div>
+                            <figure class="sphaera-compas">
+                                <div class="sphaera-disco">
+                                    <img src="/media/sphaera/luz.webp" width="780" height="780" loading="lazy" decoding="async" alt="Grabado redondo: un disco de rayos claros que se abre desde un centro negro, rodeado de oscuridad">
+                                    <svg viewBox="-500 -500 1000 1000" aria-hidden="true" focusable="false">
+                                        <circle class="sphaera-traza" r="440" pathLength="1" transform="rotate(-90)"/>
+                                        <line class="sphaera-brazo" x1="0" y1="0" x2="0" y2="-440"/>
+                                        <circle class="sphaera-centro" r="7"/>
+                                    </svg>
+                                </div>
+                                <figcaption>La luz brota de la oscuridad. Robert Fludd, 1617. Al bajar, el compás da la vuelta y la lámina se abre, como en la portada de la web.</figcaption>
+                            </figure>
+                            <ol class="sphaera-discos" aria-label="Tres capítulos de la web">
+                                <li><img src="/media/sphaera/torno.webp" width="640" height="640" loading="lazy" decoding="async" alt="Estrella de seis puntas dentro de un anillo de espirales, torneada y fotografiada en 1869"><span class="sphaera-cap">Círculos sobre círculos</span>Woolsey, 1869</li>
+                                <li><img src="/media/sphaera/diatomea.webp" width="900" height="900" loading="lazy" decoding="async" alt="Una diatomea redonda con anillos y rayos, al microscopio"><span class="sphaera-cap">Lo pequeño también</span>Filbri, 1887</li>
+                                <li><img src="/media/sphaera/eclipse.webp" width="900" height="900" loading="lazy" decoding="async" alt="Eclipse total de Sol: un disco negro rodeado de la corona"><span class="sphaera-cap">Dos discos iguales</span>Trouvelot, 1878</li>
+                            </ol>
+                            <div class="sphaera-pie hidden-element">
+                                <p>58 láminas de dominio público, del siglo XII a 1909, y figuras que se calculan con el scroll: π entre polígonos, las órbitas de Ptolomeo a Kepler y el eclipse con el porcentaje tapado.</p>
+                                <div class="case-links sphaera-links">
+                                    <a href="/proyecto/sphaera/">Empezar por el centro</a>
+                                    <a href="https://github.com/CODIGOAFRX/sphaera" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
+
+                <article id="diseccion" class="diseccion-destacado" aria-labelledby="diseccion-title">
+                            <div class="diseccion-cabeza hidden-element">
+                                <p class="case-index diseccion-index">Proyecto visual / Láminas médicas</p>
+                                <h3 id="diseccion-title" class="diseccion-titulo">Disección</h3>
+                                <p class="diseccion-sub">Lección pública de anatomía en nueve cortes, con láminas médicas reales de 1425 a 1926.</p>
+                            </div>
+                            <figure class="diseccion-cuerpo">
+                                <div class="diseccion-capas">
+                                    <img src="/media/diseccion/piel.webp" width="520" height="776" loading="lazy" decoding="async" alt="Figura medieval de un hombre desnudo, de frente, pintada sobre pergamino entre texto en latín">
+                                    <img src="/media/diseccion/venas.webp" width="520" height="776" loading="lazy" decoding="async" alt="">
+                                    <img src="/media/diseccion/musculo.webp" width="520" height="776" loading="lazy" decoding="async" alt="">
+                                    <img src="/media/diseccion/visceras.webp" width="520" height="776" loading="lazy" decoding="async" alt="">
+                                    <img src="/media/diseccion/hueso.webp" width="520" height="776" loading="lazy" decoding="async" alt="La misma figura reducida al esqueleto, con la columna y las costillas a la vista">
+                                    <span class="diseccion-bisturi" aria-hidden="true"></span>
+                                </div>
+                                <figcaption>El mismo cuerpo, dibujado cinco veces hacia 1430 en el rollo del cirujano John of Arderne. Al bajar pierde la piel, las venas, el músculo y las vísceras, como en el primer acto de la web.</figcaption>
+                            </figure>
+                            <ol class="diseccion-actos" aria-label="Tres actos de la web">
+                                <li><img src="/media/diseccion/angel.webp" width="420" height="560" loading="lazy" decoding="async" alt="Espalda de una mujer con la piel abierta y doblada como dos alas, en mezzotinta de color"><span class="diseccion-acto">La carne</span>Gautier d’Agoty, 1746</li>
+                                <li><img src="/media/diseccion/visceras-mascagni.webp" width="420" height="560" loading="lazy" decoding="async" alt="Torso abierto en color con el corazón, los pulmones, el hígado y los intestinos"><span class="diseccion-acto">Las vísceras</span>Mascagni, 1823</li>
+                                <li><img src="/media/diseccion/catacumbas.webp" width="420" height="560" loading="lazy" decoding="async" alt="Pasillo subterráneo con las paredes hechas de calaveras y huesos apilados"><span class="diseccion-acto">El osario</span>Nadar, 1861</li>
+                            </ol>
+                            <div class="diseccion-pie hidden-element">
+                                <p>58 láminas de dominio público, del rollo de un cirujano medieval a la res de Soutine. Todo se abre con el scroll: la piel se corta capa a capa, gotea sangre sobre los hombres heridos, una linterna alumbra las catacumbas de París y unas constantes vitales cuentan las horas post mórtem. Contiene imágenes médicas explícitas.</p>
+                                <div class="case-links diseccion-links">
+                                    <a href="/proyecto/diseccion/">Entrar en la lección</a>
+                                    <a href="https://github.com/CODIGOAFRX/diseccion" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
+
+                <article id="ornamentos" class="ornamentos-destacado visual-span-3" aria-labelledby="ornamentos-title">
+                            <div class="ornamentos-cabeza hidden-element">
+                                <p class="case-index ornamentos-index">Recurso para la web / Capitulares y florones</p>
+                                <h3 id="ornamentos-title" class="ornamentos-titulo" aria-label="Ornamentos"><span class="ornamentos-letra ornamentos-letra--o" aria-hidden="true"></span><span aria-hidden="true">rnamentos</span></h3>
+                                <p class="ornamentos-sub">Capitulares de cinco alfabetos, del siglo XI al XIX, y florones de torno de 1869, listos para cualquier web con una línea de CSS.</p>
+                            </div>
+                            <ol class="ornamentos-alfabetos" aria-label="Una capitular de cada alfabeto">
+                                <li><span class="ornamentos-letra ornamentos-letra--a" aria-hidden="true"></span><span class="ornamentos-siglo">Siglo XI</span>Románico alemán</li>
+                                <li><span class="ornamentos-letra ornamentos-letra--b" aria-hidden="true"></span><span class="ornamentos-siglo">Siglo XIV</span>Gótico alemán</li>
+                                <li><span class="ornamentos-letra ornamentos-letra--c" aria-hidden="true"></span><span class="ornamentos-siglo">Siglo XVI</span>Veneciano</li>
+                                <li><span class="ornamentos-letra ornamentos-letra--d" aria-hidden="true"></span><span class="ornamentos-siglo">Siglo XIX</span>Rústico</li>
+                            </ol>
+                            <figure class="ornamentos-floron">
+                                <span class="ornamentos-floron-forma" aria-hidden="true"></span>
+                                <figcaption>Florón de torno de Edward J. Woolsey, 1869, usado como máscara: toma el color que se le dé.</figcaption>
+                            </figure>
+                            <div class="ornamentos-pie hidden-element">
+                                <p>120 letras del Alphabet-album de Silvestre (París, 1843), recortadas y vectorizadas, y 23 florones fotografiados en 1869. Se escribe un párrafo y la primera letra se vuelve capitular, con su HTML y su CSS para copiar.</p>
+                                <div class="case-links ornamentos-links">
+                                    <a href="/proyecto/ornamentos/">Abrir Ornamentos</a>
+                                    <a href="/proyecto/ornamentos/#catalogo">Ver el catálogo</a>
+                                    <a href="https://github.com/CODIGOAFRX/ornamentos" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
+
+                <article id="trazado" class="trazado-destacado visual-span-3" aria-labelledby="trazado-title">
+                            <div class="trazado-cabeza hidden-element">
+                                <p class="case-index trazado-index">Proyecto visual / Dibujo técnico</p>
+                                <h3 id="trazado-title" class="trazado-titulo">Trazado</h3>
+                                <p class="trazado-sub">Diez construcciones con regla y compás que se trazan con el scroll, con los instrumentos encima del papel.</p>
+                            </div>
+                            <figure class="trazado-mediatriz">
+                                <svg viewBox="150 60 700 680" aria-hidden="true" focusable="false">
+                                    <path class="trazado-arco a0" d="M416.6 126.8A320 320 0 0 1 553.2 297.8" pathLength="1"/>
+                                    <path class="trazado-arco a1" d="M553.2 502.2A320 320 0 0 1 416.6 673.2" pathLength="1"/>
+                                    <path class="trazado-arco a2" d="M446.8 297.8A320 320 0 0 1 583.4 126.8" pathLength="1"/>
+                                    <path class="trazado-arco a3" d="M583.4 673.2A320 320 0 0 1 446.8 502.2" pathLength="1"/>
+                                    <path class="trazado-dato" d="M250 400H750"/>
+                                    <path class="trazado-sol" d="M500 130V670" pathLength="1"/>
+                                    <path class="trazado-recto" d="M522 400V378H500"/>
+                                    <circle class="trazado-p" cx="250" cy="400" r="7"/><circle class="trazado-p" cx="750" cy="400" r="7"/>
+                                    <text x="206" y="412">A</text><text x="770" y="412">B</text>
+                                    <g class="trazado-compas">
+                                        <path class="trazado-pata"/><path class="trazado-pata"/>
+                                        <circle class="trazado-charnela" r="11"/>
+                                    </g>
+                                </svg>
+                                <figcaption>La mediatriz: cuatro arcos con el compás y una recta con la regla. Al bajar se traza paso a paso, como en cada lámina de la web.</figcaption>
+                            </figure>
+                            <ol class="trazado-laminas" aria-label="Tres láminas de la web">
+                                <li><svg class="trazado-mini" viewBox="-58.3 36 944.3 700" aria-hidden="true" focusable="false"><g class="trazos"><path class="t dato" d="M150 590L830 590" pathLength="1"/><path class="t aux" d="M150 590L745.5 203.3" pathLength="1"/><path class="t aux" d="M234.9 508A118 118 0 0 1 259.4 545.8" pathLength="1"/><path class="t aux" d="M333.8 443.8A118 118 0 0 1 358.4 481.5" pathLength="1"/><path class="t aux" d="M432.8 379.5A118 118 0 0 1 457.3 417.3" pathLength="1"/><path class="t aux" d="M531.8 315.2A118 118 0 0 1 556.3 353" pathLength="1"/><path class="t aux" d="M630.7 251A118 118 0 0 1 655.3 288.7" pathLength="1"/><path class="t aux" d="M644.8 268.7L830 590" pathLength="1"/><path class="t aux" d="M545.9 332.9L694 590" pathLength="1"/><path class="t aux" d="M446.9 397.2L558 590" pathLength="1"/><path class="t aux" d="M347.9 461.5L422 590" pathLength="1"/><path class="t aux" d="M249 525.7L286 590" pathLength="1"/></g><g class="marcas"><g class="cota"><path d="M150 598L150 660M286 598L286 660M150 650L286 650"/><path class="flecha" d="M150 650L166 645.5L166 654.5ZM286 650L270 654.5L270 645.5Z"/><text transform="translate(218 638) rotate(0)">27,2 mm</text></g><g class="cota"><path d="M286 598L286 660M422 598L422 660M286 650L422 650"/><path class="flecha" d="M286 650L302 645.5L302 654.5ZM422 650L406 654.5L406 645.5Z"/><text transform="translate(354 638) rotate(0)">27,2 mm</text></g><g class="cota"><path d="M422 598L422 660M558 598L558 660M422 650L558 650"/><path class="flecha" d="M422 650L438 645.5L438 654.5ZM558 650L542 654.5L542 645.5Z"/><text transform="translate(490 638) rotate(0)">27,2 mm</text></g><g class="cota"><path d="M558 598L558 660M694 598L694 660M558 650L694 650"/><path class="flecha" d="M558 650L574 645.5L574 654.5ZM694 650L678 654.5L678 645.5Z"/><text transform="translate(626 638) rotate(0)">27,2 mm</text></g><g class="cota"><path d="M694 598L694 660M830 598L830 660M694 650L830 650"/><path class="flecha" d="M694 650L710 645.5L710 654.5ZM830 650L814 654.5L814 645.5Z"/><text transform="translate(762 638) rotate(0)">27,2 mm</text></g></g><g class="rotulos"><g class="p dato"><circle cx="150" cy="590" r="5.5"/><text x="116" y="602">A</text></g><g class="p dato"><circle cx="830" cy="590" r="5.5"/><text x="844" y="602">B</text></g><g class="p aux"><circle cx="249" cy="525.7" r="5.5"/><text x="235" y="507.7">1</text></g><g class="p aux"><circle cx="347.9" cy="461.5" r="5.5"/><text x="333.9" y="443.5">2</text></g><g class="p aux"><circle cx="446.9" cy="397.2" r="5.5"/><text x="432.9" y="379.2">3</text></g><g class="p aux"><circle cx="545.9" cy="332.9" r="5.5"/><text x="531.9" y="314.9">4</text></g><g class="p aux"><circle cx="644.8" cy="268.7" r="5.5"/><text x="630.8" y="250.7">5</text></g><g class="p sol"><circle cx="830" cy="590" r="5.5"/></g><g class="p sol"><circle cx="694" cy="590" r="5.5"/></g><g class="p sol"><circle cx="558" cy="590" r="5.5"/></g><g class="p sol"><circle cx="422" cy="590" r="5.5"/></g><g class="p sol"><circle cx="286" cy="590" r="5.5"/></g></g></svg><span class="trazado-cap">Dividir un segmento</span>Tales, con escuadra y cartabón</li>
+                                <li><svg class="trazado-mini" viewBox="120.5 74 827.1 620.3" aria-hidden="true" focusable="false"><g class="trazos"><path class="t dato" d="M750 380A250 250 0 1 1 250 380A250 250 0 1 1 750 380" pathLength="1"/><path class="t aux" d="M250 380L750 380" pathLength="1"/><path class="t aux" d="M500 130L500 630" pathLength="1"/><path class="t aux" d="M595.9 239.6A170 170 0 0 1 647.7 295.9" pathLength="1"/><path class="t aux" d="M647.7 464.1A170 170 0 0 1 595.9 520.4" pathLength="1"/><path class="t aux" d="M602.3 295.9A170 170 0 0 1 654.1 239.6" pathLength="1"/><path class="t aux" d="M654.1 520.4A170 170 0 0 1 602.3 464.1" pathLength="1"/><path class="t aux" d="M625 244.8L625 515.2" pathLength="1"/><path class="t aux" d="M500 130A279.5 279.5 0 0 0 345.5 380" pathLength="1"/><path class="t aux" d="M500 130L345.5 380" pathLength="1"/><path class="t aux" d="M766.4 254.2A293.9 293.9 0 0 1 700.4 344.9" pathLength="1"/><path class="t aux" d="M701.9 594.4A293.9 293.9 0 0 1 595.3 559.8" pathLength="1"/><path class="t aux" d="M358.5 638.3A293.9 293.9 0 0 1 358.5 526.2" pathLength="1"/><path class="t aux" d="M210.6 325.2A293.9 293.9 0 0 1 317.2 290.6" pathLength="1"/><path class="t sol" d="M500 130L737.8 302.7" pathLength="1"/><path class="t sol" d="M737.8 302.7L646.9 582.3" pathLength="1"/><path class="t sol" d="M646.9 582.3L353.1 582.3" pathLength="1"/><path class="t sol" d="M353.1 582.3L262.2 302.7" pathLength="1"/><path class="t sol" d="M262.2 302.7L500 130" pathLength="1"/></g><g class="marcas"><g class="cota"><path d="M352.3 384.2L388 406.3M506.8 134.2L542.5 156.3M379.5 401L534 151"/><path class="flecha" d="M379.5 401L384.1 385.1L391.8 389.8ZM534 151L529.4 167L521.8 162.3Z"/><text transform="translate(446.6 269.7) rotate(-58.3)">58,8 mm</text></g><g class="cota"><path d="M745.4 305.2L827.2 331.8M654.6 584.7L736.3 611.3M817.7 328.7L726.8 608.2"/><path class="flecha" d="M817.7 328.7L817 345.3L808.4 342.5ZM726.8 608.2L727.5 591.6L736.1 594.4Z"/><text transform="translate(783.7 472.2) rotate(-72)">58,8 mm</text></g></g><g class="rotulos"><g class="p dato"><circle cx="500" cy="380" r="5.5"/><text x="466" y="412">O</text></g><g class="p dato"><circle cx="500" cy="130" r="5.5"/><text x="512" y="114">C</text></g><g class="p aux"><circle cx="625" cy="380" r="5.5"/><text x="635" y="410">M</text></g><g class="p aux"><circle cx="345.5" cy="380" r="5.5"/><text x="331.5" y="412">N</text></g></g></svg><span class="trazado-cap">Pentágono</span>Con el número de oro dentro</li>
+                                <li><svg class="trazado-mini" viewBox="92.4 39 869.3 652" aria-hidden="true" focusable="false"><g class="trazos"><path class="t dato" d="M178.4 487.5A175 175 0 1 1 481.6 312.5A175 175 0 1 1 178.4 487.5" pathLength="1"/><path class="t aux" d="M330 400L870 330" pathLength="1"/><path class="t aux" d="M525.4 124.7A337.6 337.6 0 0 1 614.3 217.9" pathLength="1"/><path class="t aux" d="M651.3 503.6A337.6 337.6 0 0 1 589.1 616.4" pathLength="1"/><path class="t aux" d="M548.7 226.4A337.6 337.6 0 0 1 610.9 113.6" pathLength="1"/><path class="t aux" d="M674.6 605.3A337.6 337.6 0 0 1 585.7 512.1" pathLength="1"/><path class="t aux" d="M574.3 167L625.7 563" pathLength="1"/><path class="t aux" d="M870 330A272.3 272.3 0 1 1 330 400A272.3 272.3 0 1 1 870 330" pathLength="1"/><path class="t sol" d="M870 330L207.6 196.9" pathLength="1"/><path class="t sol" d="M870 330L263.4 627.6" pathLength="1"/><path class="t aux" d="M330 400L364.5 228.4" pathLength="1"/><path class="t aux" d="M330 400L407.1 557.1" pathLength="1"/></g><g class="marcas"><path class="recto" d="M360.1 250L381.7 254.3L386 232.8"/><path class="recto" d="M397.4 537.4L417.1 527.7L426.8 547.4"/><g class="cota"><path d="M871.6 322.2L880.6 277.1M366 220.6L375.1 175.5M878.7 286.9L373.1 185.3"/><path class="flecha" d="M878.7 286.9L862.1 288.1L863.9 279.3ZM373.1 185.3L389.7 184L387.9 192.9Z"/><text transform="translate(623.5 247.8) rotate(11.4)">103,1 mm</text></g><g class="cota"><path d="M873.5 337.2L893.8 378.5M410.6 564.3L430.9 605.6M889.4 369.5L426.5 596.6"/><path class="flecha" d="M889.4 369.5L877 380.6L873 372.5ZM426.5 596.6L438.8 585.5L442.8 593.6Z"/><text transform="translate(663.2 493.8) rotate(-26.1)">103,1 mm</text></g></g><g class="rotulos"><g class="p dato"><circle cx="330" cy="400" r="5.5"/><text x="296" y="430">O</text></g><g class="p dato"><circle cx="870" cy="330" r="5.5"/><text x="884" y="316">P</text></g><g class="p aux"><circle cx="600" cy="365" r="5.5"/><text x="588" y="399">M</text></g><g class="p sol"><circle cx="364.5" cy="228.4" r="5.5"/><text x="354.5" y="208.4">T</text></g><g class="p sol"><circle cx="407.1" cy="557.1" r="5.5"/><text x="401.1" y="597.1">T'</text></g></g></svg><span class="trazado-cap">Tangentes</span>Desde un punto exterior</li>
+                            </ol>
+                            <div class="trazado-pie hidden-element">
+                                <p>Mediatriz, bisectriz, paralelas, Tales, triángulos, polígonos y tangentes. La geometría se calcula en el navegador, cada lámina termina con una comprobación medida y entre ellas van los grabados de Hirschvogel (1543) y las fortalezas de Errard (1600).</p>
+                                <div class="case-links trazado-links">
+                                    <a href="/proyecto/trazado/">Empezar a trazar</a>
+                                    <a href="https://github.com/CODIGOAFRX/trazado" target="_blank" rel="noopener noreferrer">Ver código</a>
+                                </div>
+                            </div>
+                        </article>
+
+                <article id="nocturna" class="nocturna-destacado visual-span-3" aria-labelledby="nocturna-title">
+                            <div class="nocturna-cabeza hidden-element">
+                                <p class="case-index nocturna-index">Proyecto visual / Three.js</p>
+                                <h3 id="nocturna-title" class="nocturna-titulo">Nocturna</h3>
+                                <p class="nocturna-sub">El último tren de la línea 0 cruza una ciudad que no existe. El scroll mueve el tren.</p>
+                            </div>
+                            <figure class="nocturna-ciudad">
+                                <svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false"><g class="nocturna-capa c0"><path class="nocturna-torre" d="M-60 400V225h87V400zM36 400V246h76V400zM115 400V123h85V400zM209 400V134h58V400zM277 400V85h64V400zM346 400V259h47V400zM399 400V190h55V400zM464 400V221h42V400zM515 400V251h72V400zM590 400V259h46V400zM645 400V259h58V400zM706 400V228h80V400zM787 400V117h57V400zM846 400V192h74V400zM922 400V255h41V400zM966 400V191h66V400zM1042 400V246h87V400zM1132 400V112h79V400zM1221 400V96h45V400zM1269 400V175h51V400zM1326 400V234h41V400zM1369 400V229h85V400zM1460 400V151h62V400zM1525 400V223h69V400z"/></g><g class="nocturna-capa c1"><path class="nocturna-torre" d="M-60 400V166h70V400zM18 400V177h46V400zM74 400V298h66V400zM149 400V273h46V400zM200 400V257h63V400zM274 400V154h72V400zM358 400V180h55V400zM422 400V287h78V400zM509 400V162h35V400zM546 400V282h53V400zM610 400V303h34V400zM650 400V233h54V400zM710 400V308h37V400zM755 400V266h75V400zM838 400V283h52V400zM897 400V303h65V400zM967 400V294h35V400zM1008 400V166h43V400zM1056 400V226h42V400zM1105 400V289h58V400zM1172 400V202h59V400zM1236 400V151h78V400zM1323 400V276h51V400zM1382 400V272h77V400zM1464 400V252h43V400zM1518 400V303h79V400z"/><path class="nocturna-luz" d="M-55 176h5v6h-5zM-37 187h5v6h-5zM-1 231h5v6h-5zM-55 297h5v6h-5zM-28 297h5v6h-5zM-37 319h5v6h-5zM-55 330h5v6h-5zM-46 341h5v6h-5zM-55 352h5v6h-5zM23 187h5v6h-5zM41 209h5v6h-5zM50 209h5v6h-5zM41 220h5v6h-5zM32 253h5v6h-5zM23 264h5v6h-5zM32 308h5v6h-5zM79 341h5v6h-5zM88 374h5v6h-5zM106 374h5v6h-5zM154 294h5v6h-5zM172 294h5v6h-5zM154 360h5v6h-5zM232 278h5v6h-5zM250 289h5v6h-5zM214 300h5v6h-5zM223 300h5v6h-5zM241 322h5v6h-5zM223 333h5v6h-5zM232 355h5v6h-5zM279 175h5v6h-5zM306 175h5v6h-5zM324 175h5v6h-5zM288 186h5v6h-5zM297 197h5v6h-5zM306 208h5v6h-5zM288 219h5v6h-5zM297 252h5v6h-5zM315 263h5v6h-5zM333 274h5v6h-5zM279 307h5v6h-5zM297 329h5v6h-5zM333 329h5v6h-5zM306 340h5v6h-5zM324 340h5v6h-5zM288 351h5v6h-5zM324 362h5v6h-5zM324 373h5v6h-5zM363 201h5v6h-5zM363 223h5v6h-5zM390 278h5v6h-5zM372 322h5v6h-5zM390 355h5v6h-5zM472 319h5v6h-5zM427 363h5v6h-5zM436 363h5v6h-5zM481 363h5v6h-5zM532 205h5v6h-5zM523 282h5v6h-5zM514 315h5v6h-5zM578 292h5v6h-5zM587 292h5v6h-5zM551 303h5v6h-5zM560 303h5v6h-5zM560 336h5v6h-5zM551 369h5v6h-5zM560 380h5v6h-5zM615 357h5v6h-5zM615 379h5v6h-5zM691 254h5v6h-5zM664 276h5v6h-5zM673 276h5v6h-5zM778 276h5v6h-5zM823 287h5v6h-5zM787 309h5v6h-5zM787 320h5v6h-5zM778 353h5v6h-5zM787 375h5v6h-5zM870 315h5v6h-5zM843 370h5v6h-5zM861 370h5v6h-5zM870 370h5v6h-5zM911 324h5v6h-5zM911 335h5v6h-5zM938 335h5v6h-5zM920 357h5v6h-5zM929 368h5v6h-5zM911 379h5v6h-5zM990 326h5v6h-5zM981 348h5v6h-5zM990 348h5v6h-5zM972 370h5v6h-5zM1013 176h5v6h-5zM1013 286h5v6h-5zM1013 297h5v6h-5zM1022 319h5v6h-5zM1022 352h5v6h-5zM1031 363h5v6h-5zM1061 247h5v6h-5zM1088 247h5v6h-5zM1088 258h5v6h-5zM1079 269h5v6h-5zM1088 302h5v6h-5zM1110 310h5v6h-5zM1146 321h5v6h-5zM1128 354h5v6h-5zM1186 212h5v6h-5zM1177 234h5v6h-5zM1222 245h5v6h-5zM1186 256h5v6h-5zM1222 278h5v6h-5zM1186 289h5v6h-5zM1177 344h5v6h-5zM1195 366h5v6h-5zM1213 377h5v6h-5zM1277 161h5v6h-5zM1286 194h5v6h-5zM1250 216h5v6h-5zM1286 227h5v6h-5zM1241 260h5v6h-5zM1286 260h5v6h-5zM1295 260h5v6h-5zM1277 282h5v6h-5zM1286 304h5v6h-5zM1286 315h5v6h-5zM1277 326h5v6h-5zM1304 326h5v6h-5zM1337 297h5v6h-5zM1346 297h5v6h-5zM1337 374h5v6h-5zM1423 282h5v6h-5zM1396 315h5v6h-5zM1414 326h5v6h-5zM1396 337h5v6h-5zM1405 381h5v6h-5zM1496 295h5v6h-5zM1478 306h5v6h-5zM1487 328h5v6h-5zM1496 328h5v6h-5zM1487 350h5v6h-5zM1550 313h5v6h-5zM1577 313h5v6h-5zM1559 324h5v6h-5zM1586 324h5v6h-5zM1550 346h5v6h-5zM1559 346h5v6h-5zM1523 368h5v6h-5zM1559 368h5v6h-5z"/><path class="nocturna-luz calida" d="M32 242h5v6h-5zM79 308h5v6h-5zM133 374h5v6h-5zM214 289h5v6h-5zM324 219h5v6h-5zM306 263h5v6h-5zM306 373h5v6h-5zM445 297h5v6h-5zM445 319h5v6h-5zM463 330h5v6h-5zM523 348h5v6h-5zM664 243h5v6h-5zM655 287h5v6h-5zM664 287h5v6h-5zM769 298h5v6h-5zM760 353h5v6h-5zM843 326h5v6h-5zM1070 346h5v6h-5zM1137 376h5v6h-5zM1222 267h5v6h-5zM1222 311h5v6h-5zM1213 355h5v6h-5zM1195 377h5v6h-5zM1250 238h5v6h-5zM1286 271h5v6h-5zM1241 381h5v6h-5zM1250 381h5v6h-5zM1328 363h5v6h-5zM1441 326h5v6h-5zM1423 348h5v6h-5zM1469 361h5v6h-5zM1559 335h5v6h-5zM1532 368h5v6h-5z"/></g><g class="nocturna-capa c2"><path class="nocturna-torre" d="M-60 400V243h70V400zM13 400V245h47V400zM63 400V302h63V400zM138 400V295h56V400zM197 400V263h75V400zM282 400V324h96V400zM384 400V329h41V400zM433 400V358h73V400zM515 400V351h87V400zM611 400V304h51V400zM673 400V260h61V400zM740 400V249h92V400zM843 400V332h42V400zM894 400V342h60V400zM964 400V249h87V400zM1058 400V263h44V400zM1104 400V297h80V400zM1192 400V359h64V400zM1267 400V360h80V400zM1359 400V316h84V400zM1446 400V251h64V400zM1515 400V344h62V400z"/><path class="nocturna-luz" d="M-37 264h5v6h-5zM-10 264h5v6h-5zM-28 308h5v6h-5zM-55 319h5v6h-5zM-46 319h5v6h-5zM-55 330h5v6h-5zM-46 330h5v6h-5zM-1 330h5v6h-5zM-55 341h5v6h-5zM-46 341h5v6h-5zM-10 341h5v6h-5zM-10 363h5v6h-5zM45 255h5v6h-5zM18 299h5v6h-5zM27 299h5v6h-5zM45 299h5v6h-5zM27 376h5v6h-5zM68 312h5v6h-5zM113 312h5v6h-5zM104 323h5v6h-5zM113 323h5v6h-5zM86 334h5v6h-5zM77 345h5v6h-5zM77 367h5v6h-5zM95 367h5v6h-5zM152 327h5v6h-5zM179 349h5v6h-5zM179 382h5v6h-5zM256 295h5v6h-5zM229 306h5v6h-5zM238 317h5v6h-5zM247 317h5v6h-5zM211 339h5v6h-5zM211 350h5v6h-5zM229 350h5v6h-5zM265 350h5v6h-5zM229 361h5v6h-5zM229 372h5v6h-5zM256 383h5v6h-5zM265 383h5v6h-5zM287 334h5v6h-5zM359 334h5v6h-5zM359 345h5v6h-5zM305 356h5v6h-5zM332 356h5v6h-5zM332 367h5v6h-5zM332 378h5v6h-5zM359 378h5v6h-5zM389 350h5v6h-5zM407 361h5v6h-5zM556 361h5v6h-5zM529 383h5v6h-5zM643 325h5v6h-5zM687 270h5v6h-5zM705 292h5v6h-5zM714 336h5v6h-5zM714 347h5v6h-5zM678 358h5v6h-5zM808 259h5v6h-5zM745 270h5v6h-5zM763 292h5v6h-5zM790 292h5v6h-5zM799 303h5v6h-5zM808 303h5v6h-5zM763 325h5v6h-5zM763 336h5v6h-5zM808 336h5v6h-5zM790 347h5v6h-5zM817 347h5v6h-5zM808 369h5v6h-5zM754 380h5v6h-5zM772 380h5v6h-5zM781 380h5v6h-5zM875 342h5v6h-5zM875 353h5v6h-5zM848 364h5v6h-5zM848 375h5v6h-5zM875 375h5v6h-5zM908 352h5v6h-5zM926 352h5v6h-5zM908 363h5v6h-5zM969 259h5v6h-5zM996 259h5v6h-5zM1014 259h5v6h-5zM1005 270h5v6h-5zM1023 270h5v6h-5zM1023 281h5v6h-5zM1005 314h5v6h-5zM1023 314h5v6h-5zM987 325h5v6h-5zM996 325h5v6h-5zM1041 336h5v6h-5zM996 358h5v6h-5zM1032 358h5v6h-5zM1032 369h5v6h-5zM1063 273h5v6h-5zM1090 284h5v6h-5zM1081 317h5v6h-5zM1090 361h5v6h-5zM1081 372h5v6h-5zM1081 383h5v6h-5zM1172 307h5v6h-5zM1109 318h5v6h-5zM1109 329h5v6h-5zM1136 340h5v6h-5zM1136 351h5v6h-5zM1172 351h5v6h-5zM1136 362h5v6h-5zM1109 373h5v6h-5zM1118 373h5v6h-5zM1154 384h5v6h-5zM1233 369h5v6h-5zM1290 381h5v6h-5zM1382 326h5v6h-5zM1418 326h5v6h-5zM1436 326h5v6h-5zM1382 337h5v6h-5zM1427 337h5v6h-5zM1382 348h5v6h-5zM1427 348h5v6h-5zM1391 370h5v6h-5zM1460 305h5v6h-5zM1478 305h5v6h-5zM1496 316h5v6h-5zM1487 338h5v6h-5zM1460 382h5v6h-5zM1565 354h5v6h-5z"/><path class="nocturna-luz calida" d="M-55 275h5v6h-5zM-19 297h5v6h-5zM-28 352h5v6h-5zM-37 374h5v6h-5zM18 343h5v6h-5zM86 345h5v6h-5zM305 345h5v6h-5zM359 356h5v6h-5zM368 367h5v6h-5zM296 378h5v6h-5zM416 361h5v6h-5zM492 379h5v6h-5zM574 383h5v6h-5zM616 347h5v6h-5zM634 380h5v6h-5zM678 325h5v6h-5zM687 336h5v6h-5zM714 369h5v6h-5zM678 380h5v6h-5zM754 259h5v6h-5zM799 314h5v6h-5zM799 347h5v6h-5zM808 347h5v6h-5zM857 342h5v6h-5zM866 375h5v6h-5zM917 352h5v6h-5zM978 281h5v6h-5zM969 314h5v6h-5zM1041 314h5v6h-5zM1023 325h5v6h-5zM1032 325h5v6h-5zM969 347h5v6h-5zM1005 369h5v6h-5zM978 380h5v6h-5zM1172 373h5v6h-5zM1460 272h5v6h-5zM1478 283h5v6h-5zM1496 305h5v6h-5zM1469 382h5v6h-5zM1478 382h5v6h-5z"/></g><path class="nocturna-via" d="M-60 402H1560"/><g class="nocturna-tren"><path d="M0 393h150l14 9H-8z"/><path class="nocturna-faro" d="M164 402h60"/></g></svg>
+                                <figcaption>Aquí, un perfil de papel. En su web es una ciudad en 3D que se recorre por dentro: Las Agujas, El Mercado, El Túnel y El Núcleo.</figcaption>
+                            </figure>
+                            <div class="nocturna-pie hidden-element">
+                                <p>Más de mil edificios, rótulos en un alfabeto inventado, lluvia y suelo mojado, generados por código al cargar: ni modelos 3D, ni texturas, ni vídeo. Menos de veinte llamadas de dibujo, para que vaya fluida también en equipos modestos.</p>
+                                <div class="case-links nocturna-links">
+                                    <a href="/proyecto/nocturna/">Subir al tren</a>
+                                </div>
+                            </div>
+                        </article>
+
+                <article id="milenario" class="milenario-destacado visual-span-3" aria-labelledby="milenario-title">
+                            <div class="milenario-cabeza hidden-element">
+                                <p class="case-index milenario-index">Proyecto visual / Three.js</p>
+                                <h3 id="milenario-title" class="milenario-titulo">Milenario</h3>
+                                <p class="milenario-sub">Un árbol de tres mil años, de la raíz a la copa. El scroll te sube por él.</p>
+                            </div>
+                            <figure class="milenario-corte">
+                                <div class="milenario-lienzo">
+                                    <img class="milenario-tenue" src="media/milenario/arbol.svg" alt="" width="1000" height="1030" loading="lazy" decoding="async">
+                                    <img class="milenario-vivo" src="media/milenario/arbol.svg" alt="" width="1000" height="1030" loading="lazy" decoding="async">
+                                    <span class="milenario-nivel" aria-hidden="true"><b>+78 m</b></span>
+                                </div>
+                                <figcaption>Aquí, un dibujo de líneas. En su web es un árbol en 3D que se recorre por dentro: las raíces y su red de hongos bajo tierra, el tronco, las ramas y la copa bajo las estrellas.</figcaption>
+                            </figure>
+                            <div class="milenario-pie hidden-element">
+                                <p>El tronco, cientos de ramas, decenas de miles de hojas y el micelio se generan por código al cargar: ni modelos 3D, ni vídeo. La calidad se ajusta sola al equipo para que vaya fluido también en un portátil de oficina.</p>
+                                <div class="case-links milenario-links">
+                                    <a href="/proyecto/milenario/">Subir al árbol</a>
+                                </div>
+                            </div>
+                        </article>
             </div>
         </section>
 
@@ -1104,7 +1095,7 @@
         <section id="projects" class="projects">
             <div class="content-wrapper">
                 <div class="projects-heading hidden-element">
-                    <h3 class="section-label">05 / Otros proyectos</h3>
+                    <h3 class="section-label">06 / Otros proyectos</h3>
                     <h2>Más allá del frontend.</h2>
                     <p>Arquitectura backend, datos, automatización y experimentación técnica. Una selección corta,
                         centrada en los proyectos que mejor explican cómo trabajo.</p>
@@ -1128,7 +1119,7 @@
         <section id="stack" class="stack">
             <div class="orbit-stage">
                 <div class="content-wrapper hidden-element">
-                    <h3 class="section-label">06 / Tecnologías y Habilidades</h3>
+                    <h3 class="section-label">07 / Tecnologías y Habilidades</h3>
                     <div class="tech-grid-blueprint">
                         <div class="tech-blueprint-row">
                             <span class="tech-blueprint-label">BACKEND & CORE</span>
@@ -1173,7 +1164,7 @@
         <section id="recommendation" class="recommendation">
             <div class="content-wrapper recommendation-grid hidden-element">
                 <div>
-                    <h3 class="section-label">07 / Recomendación</h3>
+                    <h3 class="section-label">08 / Recomendación</h3>
                     <p class="recommendation-context">Una referencia pública sobre mi etapa formativa y mi forma de
                         afrontar los proyectos.</p>
                     <figure class="lamina lamina-rueda">
@@ -1199,7 +1190,7 @@
         <!-- Contact Section -->
         <section id="contact" class="contact">
             <div class="content-wrapper hidden-element">
-                <h3 class="section-label">08 / Contacto</h3>
+                <h3 class="section-label">09 / Contacto</h3>
                 <p class="contact-kicker">Disponible para oportunidades de desarrollo backend, full-stack y automatización.</p>
                 <h2 class="contact-title">Hablemos de lo próximo.</h2>
                 <a href="mailto:info@pedrogomez.dev" class="huge-link">info@pedrogomez.dev</a>
@@ -1231,7 +1222,7 @@
             <a href="https://pdimagearchive.org/images/22f79abf-41bf-448e-b8df-30fb02ccba5a/" target="_blank" rel="noopener noreferrer">palomas mensajeras, 1884</a>.</p>
     </footer>
 
-    <script src="script.js?v=20261126-tareas"></script>
+    <script src="script.js?v=20261127-horario"></script>
     <script src="net.js?v=20261111-quieta" defer></script>
     <script src="scenes.js?v=20261124-dual" defer></script>
     <script src="horizonte.js?v=20261111-estrellas" defer></script>
