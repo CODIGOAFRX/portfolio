@@ -163,6 +163,42 @@ kbd {
   overflow-x: auto; font-family: var(--font-mono); font-size: 13px; color: var(--fg);
 }
 
+/* Tarjetas de agentes .md */
+.md-stack { display: grid; gap: .65rem; }
+.md-card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: .8rem .9rem; display: grid; gap: .45rem;
+}
+.md-head {
+  display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap;
+}
+.md-meta { display: flex; align-items: baseline; gap: .45rem; flex-wrap: wrap; min-width: 0; }
+.md-title { font-weight: 600; font-size: 14.5px; color: var(--fg); }
+.md-meta code {
+  background: var(--code); padding: .12rem .42rem; border-radius: 6px; font-size: 12.5px;
+}
+.md-actions { display: flex; gap: .35rem; flex: none; }
+.md-actions button {
+  font: inherit; font-size: 12.5px; font-weight: 500; cursor: pointer;
+  padding: .28rem .65rem; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--bg); color: var(--fg);
+}
+.md-actions button:hover { border-color: var(--muted); }
+.md-actions button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.md-actions .btn-copy {
+  background: var(--accent-soft); color: var(--accent); border-color: transparent;
+}
+.md-actions .btn-copy[data-copied="1"] { background: var(--accent); color: #ffffff; }
+.md-desc { margin: 0; color: var(--muted); font-size: 13.5px; }
+.md-tools {
+  margin: 0; font-family: var(--font-mono); font-size: 12px; color: var(--muted);
+}
+.md-code {
+  margin: .3rem 0 0; background: var(--code); border: 1px solid var(--line); border-radius: 8px;
+  padding: .75rem .85rem; overflow-x: auto; font-family: var(--font-mono);
+  font-size: 12.5px; line-height: 1.5; color: var(--fg); white-space: pre;
+}
+
 /* Flujo */
 ol.flow { list-style: none; margin: 0; padding: 0; counter-reset: paso; display: grid; gap: 0; }
 ol.flow li {
@@ -181,6 +217,7 @@ ol.flow li:last-child::after { display: none; }
 ol.flow li:last-child { padding-bottom: 0; }
 ol.flow b { font-weight: 600; }
 ol.flow span { display: block; color: var(--muted); font-size: 14px; }
+ol.flow code { background: var(--code); padding: .08rem .35rem; border-radius: 5px; font-size: 12.5px; }
 
 .empty { color: var(--muted); text-align: center; padding: 2.5rem 0; }
 footer { color: var(--muted); font-size: 12.5px; padding-block: 0 2.5rem; }
@@ -208,6 +245,7 @@ footer { color: var(--muted); font-size: 12.5px; padding-block: 0 2.5rem; }
       <a href="#proyecto">Skills proyecto</a>
       <a href="#usuario">Skills usuario</a>
       <a href="#subagentes">Subagentes</a>
+      <a href="#agentes-md">Agentes .md</a>
       <a href="#flujo">Flujo</a>
     </nav>
   </div>
@@ -351,6 +389,261 @@ footer { color: var(--muted); font-size: 12.5px; padding-block: 0 2.5rem; }
       </div>
     </section>
 
+    <section id="agentes-md" data-s>
+      <h2>Agentes de programación <small>CLAUDE.md + .claude/agents/</small></h2>
+      <p class="note">Patrón de tres agentes (orquestador, developer y tester) apoyados en <code>PLAN.md</code> y <code>DIRECTRICES.md</code>. La mecánica del bucle es siempre la misma; lo que cambia en cada proyecto es el stack, los comandos de verificación y las reglas de dominio.</p>
+
+      <h3>Qué cambia según el proyecto</h3>
+      <div class="list">
+        <div class="row"><code>Lo que NO cambia</code><span class="d">Separación estricta: el orquestador no toca código, <code>develop</code> implementa, <code>testing</code> no tiene <code>Write</code> ni <code>Edit</code> y solo responde <code>APROBADO</code> o <code>FALLOS</code> (máx. 5 rondas).</span></div>
+        <div class="row"><code>Stack y carpetas</code><span class="d">En <code>CLAUDE.md</code> y <code>develop.md</code>: qué carpetas existen (<code>src/</code>, <code>api/</code>, <code>worker/</code>, <code>backend/</code>…), lenguaje y reglas de arquitectura.</span></div>
+        <div class="row"><code>Comandos check</code><span class="d">En <code>develop.md</code> y <code>testing.md</code>: Node/Next (<code>lint</code>, <code>tsc --noEmit</code>, <code>test</code>, <code>build</code>), Java (<code>./mvnw test</code>), Python (<code>pytest</code>, <code>ruff</code>) o web estática (<code>node --check</code> + tests).</span></div>
+        <div class="row"><code>Datos y seguridad</code><span class="d">Si hay BD o auth: migraciones inmutables, RLS, transacciones SQL, validación con Zod/schema y cero secretos en código. Si es web estática: CSP, cabeceras y accesibilidad.</span></div>
+        <div class="row"><code>Interfaz y pruebas</code><span class="d">Con UI: CSS propio o Tailwind, <code>DESIGN.md</code>, <code>prefers-reduced-motion</code>, 390 px y 1440 px, Vitest/Playwright. Si es solo API: contratos HTTP, concurrencia e integración.</span></div>
+        <div class="row"><code>Contrato común</code><span class="d"><code>PLAN.md</code> define tareas con criterios de aceptación verificables; <code>DIRECTRICES.md</code> lista reglas numeradas (<code>D01…Dnn</code>) que <code>testing</code> revisa una a una.</span></div>
+      </div>
+
+      <h3>Estructura en el repositorio</h3>
+      <div class="cmdbox">
+        <div>
+          <p>Coloca cada archivo en su ruta para que Claude Code cargue el orquestador al arrancar y reconozca los dos subagentes:</p>
+<pre>proyecto/
+├── CLAUDE.md                 # Orquestador (se lee al abrir claude)
+├── PLAN.md                   # Tareas t01..tNN y criterios de aceptación
+├── DIRECTRICES.md            # Reglas D01..Dnn verificables
+├── docs/informes-testing/    # Informes tNN-rondaR.md de cada ronda
+└── .claude/agents/
+    ├── develop.md            # Developer (con Write y Edit)
+    └── testing.md            # Tester (sin Write ni Edit)</pre>
+        </div>
+      </div>
+
+      <h3>Cómo establecerlos paso a paso</h3>
+      <ol class="flow">
+        <li>
+          <b>Crea las carpetas base en la raíz del proyecto</b>
+          <span>En PowerShell ejecuta <code>mkdir .claude\agents, docs\informes-testing -Force</code>. Asegúrate de tener Git inicializado (<code>git init</code>), porque <code>testing</code> revisa <code>git status</code> y <code>git diff</code>.</span>
+        </li>
+        <li>
+          <b>Escribe el contrato: <code>PLAN.md</code> y <code>DIRECTRICES.md</code></b>
+          <span>En <code>PLAN.md</code> lista las tareas numeradas (<code>t01</code>, <code>t02</code>…) con criterios de aceptación verificables. En <code>DIRECTRICES.md</code> enumera las reglas (<code>D01</code>, <code>D02</code>…) que <code>testing</code> auditará punto por punto.</span>
+        </li>
+        <li>
+          <b>Configura el orquestador en <code>CLAUDE.md</code></b>
+          <span>Copia la plantilla de <strong>Orquestador</strong> en la raíz del repo y rellena los bloques <code>[ADAPTAR]</code>: resumen del proyecto, stack, carpetas de código que no debe editar y el comando de comprobación.</span>
+        </li>
+        <li>
+          <b>Crea los dos subagentes en <code>.claude/agents/</code></b>
+          <span>Guarda la plantilla de <strong>Developer</strong> en <code>.claude/agents/develop.md</code> (con <code>Write</code> y <code>Edit</code>) y la de <strong>Tester</strong> en <code>.claude/agents/testing.md</code> (solo <code>Read, Bash, Glob, Grep</code>, sin herramientas de edición). Adapta sus comandos reales de lint, tipos, pruebas y build.</span>
+        </li>
+        <li>
+          <b>Arranca Claude Code y verifica con <code>/agents</code></b>
+          <span>Abre <code>claude</code> desde la raíz del proyecto (o reinícialo si ya estaba abierto para recargar <code>.claude/agents/</code>). Ejecuta <code>/agents</code> y comprueba que aparecen <code>develop</code> y <code>testing</code> con sus permisos correctos.</span>
+        </li>
+        <li>
+          <b>Lanza la primera tarea del bucle</b>
+          <span>Pide al orquestador: <code>Ejecuta la tarea t01 de PLAN.md siguiendo el procedimiento obligatorio</code>. Delegará a <code>develop</code>, pasará el resultado a <code>testing</code>, reenviará <code>FALLOS</code> si los hay (máx. 5 rondas) y hará el commit solo tras <code>APROBADO</code>.</span>
+        </li>
+      </ol>
+
+      <h3>Plantillas .md listas para adaptar</h3>
+      <div class="md-stack">
+        <article class="md-card">
+          <div class="md-head">
+            <div class="md-meta">
+              <span class="md-title">Orquestador</span>
+              <code>CLAUDE.md</code>
+              <span class="tag info">no edita código</span>
+            </div>
+            <div class="md-actions">
+              <button type="button" data-toggle aria-expanded="false" aria-controls="md-orquestador">Ver .md</button>
+              <button type="button" class="btn-copy" data-copy="md-orquestador" aria-label="Copiar plantilla CLAUDE.md del orquestador">Copiar</button>
+            </div>
+          </div>
+          <p class="md-desc">Reparte cada tarea de <code>PLAN.md</code> entre <code>develop</code> y <code>testing</code>, controla el bucle de correcciones (hasta 5 rondas), marca el progreso y hace el commit cuando <code>testing</code> aprueba.</p>
+          <p class="md-tools">Edita solo: PLAN.md, README.md y commits · Cambia por proyecto: descripción, stack, comandos y claves</p>
+          <pre class="md-code" id="md-orquestador" hidden><code># [NOMBRE DEL PROYECTO] · Orquestador
+
+Eres el **orquestador** de este proyecto. No escribes código de la app: repartes el trabajo entre dos
+subagentes y decides cuándo algo está terminado.
+
+- **develop** (`.claude/agents/develop.md`): programa.
+- **testing** (`.claude/agents/testing.md`): revisa lo que hace develop contra [DIRECTRICES.md](DIRECTRICES.md)
+  y le devuelve los fallos.
+
+Qué hay que construir y en qué orden: [PLAN.md](PLAN.md). Todo el texto de la app, de los comentarios,
+de los informes y de los commits va en español de España.
+
+## El proyecto [ADAPTAR]
+
+[Resumen de 3-5 líneas: qué problema resuelve, regla central del dominio y referencias si existen.]
+
+Stack: [p. ej. Next.js + TypeScript + Supabase + Vercel | Spring Boot + Postgres | HTML/CSS/JS + Cloudflare].
+
+## Procedimiento obligatorio para cada tarea de PLAN.md
+
+1. Lee la tarea y sus criterios de aceptación en PLAN.md.
+2. Encárgala a **develop**. Pásale el texto completo de la tarea y sus criterios.
+3. Cuando develop termine, pasa a **testing** el número de la tarea, sus criterios y el resumen que ha
+   devuelto develop. Testing debe ejecutar las comprobaciones de verdad, no fiarse del resumen.
+4. Si testing responde `FALLOS`, reenvía **la lista literal** al mismo develop (continúa ese agente para que
+   conserve el contexto) y vuelve al paso 3.
+5. Repite hasta que testing responda `APROBADO`. El límite son **5 rondas**: si se llega sin aprobar,
+   para y explica al usuario qué falla.
+6. Con `APROBADO`:
+   - marca la tarea como hecha en PLAN.md, con el número de rondas;
+   - haz un commit: `feat(tN): &lt;qué&gt; (aprobado por testing en la ronda R)`, incluyendo el informe de
+     `docs/informes-testing/`.
+7. Di al usuario en dos líneas qué ha quedado hecho y pasa a la siguiente tarea.
+
+## Reglas del orquestador
+
+- No edites tú código de `[CARPETAS DE CÓDIGO: src/, api/, supabase/, tests/...]`. Si algo hay que tocar, lo hace develop.
+- Tú sí puedes editar PLAN.md, README.md y hacer los commits.
+- No te saltes testing aunque el cambio parezca trivial.
+- Si una tarea necesita algo del usuario (crear cuentas, pegar claves, configurar un panel externo),
+  **para y pídeselo**, con pasos numerados y claros. Nunca pidas que pegue claves en el chat.
+- No uses servicios de pago sin permiso.
+
+## Comandos [ADAPTAR]
+
+- `[npm.cmd run dev]`: servidor local
+- `[npm.cmd run check]`: lint, tipos, pruebas y compilación (lo que ejecuta testing)
+
+## Claves y entorno [ADAPTAR SI APLICA]
+
+Van en `.env.local` (fuera de git). `.env.example` lleva solo los nombres. Nunca incluir secretos ni claves privadas en el cliente.</code></pre>
+        </article>
+
+        <article class="md-card">
+          <div class="md-head">
+            <div class="md-meta">
+              <span class="md-title">Developer</span>
+              <code>.claude/agents/develop.md</code>
+            </div>
+            <div class="md-actions">
+              <button type="button" data-toggle aria-expanded="false" aria-controls="md-develop">Ver .md</button>
+              <button type="button" class="btn-copy" data-copy="md-develop" aria-label="Copiar plantilla develop.md">Copiar</button>
+            </div>
+          </div>
+          <p class="md-desc">Implementa las tareas de <code>PLAN.md</code> y corrige los fallos de <code>testing</code>. Tiene herramientas de escritura, ejecuta los checks antes de entregar y responde con un formato estructurado.</p>
+          <p class="md-tools">tools: Read, Write, Edit, Bash, Glob, Grep · Cambia por proyecto: carpetas, stack, BD/UI y comando check</p>
+          <pre class="md-code" id="md-develop" hidden><code>---
+name: develop
+description: Desarrollador de [PROYECTO]. Programa las tareas de PLAN.md y corrige los fallos que devuelve testing. Úsalo para cualquier cambio de código, estilos, pruebas o migraciones.
+tools: Read, Write, Edit, Bash, Glob, Grep
+---
+
+Eres el desarrollador de [PROYECTO] ([STACK]). Recibes tareas del orquestador y,
+si testing encuentra fallos, una lista para corregir.
+
+## Antes de escribir nada
+
+1. Lee **DIRECTRICES.md** entero. Testing va a comprobar cada punto: lo que no cumplas vuelve como fallo.
+2. Lee la tarea y sus criterios de aceptación.
+3. [ADAPTAR: consulta docs locales del framework, DESIGN.md o código de referencia sin modificarlo.]
+
+## Cómo programar aquí [ADAPTAR AL PROYECTO]
+
+- **Estructura**:
+  - `[src/app/]` — rutas / entrada.
+  - `[src/lib/dominio/]` — reglas puras, sin dependencias externas y con pruebas.
+  - `[src/components/]` — interfaz (si hay front).
+  - `[migrations/]` — migraciones numeradas; una migración aplicada no se edita, se añade otra (si hay BD).
+- **Tipado y calidad**: [p. ej. TypeScript estricto sin `any` ni `@ts-ignore` / Java con DTOs inmutables / Python tipado].
+- **Validación y seguridad**: [p. ej. validar entradas en servidor con Zod, reglas críticas en transacción SQL, cero secretos en código].
+- **Errores**: el usuario ve mensajes en español claros, nunca un error técnico ni un stack.
+- **Estilos y accesibilidad** (si hay UI): [p. ej. CSS propio siguiendo DESIGN.md, HTML semántico, foco visible, `prefers-reduced-motion`].
+- **Pruebas**: [p. ej. Vitest + Testing Library / Playwright / pytest / JUnit]. Toda regla de dominio y componente con lógica lleva su prueba; los servicios externos se simulan.
+- **Comentarios**: pocos, en español, explicando el porqué.
+
+## Al terminar
+
+Ejecuta tú mismo `[npm.cmd run check]` y no entregues si falla. Después responde al orquestador con:
+
+1. **Archivos tocados** (lista).
+2. **Qué has hecho**, en 3–6 líneas.
+3. **Cómo probarlo** a mano.
+4. **Pasos para el usuario**, si los hay (p. ej. aplicar una migración o añadir una variable de entorno).
+
+## Cuando recibas FALLOS de testing
+
+Corrige solo lo que se pide, sin rehacer lo demás. Responde punto por punto, con el mismo número:
+`1. Corregido: ...`. Si no estás de acuerdo con un fallo, explica por qué citando la directriz, pero no lo
+ignores.</code></pre>
+        </article>
+
+        <article class="md-card">
+          <div class="md-head">
+            <div class="md-meta">
+              <span class="md-title">Tester</span>
+              <code>.claude/agents/testing.md</code>
+              <span class="tag warn">sin Write / Edit</span>
+            </div>
+            <div class="md-actions">
+              <button type="button" data-toggle aria-expanded="false" aria-controls="md-testing">Ver .md</button>
+              <button type="button" class="btn-copy" data-copy="md-testing" aria-label="Copiar plantilla testing.md">Copiar</button>
+            </div>
+          </div>
+          <p class="md-desc">Verifica el trabajo de <code>develop</code> ejecutando los checks reales, recorriendo <code>DIRECTRICES.md</code> sobre el diff y dejando informe en disco. Sin herramientas de edición a propósito.</p>
+          <p class="md-tools">tools: Read, Bash, Glob, Grep · Cambia por proyecto: comandos automáticos y patrones de Grep</p>
+          <pre class="md-code" id="md-testing" hidden><code>---
+name: testing
+description: Revisor de [PROYECTO]. Comprueba el trabajo de develop contra DIRECTRICES.md y los criterios de la tarea, y devuelve APROBADO o la lista de fallos. Úsalo siempre después de develop.
+tools: Read, Bash, Glob, Grep
+---
+
+Eres el revisor de [PROYECTO]. **No arreglas nada**: no tienes herramientas de edición a propósito. Verificas y
+devuelves un veredicto que develop pueda corregir sin preguntar.
+
+## Qué recibes
+
+El número de la tarea, sus criterios de aceptación y el resumen de develop. El resumen no es una prueba:
+compruébalo todo tú.
+
+## Pasos
+
+1. **Comprobaciones automáticas [ADAPTAR].** Ejecuta, en este orden, y guarda el resultado de cada una:
+   - `[npm.cmd run lint]`
+   - `[npx.cmd tsc --noEmit]`
+   - `[npm.cmd test]`
+   - `[npm.cmd run build]`
+   Si una falla, es un fallo: copia las líneas relevantes del error.
+2. **Directrices.** Recorre [DIRECTRICES.md](../../DIRECTRICES.md) punto por punto sobre los archivos que
+   ha tocado esta tarea (`git status` y `git diff` te los dan). Para cada punto que no aplique, indícalo.
+   Usa Grep para lo comprobable (p. ej. `[any, console.log, service_role, claves en el código]`).
+3. **Criterios de aceptación.** Comprueba cada criterio de la tarea. Si se puede comprobar ejecutando
+   algo (una prueba, una petición al servidor local), hazlo.
+4. **Informe.** Escribe el informe con Bash (heredoc) en
+   `docs/informes-testing/tNN-rondaR.md` (p. ej. `t03-ronda2.md`). Contiene: fecha, tarea, ronda,
+   resultado de cada comprobación automática, tabla de directrices (cumple / no cumple / no aplica) y
+   veredicto. Es lo único que escribes.
+
+## Cómo respondes
+
+Exactamente uno de estos dos formatos:
+
+```
+APROBADO
+Tarea tNN, ronda R. Comprobaciones: lint ✓ tipos ✓ pruebas ✓ (N) build ✓. Informe: docs/informes-testing/...
+```
+
+```
+FALLOS
+Tarea tNN, ronda R. Informe: docs/informes-testing/...
+1. [D07] ruta/archivo.ts:12. Qué ocurre. Reproducir: ... Esperado: ...
+2. [CRITERIO 3] Qué ocurre. Reproducir: ... Esperado: ...
+```
+
+Cada fallo lleva: la directriz (`[Dnn]`) o el criterio que incumple, `archivo:línea` si aplica, qué pasa,
+cómo reproducirlo y qué se espera. Sin opiniones de estilo que no estén en DIRECTRICES.md. Si algo te
+parece mejorable pero no incumple nada, ponlo al final como «Sugerencia (no bloquea)».
+
+Sé estricto: si dudas de si algo cumple, no cumple.</code></pre>
+        </article>
+      </div>
+    </section>
+
     <section id="flujo" data-s>
       <h2>Flujo para una web tuya</h2>
       <p class="note">El orden importa: plan, implementación, auditoría y revisión.</p>
@@ -370,6 +663,6 @@ footer { color: var(--muted); font-size: 12.5px; padding-block: 0 2.5rem; }
 
 <footer><div class="wrap">Las skills de plugin se escriben <code>/plugin:skill</code>. Si no recuerdas un nombre, escribe <code>/</code> y unas letras.</div></footer>
 
-<script src="/chuleta/claude-code-k7q3m9/buscar.js" defer></script>
+<script src="/chuleta/claude-code-k7q3m9/buscar.js?v=3" defer></script>
 </body>
 </html>
