@@ -6818,3 +6818,693 @@ html.has-intro .hero.cue-hidden .scroll-cue {
 @media (prefers-reduced-motion: reduce) {
     .dual-tramo b { transition: none; }
 }
+
+/* ==================================================================
+   PayAF · bloque destacado tipo PERA ERP en la portada
+   Mundo: tablero de salidas de estación (#16181b), lamas (#23262b),
+   amarillo vivo (#f5c400) solo para lo activo y Barlow Condensed.
+   ================================================================== */
+@font-face {
+    font-family: 'Barlow PayAF';
+    src: url('media/payaf/barlow-400-latin.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Barlow PayAF';
+    src: url('media/payaf/barlow-500-latin.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Barlow PayAF';
+    src: url('media/payaf/barlow-600-latin.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Barlow Condensed PayAF';
+    src: url('media/payaf/barlow-condensed-500-latin.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Barlow Condensed PayAF';
+    src: url('media/payaf/barlow-condensed-600-latin.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+.payaf {
+    --pf-board: #16181b;
+    --pf-slat: #21242a;
+    --pf-line: #2f343c;
+    --pf-ink: #f2eee3;
+    --pf-dim: #a3a9ae;
+    --pf-live: #f5c400;
+    --pf-ok: #43d17f;
+    --pf-bad: #ff6a5c;
+    --pf-bad-bg: #7a1b15;
+    --pf-display: 'Barlow Condensed PayAF', 'Barlow PayAF', Arial, sans-serif;
+    --pf-body: 'Barlow PayAF', Arial, Helvetica, sans-serif;
+    --pf-mono: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Menlo, monospace;
+    margin-bottom: clamp(5rem, 12vh, 9rem);
+    padding: clamp(2.2rem, 6vw, 6rem);
+    background: var(--pf-board);
+    color: var(--pf-ink);
+    font-family: var(--pf-body);
+    font-variant-numeric: tabular-nums;
+    position: relative;
+}
+
+.payaf ::selection { background: var(--pf-live); color: #14181c; }
+
+.payaf .payaf-index {
+    color: var(--pf-dim);
+    margin-bottom: 1.5rem;
+}
+
+.payaf .payaf-index::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 0.7rem;
+    border-radius: 50%;
+    background: var(--pf-live);
+    transform: translateY(-1px);
+}
+
+.payaf-heading { margin-bottom: clamp(3rem, 7vh, 5.5rem); }
+
+.payaf-title-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: clamp(1rem, 2.5vw, 2.2rem);
+}
+
+.payaf-mark {
+    width: clamp(54px, 7.5vw, 104px);
+    height: auto;
+    flex: 0 0 auto;
+}
+
+.payaf-title {
+    font-family: var(--pf-display);
+    color: var(--pf-ink);
+    font-size: clamp(4rem, 9.5vw, 10.2rem);
+    font-weight: 600;
+    line-height: 0.86;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+}
+
+.payaf-live-pill {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.45rem 0.9rem;
+    background: var(--pf-slat);
+    border: 1px solid var(--pf-line);
+    font-family: var(--pf-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--pf-ink);
+}
+
+.payaf-live-pill i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--pf-ok);
+}
+
+.payaf-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr);
+    gap: clamp(2rem, 6vw, 6.5rem);
+    align-items: start;
+    margin-top: clamp(2rem, 4vh, 3rem);
+}
+
+.payaf-sub {
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 2.4vw, 2.3rem);
+    font-style: italic;
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+    color: var(--pf-ink);
+}
+
+.payaf-intro p {
+    color: #c2c6ca;
+    font-size: 1.03rem;
+    line-height: 1.7;
+}
+
+.payaf-intro p + p { margin-top: 1rem; }
+.payaf-intro strong { color: var(--pf-ink); font-weight: 600; }
+
+/* Escaparate de capturas reales */
+.payaf-showcase {
+    position: relative;
+    padding-right: 9%;
+    padding-bottom: 4%;
+}
+
+.payaf-browser {
+    display: block;
+    overflow: hidden;
+    border: 1px solid var(--pf-line);
+    background: #0d0f12;
+    box-shadow: 0 50px 120px rgba(0, 0, 0, 0.55);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+}
+
+.payaf-browser:hover { transform: translateY(-4px); }
+
+.payaf-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1.25rem;
+    border-bottom: 1px solid var(--pf-line);
+    background: #1b1e23;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pf-dim);
+}
+
+.payaf-bar strong {
+    color: var(--pf-live);
+    font-weight: 600;
+}
+
+.payaf-screen {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 10;
+    background: #e8ebed;
+    overflow: hidden;
+}
+
+.payaf-screen img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top left;
+    opacity: 0;
+    animation: payaf-reel 15s infinite;
+}
+
+.payaf-screen img:nth-child(1) { opacity: 1; animation-delay: 0s; }
+.payaf-screen img:nth-child(2) { animation-delay: 5s; }
+.payaf-screen img:nth-child(3) { animation-delay: 10s; }
+
+@keyframes payaf-reel {
+    0%, 28% { opacity: 1; }
+    34%, 94% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.payaf-phone {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 22%;
+    border: 6px solid #0d0f12;
+    border-radius: 22px;
+    overflow: hidden;
+    background: #0d0f12;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.65);
+}
+
+.payaf-phone img { display: block; width: 100%; height: auto; }
+
+/* Cómo funciona paso a paso (ligado al scroll y clicable) */
+.payaf-flow {
+    margin-top: clamp(4.5rem, 10vh, 7.5rem);
+    padding-top: clamp(3rem, 7vh, 5rem);
+    border-top: 1px solid var(--pf-line);
+}
+
+.payaf-flow-head { margin-bottom: clamp(2.5rem, 5vh, 4rem); max-width: 46rem; }
+
+.payaf-flow-eyebrow {
+    font-family: var(--pf-display);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--pf-live);
+    margin-bottom: 0.75rem;
+}
+
+.payaf-flow-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 400;
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    color: var(--pf-ink);
+}
+
+.payaf-flow-hint {
+    margin-top: 0.8rem;
+    color: var(--pf-dim);
+    font-size: 0.96rem;
+}
+
+.payaf-flow-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: clamp(2rem, 4.5vw, 4.5rem);
+    align-items: start;
+}
+
+.payaf-stage {
+    position: sticky;
+    top: clamp(5rem, 11vh, 7.5rem);
+    background: #101215;
+    border: 1px solid var(--pf-line);
+    overflow: hidden;
+}
+
+.payaf-board-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.8rem 1.1rem;
+    background: #1d2026;
+    border-bottom: 1px solid var(--pf-line);
+    font-family: var(--pf-display);
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.payaf-lamp {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--pf-live);
+    flex: none;
+    transition: background-color 0.25s ease;
+}
+
+.payaf-flow[data-step="2"] .payaf-lamp,
+.payaf-flow[data-step="3"] .payaf-lamp { background: var(--pf-bad); }
+.payaf-flow[data-step="4"] .payaf-lamp { background: var(--pf-ok); }
+
+.payaf-board-label { color: var(--pf-ink); }
+
+.payaf-board-state {
+    margin-left: auto;
+    padding: 0.15rem 0.55rem;
+    background: #0c0e11;
+    border: 1px solid var(--pf-line);
+    color: var(--pf-live);
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.payaf-flow[data-step="3"] .payaf-board-state {
+    background: var(--pf-bad-bg);
+    border-color: var(--pf-bad);
+    color: #fff6f5;
+}
+
+.payaf-flow[data-step="4"] .payaf-board-state {
+    color: var(--pf-ok);
+}
+
+/* Diagrama hexagonal SVG */
+.payaf-hex-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: 0.75rem 0.5rem 0.25rem;
+}
+
+.px-side, .px-zone {
+    font-family: var(--pf-display);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    fill: #7d858c;
+}
+
+.px-outer {
+    fill: #16191f;
+    stroke: #383e48;
+    stroke-width: 1.5;
+    transition: stroke 0.3s ease;
+}
+
+.px-core {
+    fill: #0d0f12;
+    stroke: #565d68;
+    stroke-width: 2;
+    transition: stroke 0.3s ease, fill 0.3s ease;
+}
+
+.px-core-title {
+    font-family: var(--pf-display);
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    fill: var(--pf-ink);
+}
+
+.px-core-sub {
+    font-family: var(--pf-mono);
+    font-size: 10.5px;
+    fill: #9aa2a9;
+}
+
+.px-wire {
+    fill: none;
+    stroke: #363c46;
+    stroke-width: 1.75;
+    transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+
+.px-port {
+    fill: #16191f;
+    stroke: #7a828a;
+    stroke-width: 1.75;
+    transition: fill 0.25s ease, stroke 0.25s ease;
+}
+
+.px-node rect {
+    fill: #1a1e24;
+    stroke: #343a44;
+    stroke-width: 1.25;
+    transition: fill 0.25s ease, stroke 0.25s ease;
+}
+
+.px-n-title {
+    font-family: var(--pf-display);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    fill: var(--pf-ink);
+}
+
+.px-n-sub {
+    font-family: var(--pf-mono);
+    font-size: 9.5px;
+    fill: #8d959d;
+}
+
+.px-badge {
+    font-family: var(--pf-mono);
+    font-size: 8.5px;
+    font-weight: 600;
+    fill: var(--pf-ok);
+}
+
+/* Estados activos por paso (data-step="0..4") */
+.payaf-flow[data-step="0"] .w-rest,
+.payaf-flow[data-step="0"] .w-db { stroke: var(--pf-live); stroke-width: 2.6; stroke-dasharray: 6 4; }
+.payaf-flow[data-step="0"] .p-rest,
+.payaf-flow[data-step="0"] .p-db { fill: var(--pf-live); stroke: var(--pf-live); }
+.payaf-flow[data-step="0"] .n-rest rect,
+.payaf-flow[data-step="0"] .n-db rect { stroke: var(--pf-live); fill: #252216; }
+
+.payaf-flow[data-step="1"] .px-core { stroke: var(--pf-live); fill: #1c1a10; }
+.payaf-flow[data-step="1"] .px-outer { stroke: #6a5f2b; }
+.payaf-flow[data-step="1"] .w-redsys,
+.payaf-flow[data-step="1"] .w-adyen,
+.payaf-flow[data-step="1"] .w-stripe { stroke: var(--pf-live); stroke-width: 2; }
+.payaf-flow[data-step="1"] .p-gw { fill: var(--pf-live); stroke: var(--pf-live); }
+.payaf-flow[data-step="1"] .n-redsys rect { stroke: var(--pf-live); fill: #252216; }
+.payaf-flow[data-step="1"] .b-redsys { fill: var(--pf-live); }
+
+.payaf-flow[data-step="2"] .px-core { stroke: var(--pf-live); }
+.payaf-flow[data-step="2"] .w-redsys { stroke: var(--pf-bad); stroke-width: 2.4; stroke-dasharray: 4 4; }
+.payaf-flow[data-step="2"] .n-redsys rect { stroke: var(--pf-bad); fill: #2c1716; }
+.payaf-flow[data-step="2"] .b-redsys { fill: var(--pf-bad); }
+.payaf-flow[data-step="2"] .w-adyen { stroke: var(--pf-live); stroke-width: 2.8; stroke-dasharray: 6 4; }
+.payaf-flow[data-step="2"] .p-gw { fill: var(--pf-live); stroke: var(--pf-live); }
+.payaf-flow[data-step="2"] .n-adyen rect { stroke: var(--pf-ok); fill: #14261c; }
+.payaf-flow[data-step="2"] .b-adyen { fill: var(--pf-ok); }
+
+.payaf-flow[data-step="3"] .px-core { stroke: var(--pf-bad); }
+.payaf-flow[data-step="3"] .n-redsys rect { stroke: var(--pf-bad); fill: var(--pf-bad-bg); }
+.payaf-flow[data-step="3"] .b-redsys { fill: #ffffff; }
+.payaf-flow[data-step="3"] .w-redsys { stroke: #4b2321; stroke-dasharray: 2 5; }
+.payaf-flow[data-step="3"] .w-adyen { stroke: var(--pf-live); stroke-width: 2.6; }
+.payaf-flow[data-step="3"] .p-gw { fill: var(--pf-live); stroke: var(--pf-live); }
+.payaf-flow[data-step="3"] .n-adyen rect { stroke: var(--pf-live); fill: #252216; }
+
+.payaf-flow[data-step="4"] .w-db,
+.payaf-flow[data-step="4"] .w-outbox { stroke: var(--pf-live); stroke-width: 2.6; stroke-dasharray: 6 4; }
+.payaf-flow[data-step="4"] .w-wh { stroke: var(--pf-ok); stroke-width: 2.6; stroke-dasharray: 6 4; }
+.payaf-flow[data-step="4"] .p-db,
+.payaf-flow[data-step="4"] .p-outbox { fill: var(--pf-live); stroke: var(--pf-live); }
+.payaf-flow[data-step="4"] .p-wh { fill: var(--pf-ok); stroke: var(--pf-ok); }
+.payaf-flow[data-step="4"] .n-db rect,
+.payaf-flow[data-step="4"] .n-outbox rect { stroke: var(--pf-live); fill: #252216; }
+.payaf-flow[data-step="4"] .n-wh rect { stroke: var(--pf-ok); fill: #14261c; }
+.payaf-flow[data-step="4"] .n-redsys rect { stroke: var(--pf-bad); fill: #2c1716; }
+.payaf-flow[data-step="4"] .b-redsys { fill: var(--pf-bad); }
+
+.payaf-trace-line {
+    margin: 0;
+    padding: 0.7rem 1.1rem;
+    border-top: 1px solid var(--pf-line);
+    background: #14171c;
+    font-family: var(--pf-mono);
+    font-size: 0.78rem;
+    color: var(--pf-live);
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.payaf-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.85rem;
+}
+
+.payaf-step {
+    border-left: 2px solid var(--pf-line);
+    transition: border-color 0.25s ease;
+}
+
+.payaf-step.is-active { border-left-color: var(--pf-live); }
+
+.payaf-step-btn {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 2.2rem minmax(0, 1fr);
+    gap: 0.85rem;
+    align-items: start;
+    padding: 1.05rem 1.1rem;
+    border: 1px solid transparent;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    opacity: 0.62;
+    transition: opacity 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, transform 0.12s ease;
+}
+
+.payaf-step-btn:hover { opacity: 0.92; background: rgba(255, 255, 255, 0.03); }
+.payaf-step-btn:active { transform: scale(0.99); }
+.payaf-step-btn:focus-visible { outline: 2px solid var(--pf-live); outline-offset: 2px; opacity: 1; }
+
+.payaf-step.is-active .payaf-step-btn {
+    opacity: 1;
+    background: var(--pf-slat);
+    border-color: var(--pf-line);
+}
+
+.payaf-step-num {
+    font-family: var(--pf-display);
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--pf-dim);
+}
+
+.payaf-step.is-active .payaf-step-num { color: var(--pf-live); }
+
+.payaf-step-body > strong {
+    display: block;
+    font-family: var(--pf-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+    color: var(--pf-ink);
+}
+
+.payaf-step-body > span {
+    display: block;
+    margin-top: 0.45rem;
+    color: #b7bdc3;
+    font-size: 0.93rem;
+    line-height: 1.55;
+}
+
+.payaf-step-body > span strong {
+    font-weight: 600;
+    color: var(--pf-ink);
+}
+
+.payaf-step-body code {
+    font-family: var(--pf-mono);
+    font-size: 0.84em;
+    padding: 0.08rem 0.35rem;
+    background: #101215;
+    border: 1px solid var(--pf-line);
+    color: var(--pf-ink);
+}
+
+/* Pilares arquitectónicos (4 columnas, como .pera-modules) */
+.payaf-modules {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.75rem);
+    margin: clamp(3.5rem, 8vh, 6rem) 0 0;
+    padding: 0;
+}
+
+.payaf-modules li {
+    padding: 1.35rem;
+    background: var(--pf-slat);
+    border: 1px solid var(--pf-line);
+}
+
+.payaf-mod-tag {
+    display: inline-block;
+    margin-bottom: 0.8rem;
+    padding: 0.16rem 0.5rem;
+    background: #101215;
+    border: 1px solid var(--pf-line);
+    font-family: var(--pf-mono);
+    font-size: 0.72rem;
+    color: var(--pf-live);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.payaf-modules h4 {
+    font-family: var(--pf-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--pf-ink);
+}
+
+.payaf-modules p {
+    margin-top: 0.55rem;
+    color: #b7bdc3;
+    font-size: 0.92rem;
+    line-height: 1.58;
+}
+
+.payaf-modules code {
+    font-family: var(--pf-mono);
+    font-size: 0.85em;
+    color: var(--pf-ink);
+}
+
+/* Cifras, hechos y enlaces (como .pera-grid) */
+.payaf-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(240px, 0.7fr);
+    gap: clamp(3rem, 7vw, 7rem);
+    align-items: end;
+    margin-top: clamp(3.5rem, 8vh, 6rem);
+}
+
+.payaf-figures {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin: 0 0 2.5rem;
+    padding: 0;
+}
+
+.payaf-figures strong {
+    display: block;
+    font-family: var(--pf-display);
+    font-size: clamp(3.1rem, 5vw, 4.8rem);
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--pf-live);
+}
+
+.payaf-figures span {
+    display: block;
+    margin-top: 0.55rem;
+    color: #b7bdc3;
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
+.payaf .payaf-facts { margin: 0; border-top-color: var(--pf-line); }
+.payaf .payaf-facts div { grid-template-columns: 140px 1fr; border-bottom-color: var(--pf-line); }
+.payaf .payaf-facts dt { color: var(--pf-dim); }
+.payaf .payaf-facts dd { color: #dadce0; }
+
+.payaf-links {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.2rem;
+    font-size: 1.05rem;
+}
+
+.payaf-links a { color: var(--pf-ink); }
+.payaf-links a:first-child { border-bottom-color: var(--pf-live); color: var(--pf-live); font-weight: 600; }
+.payaf-links a:hover { color: var(--pf-live); }
+
+@media (max-width: 1024px) {
+    .payaf-flow-grid { grid-template-columns: 1fr; }
+    .payaf-stage { position: static; }
+    .payaf-modules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 900px) {
+    .payaf-row,
+    .payaf-grid { grid-template-columns: 1fr; gap: 2.2rem; }
+    .payaf-live-pill { margin-left: 0; }
+}
+
+@media (max-width: 768px) {
+    .payaf { padding: 1.6rem 1.2rem 2.2rem; }
+    .payaf-showcase { padding-right: 0; padding-bottom: 0; }
+    .payaf-phone { display: none; }
+    .payaf-modules { grid-template-columns: 1fr; }
+    .payaf-figures { grid-template-columns: 1fr; gap: 1.2rem; }
+    .payaf .payaf-facts div { grid-template-columns: 1fr; gap: 0.3rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .payaf-screen img { animation: none; opacity: 0; }
+    .payaf-screen img:nth-child(1) { opacity: 1; }
+    .payaf-step-btn { opacity: 1; }
+}

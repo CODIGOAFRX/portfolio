@@ -7,6 +7,49 @@
 //  - Tecnologías: amanece en el globo de la página y cada categoría es una órbita.
 // Sin JS o con movimiento reducido todo queda como una página normal.
 (() => {
+    // PayAF · interacción por clic en los pasos del diagrama hexagonal (funciona también con movimiento reducido)
+    const PAYAF_META = [
+        { board: '01 / 05 · ENTRADA E IDEMPOTENCIA', state: 'REST / CLAIM', redsys: 'CLOSED', adyen: 'CLOSED', trace: 'REST > AuthorizePaymentUseCase > IdempotencyStore.claim · OK' },
+        { board: '02 / 05 · EL DOMINIO DECIDE LA RUTA', state: 'REDSYS 1,20 %', redsys: '1º · 1,20%', adyen: '2º · 2,50%', trace: 'RoutingPolicy.select(100 EUR, ES) > [Redsys, Adyen, Stripe, Mock]' },
+        { board: '03 / 05 · AVERÍA 503 Y FAILOVER', state: '503 / ADYEN OK', redsys: 'HTTP 503', adyen: 'APPROVED', trace: 'PaymentGateway.authorize(Redsys) HTTP_503 > failover > Adyen APPROVED' },
+        { board: '04 / 05 · CIRCUIT BREAKER ABIERTO', state: 'REDSYS OPEN 15S', redsys: 'OPEN 15S', adyen: 'ACTIVA', trace: 'CircuitBreaker(Redsys) = OPEN · tráfico desviado directo a Adyen' },
+        { board: '05 / 05 · OUTBOX, SSE Y WEBHOOK HMAC', state: 'AUTHORIZED · SSE', redsys: 'OPEN 15S', adyen: 'HMAC OK', trace: 'PostgreSQL + Outbox > SSE autorizado · Webhook Adyen HMAC-SHA256 OK' },
+    ];
+    const payafFlow = document.querySelector('[data-payaf-flow]');
+    let setPayafStep = null;
+    if (payafFlow) {
+        const stepEls = [...payafFlow.querySelectorAll('[data-payaf-step]')];
+        const boardEl = payafFlow.querySelector('[data-payaf-board]');
+        const stateEl = payafFlow.querySelector('[data-payaf-state]');
+        const traceEl = payafFlow.querySelector('[data-payaf-trace]');
+        const badgeRedsys = payafFlow.querySelector('[data-badge-redsys]');
+        const badgeAdyen = payafFlow.querySelector('[data-badge-adyen]');
+        let currentStep = -1;
+        setPayafStep = (idx) => {
+            const clamped = Math.max(0, Math.min(PAYAF_META.length - 1, idx));
+            if (clamped === currentStep) return;
+            currentStep = clamped;
+            payafFlow.dataset.step = String(clamped);
+            const meta = PAYAF_META[clamped];
+            if (boardEl) boardEl.textContent = meta.board;
+            if (stateEl) stateEl.textContent = meta.state;
+            if (traceEl) traceEl.textContent = meta.trace;
+            if (badgeRedsys) badgeRedsys.textContent = meta.redsys;
+            if (badgeAdyen) badgeAdyen.textContent = meta.adyen;
+            stepEls.forEach((li, i) => {
+                const on = i === clamped;
+                li.classList.toggle('is-active', on);
+                const btn = li.querySelector('button');
+                if (btn) btn.setAttribute('aria-pressed', String(on));
+            });
+        };
+        setPayafStep(0);
+        stepEls.forEach((li, i) => {
+            const btn = li.querySelector('button');
+            if (btn) btn.addEventListener('click', () => setPayafStep(i));
+        });
+    }
+
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -736,6 +779,32 @@
         };
     }
 
+    // PayAF: al recorrer los 5 pasos con el scroll, ilumina en el hexágono el paso más cercano al centro
+    function payafScene(flow) {
+        if (!setPayafStep) return null;
+        const steps = [...flow.querySelectorAll('[data-payaf-step]')];
+        if (!steps.length) return null;
+        return {
+            measure() {},
+            update() {
+                const r = flow.getBoundingClientRect();
+                const vh = window.innerHeight;
+                if (r.bottom < 0 || r.top > vh) return false;
+                const focusY = vh * 0.48;
+                let best = 0;
+                let bestDist = Infinity;
+                steps.forEach((el, i) => {
+                    const sr = el.getBoundingClientRect();
+                    const center = sr.top + sr.height * 0.5;
+                    const dist = Math.abs(center - focusY);
+                    if (dist < bestDist) { bestDist = dist; best = i; }
+                });
+                setPayafStep(best);
+                return false;
+            },
+        };
+    }
+
     const scenes = [];
     const timeline = document.getElementById('timeline');
     const production = document.getElementById('production');
@@ -751,6 +820,7 @@
     const dualFig = document.querySelector('.dual-croquis');
     const arbol = document.querySelector('.milenario-corte');
     [timeline && timelineScene(timeline), production && portalScene(production), stack && orbitScene(stack),
+        payafFlow && payafScene(payafFlow),
         boveda && bovedaScene(boveda), maps && cortinaScene(maps), disc && compasScene(disc), floron && floronScene(floron),
         capas && capasScene(capas), mediatriz && mediatrizScene(mediatriz), ciudad && ciudadScene(ciudad),
         arbol && arbolScene(arbol), podaFig && podaScene(podaFig), dualFig && dualScene(dualFig)]

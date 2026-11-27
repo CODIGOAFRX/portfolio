@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es" class="no-js">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayAF · Pedro Gómez</title>
+    <meta name="description"
+        content="PayAF: enrutador de pagos multi-PSP con failover, circuit breaker, idempotencia y arquitectura hexagonal en Java 21 y Spring Boot. Caso de estudio y demo en vivo.">
+    <meta name="theme-color" content="#16181b">
+    <link rel="icon" type="image/svg+xml" href="/media/payaf/favicon.svg">
+    <link rel="canonical" href="https://www.pedrogomez.dev/proyecto/payaf-caso/">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:site_name" content="Pedro Gómez">
+    <meta property="og:title" content="PayAF · Enrutador de pagos multi-PSP con arquitectura hexagonal">
+    <meta property="og:description" content="Un pago entra por un puerto, elige la pasarela más barata y sobrevive si una se cae. Demo en vivo sobre PostgreSQL y Cloudflare Containers.">
+    <meta property="og:url" content="https://www.pedrogomez.dev/proyecto/payaf-caso/">
+    <meta property="og:image" content="https://www.pedrogomez.dev/media/payaf/panel-failover.webp">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preload" href="/media/payaf/barlow-condensed-600-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/media/payaf/barlow-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/proyecto/payaf-caso/payaf.css?v=20261127">
+    <script src="/proyecto/payaf-caso/payaf.js?v=20261127" defer></script>
+</head>
+
+<body>
+    <a class="skip-link" href="#flujo">Saltar al recorrido paso a paso</a>
+
+    <header class="topbar">
+        <a class="topbar-back" href="/#payaf" aria-label="Volver al portfolio de Pedro Gómez">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+            <span>Pedro Gómez</span>
+        </a>
+        <nav class="topbar-links" aria-label="Secciones">
+            <a href="#flujo">Cómo funciona</a>
+            <a href="#resiliencia">Pasarelas y caos</a>
+            <a href="#por-dentro">Arquitectura</a>
+        </nav>
+        <a class="button button-small" href="/proyecto/PayAF/">Probar la demo</a>
+    </header>
+
+    <main>
+        <!-- Entrada en la interfaz: la ventana crece con el scroll y muestra las 3 vistas reales -->
+        <section class="dive" data-scene="dive" aria-label="PayAF">
+            <div class="dive-stage">
+                <div class="hero">
+                    <div class="hero-copy">
+                        <p class="hero-brand"><img src="/media/payaf/favicon.svg" alt="" width="34" height="34"><span>PayAF · caso de estudio</span></p>
+                        <h1>Un pago entra por un puerto y sobrevive si una pasarela cae.</h1>
+                        <p class="hero-lead">Enrutador de pagos multi-PSP con failover automático, circuit breaker, idempotencia, outbox transaccional y webhooks firmados en Java 21 y Spring Boot.</p>
+                        <div class="hero-actions">
+                            <a class="button" href="/proyecto/PayAF/">Probar la demo en vivo</a>
+                            <a class="button button-ghost" href="https://github.com/CODIGOAFRX/PayAF" target="_blank" rel="noopener noreferrer">Ver código en GitHub</a>
+                        </div>
+                    </div>
+                    <div class="hero-slot" aria-hidden="true"></div>
+                </div>
+
+                <figure class="dive-frame browser" aria-label="Pantallas en vivo de PayAF">
+                    <div class="browser-bar" aria-hidden="true">
+                        <i></i><i></i><i></i>
+                        <span>pedrogomez.dev/proyecto/PayAF/</span>
+                    </div>
+                    <div class="browser-screen">
+                        <img class="dive-shot is-active" src="/media/payaf/panel-failover.webp" width="1920" height="1200" alt="Failover en vivo: Redsys cae con HTTP 503 y el pago salta automáticamente a Adyen">
+                        <img class="dive-shot" src="/media/payaf/panel-aprobado.webp" width="1920" height="1200" loading="lazy" alt="Pago de 100 euros en España aprobado por Redsys al 1,20 % con traza de 12 pasos">
+                        <img class="dive-shot" src="/media/payaf/panel-pasarelas.webp" width="1920" height="1200" loading="lazy" alt="Tarjetas de las cuatro pasarelas con controles de caos y registro de eventos en directo por SSE">
+                    </div>
+                    <figcaption class="dive-captions">
+                        <div class="dive-tabs" aria-hidden="true"><span class="is-active">Failover</span><span>Enrutado</span><span>Caos + SSE</span></div>
+                        <div class="dive-caption is-active">
+                            <strong>Failover en directo, sin tocar el dominio.</strong>
+                            <span>Redsys responde HTTP 503 y el enrutador salta al instante a Adyen iluminando la traza en el hexágono.</span>
+                        </div>
+                        <div class="dive-caption">
+                            <strong>Gana la pasarela más barata.</strong>
+                            <span>100 € en España: Redsys (1,20 %) vence a Adyen (2,80 €) y Stripe (3,15 €) y queda registrado en PostgreSQL.</span>
+                        </div>
+                        <div class="dive-caption">
+                            <strong>Caos compartido y eventos en tiempo real.</strong>
+                            <span>Tumba pasarelas, inyecta latencia o errores 500 y sigue cada evento de dominio por Server-Sent Events.</span>
+                        </div>
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <!-- Paso a paso con el hexágono fijo a la izquierda -->
+        <section id="flujo" class="flow" data-step="0">
+            <div class="wrap">
+                <header class="section-head reveal">
+                    <p class="eyebrow">Cómo funciona</p>
+                    <h2>Cinco pasos, del clic al webhook firmado.</h2>
+                    <p>Cada paso ilumina en el hexágono los puertos y adaptadores reales que intervienen en el backend.</p>
+                </header>
+                <div class="flow-grid">
+                    <div class="flow-visual">
+                        <div class="hex-board">
+                            <div class="hex-bar">
+                                <span class="hex-lamp" aria-hidden="true"></span>
+                                <span class="hex-bar-title" data-board>01 / 05 · ENTRADA E IDEMPOTENCIA</span>
+                                <span class="hex-bar-pill" data-state>REST / CLAIM</span>
+                            </div>
+                            <svg class="hex-svg" viewBox="0 0 640 390" role="img" aria-label="Diagrama hexagonal de PayAF">
+                                <path class="w w-rest" d="M 142 96 C 185 96, 195 142, 232 142"/>
+                                <path class="w w-cli" d="M 142 195 C 182 195, 195 195, 224 195"/>
+                                <path class="w w-wh" d="M 142 294 C 185 294, 210 264, 244 252"/>
+                                <path class="w w-redsys" d="M 408 134 C 446 134, 456 68, 492 68"/>
+                                <path class="w w-adyen" d="M 408 134 C 446 134, 456 134, 492 134"/>
+                                <path class="w w-stripe" d="M 408 134 C 446 134, 456 196, 492 196"/>
+                                <path class="w w-db" d="M 414 214 C 450 214, 458 264, 492 264"/>
+                                <path class="w w-outbox" d="M 398 258 C 442 258, 456 326, 492 326"/>
+
+                                <polygon class="hex-outer" points="320,38 426,100 426,290 320,352 214,290 214,100"/>
+                                <text class="hex-zone" x="320" y="76" text-anchor="middle">APLICACIÓN · PUERTOS</text>
+                                <polygon class="hex-core" points="320,122 384,158 384,232 320,268 256,232 256,158"/>
+                                <text class="hex-core-t" x="320" y="182" text-anchor="middle">DOMINIO</text>
+                                <text class="hex-core-s" x="320" y="202" text-anchor="middle">Payment</text>
+                                <text class="hex-core-s" x="320" y="218" text-anchor="middle">RoutingPolicy</text>
+                                <text class="hex-core-s" x="320" y="234" text-anchor="middle">CircuitBreaker</text>
+
+                                <circle class="p p-rest" cx="232" cy="142" r="5"/>
+                                <circle class="p p-wh" cx="244" cy="252" r="5"/>
+                                <circle class="p p-gw" cx="408" cy="134" r="5"/>
+                                <circle class="p p-db" cx="414" cy="214" r="5"/>
+                                <circle class="p p-outbox" cx="398" cy="258" r="5"/>
+
+                                <text class="hex-side" x="80" y="42" text-anchor="middle">ENTRADA · DRIVING</text>
+                                <g class="n n-rest"><rect x="20" y="68" width="122" height="56" rx="4"/><text class="nt" x="34" y="92">REST</text><text class="ns" x="34" y="110">POST /api/payments</text></g>
+                                <g class="n n-cli"><rect x="20" y="167" width="122" height="56" rx="4"/><text class="nt" x="34" y="191">CLI</text><text class="ns" x="34" y="209">picocli · terminal</text></g>
+                                <g class="n n-wh"><rect x="20" y="266" width="122" height="56" rx="4"/><text class="nt" x="34" y="290">Webhook</text><text class="ns" x="34" y="308">HMAC-SHA256</text></g>
+
+                                <text class="hex-side" x="556" y="34" text-anchor="middle">SALIDA · DRIVEN</text>
+                                <g class="n n-redsys"><rect x="492" y="44" width="130" height="48" rx="4"/><text class="nt" x="504" y="64">Redsys</text><text class="ns" x="504" y="81">1,20 % · ES</text><text class="nb b-redsys" x="612" y="64" text-anchor="end" data-b-redsys>CLOSED</text></g>
+                                <g class="n n-adyen"><rect x="492" y="108" width="130" height="48" rx="4"/><text class="nt" x="504" y="128">Adyen</text><text class="ns" x="504" y="145">2,50 % + 0,30</text><text class="nb b-adyen" x="612" y="128" text-anchor="end" data-b-adyen>CLOSED</text></g>
+                                <g class="n n-stripe"><rect x="492" y="172" width="130" height="48" rx="4"/><text class="nt" x="504" y="192">Stripe</text><text class="ns" x="504" y="209">2,90 % + 0,25</text><text class="nb" x="612" y="192" text-anchor="end">CLOSED</text></g>
+                                <g class="n n-db"><rect x="492" y="240" width="130" height="48" rx="4"/><text class="nt" x="504" y="260">PostgreSQL</text><text class="ns" x="504" y="277">JPA + Idempotencia</text></g>
+                                <g class="n n-outbox"><rect x="492" y="302" width="130" height="48" rx="4"/><text class="nt" x="504" y="322">Outbox / SSE</text><text class="ns" x="504" y="339">eventos en vivo</text></g>
+                            </svg>
+                            <p class="hex-trace"><code data-trace>REST &gt; AuthorizePaymentUseCase &gt; IdempotencyStore.claim · OK</code></p>
+                        </div>
+                    </div>
+
+                    <ol class="flow-steps">
+                        <li class="flow-step is-active" data-step="0">
+                            <span class="step-k">Paso 01</span>
+                            <h3>Entrada e idempotencia</h3>
+                            <p>La petición llega por <code>POST /api/payments</code> con cabecera <code>Idempotency-Key</code> (o por la CLI usando el mismo puerto <code>AuthorizePaymentUseCase</code>). Si la clave ya se procesó con el mismo cuerpo, el núcleo devuelve <code>200</code> con <code>Idempotent-Replayed: true</code> sin cobrar dos veces.</p>
+                        </li>
+                        <li class="flow-step" data-step="1">
+                            <span class="step-k">Paso 02</span>
+                            <h3>El dominio calcula la ruta</h3>
+                            <p><code>RoutingPolicy</code> (Java 21 puro, sin dependencias externas) descarta las pasarelas que no admiten divisa, país o tienen el circuito en <code>OPEN</code>, y ordena las candidatas por comisión efectiva. Para 100 € en España, Redsys (1,20 €) gana a Adyen (2,80 €) y Stripe (3,15 €).</p>
+                        </li>
+                        <li class="flow-step" data-step="2">
+                            <span class="step-k">Paso 03</span>
+                            <h3>Avería técnica y failover</h3>
+                            <p>Si Redsys devuelve <code>HTTP_503</code> o supera los 2 s de timeout, el adaptador traduce el fallo al puerto <code>PaymentGateway</code> y el caso de uso salta automáticamente a Adyen. En cambio, un rechazo de fondos (importes acabados en <code>,51</code>) devuelve <code>DECLINED</code> y detiene el enrutado.</p>
+                        </li>
+                        <li class="flow-step" data-step="3">
+                            <span class="step-k">Paso 04</span>
+                            <h3>Circuit breaker automático</h3>
+                            <p>A los tres fallos técnicos seguidos, el breaker de Redsys pasa a <code>OPEN</code> durante 15 segundos: el enrutador deja de perder tiempo contra una pasarela caída. Al expirar el cooldown, deja pasar una petición de prueba en <code>HALF_OPEN</code> y cierra el circuito si responde bien.</p>
+                        </li>
+                        <li class="flow-step" data-step="4">
+                            <span class="step-k">Paso 05</span>
+                            <h3>Outbox, SSE y webhooks HMAC</h3>
+                            <p>El pago y su evento de dominio se guardan en la misma transacción de PostgreSQL (patrón Outbox). Un relay los entrega cada 500 ms al stream <strong>SSE</strong> del panel y la PSP simulada envía su webhook firmado con <strong>HMAC-SHA256</strong>, verificado por el adaptador de entrada.</p>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bloque oscuro: capa anticorrupción y tabla real de pasarelas -->
+        <section id="resiliencia" class="board-sec">
+            <div class="wrap">
+                <div class="board-panel reveal">
+                    <div class="board-copy">
+                        <p class="eyebrow">Capa anticorrupción</p>
+                        <h2>Cuatro pasarelas, cuatro idiomas, un solo puerto.</h2>
+                        <p>Cada pasarela simulada habla su formato nativo. Su adaptador lo traduce al contrato <code>PaymentGateway</code> para que el dominio jamás dependa de un proveedor concreto.</p>
+                        <ul class="psp-list">
+                            <li>
+                                <div class="psp-head"><img src="/media/payaf/redsys.svg" width="22" height="22" alt=""><strong>Redsys</strong><span>1,20 % · EUR · ES</span></div>
+                                <p><code>Ds_Order</code>, <code>Ds_Response 0190</code> y firma <code>Ds_Signature</code> en Base64 URL-safe.</p>
+                            </li>
+                            <li>
+                                <div class="psp-head"><img src="/media/payaf/adyen.svg" width="54" height="18" alt=""><strong>Adyen</strong><span>2,50 % + 0,30 · EUR, USD, GBP, JPY</span></div>
+                                <p><code>pspReference</code> de 16 dígitos, <code>Refused</code> y firma <code>additionalData.hmacSignature</code>.</p>
+                            </li>
+                            <li>
+                                <div class="psp-head"><img src="/media/payaf/stripe.svg" width="46" height="19" alt=""><strong>Stripe</strong><span>2,90 % + 0,25 · EUR, USD, GBP</span></div>
+                                <p><code>pi_…</code>, <code>card_declined / insufficient_funds</code> y cabecera <code>Stripe-Signature</code> con ventana de 5 min.</p>
+                            </li>
+                            <li>
+                                <div class="psp-head"><strong>Mock</strong><span>9,00 % · Todas las divisas y países</span></div>
+                                <p>Último recurso cuando caen las demás pasarelas; código nativo <code>mock_decline_51</code>.</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="board-shot">
+                        <img src="/media/payaf/panel-pasarelas.webp" width="1920" height="1200" loading="lazy" alt="Tarjetas de las cuatro pasarelas con botón Tumbar 503, latencia, tasa de error y registro de eventos por SSE">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Por dentro: arquitectura y cifras reales -->
+        <section id="por-dentro" class="inside">
+            <div class="wrap">
+                <header class="section-head reveal">
+                    <p class="eyebrow">Por dentro</p>
+                    <h2>Arquitectura verificada en cada build.</h2>
+                </header>
+                <div class="bento">
+                    <article class="cell cell-wide reveal">
+                        <h3>Diez módulos Maven, dependencias hacia dentro.</h3>
+                        <p><code>payaf-domain</code> no tiene dependencias de producción. <code>payaf-application</code> solo conoce el dominio. Los siete adaptadores no pueden importarse entre sí, y <code>payaf-bootstrap</code> cablea todo con Spring Boot.</p>
+                        <div class="mods" aria-label="Módulos del proyecto">
+                            <span class="mod mod-core">payaf-domain</span>
+                            <span class="mod mod-app">payaf-application</span>
+                            <span class="mod">adapter-in-rest</span>
+                            <span class="mod">adapter-in-webhook</span>
+                            <span class="mod">adapter-in-cli</span>
+                            <span class="mod">adapter-out-gateway-sim</span>
+                            <span class="mod">adapter-out-persistence-jpa</span>
+                            <span class="mod">adapter-out-persistence-memory</span>
+                            <span class="mod">adapter-out-outbox</span>
+                            <span class="mod mod-boot">payaf-bootstrap</span>
+                        </div>
+                    </article>
+                    <article class="cell cell-dark reveal">
+                        <strong class="figure">488</strong>
+                        <p>tests automáticos en 75 suites: JUnit 6, propiedades con jqwik, integración con Postgres y reglas ArchUnit.</p>
+                    </article>
+                    <article class="cell reveal">
+                        <strong class="figure">0</strong>
+                        <p>imports de Spring, JPA o Jackson en el dominio. Si se cuela uno, <code>HexagonalArchitectureTest</code> falla.</p>
+                    </article>
+                    <article class="cell cell-cli reveal">
+                        <h3>Dos perfiles, mismo núcleo.</h3>
+                        <p>Arranca en memoria para tests instantáneos o con PostgreSQL + Flyway y tabla <code>outbox</code> en producción. También funciona sin servidor web por terminal con picocli:</p>
+                        <pre><code>java -jar payaf.jar cli authorize --amount 100.00 --currency EUR --country ES --ref pedido-1 --key k-1</code></pre>
+                    </article>
+                    <article class="cell cell-stack reveal">
+                        <h3>Tecnologías</h3>
+                        <ul class="stack">
+                            <li>Java 21</li><li>Spring Boot 4.2</li><li>Arquitectura hexagonal</li><li>ArchUnit</li>
+                            <li>jqwik</li><li>PostgreSQL</li><li>Flyway</li><li>JPA</li><li>picocli</li>
+                            <li>HMAC-SHA256</li><li>SSE</li><li>RFC 9457 ProblemDetail</li><li>Cloudflare Containers</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="final">
+            <div class="wrap final-inner reveal">
+                <img src="/media/payaf/favicon.svg" alt="" width="64" height="64">
+                <h2>Rómpelo tú mismo.</h2>
+                <p>Entra en el panel en vivo, pulsa «100 € en España» para ver ganar a Redsys, luego dale a «Tumbar (503)» y vuelve a lanzar el pago: verás el failover, el circuit breaker y la traza puerto a puerto en tiempo real.</p>
+                <div class="hero-actions">
+                    <a class="button button-large" href="/proyecto/PayAF/">Abrir la demo en vivo</a>
+                    <a class="button button-ghost" href="https://github.com/CODIGOAFRX/PayAF" target="_blank" rel="noopener noreferrer">Ver código en GitHub</a>
+                    <a class="button button-ghost" href="/#payaf">Volver al portfolio</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="wrap footer-inner">
+            <a href="/">Pedro Gómez</a>
+            <span>Pasarelas simuladas con datos de demostración. Stripe, Adyen y Redsys son marcas de sus propietarios.</span>
+        </div>
+    </footer>
+</body>
+
+</html>
